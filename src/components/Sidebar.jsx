@@ -1,0 +1,127 @@
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import superadminlogo from "../assets/boldLogo.png";
+
+const menuItems = [
+  { name: "Dashboard", path: "/" },
+  {
+    name: "Services",
+    path: "/services",
+    subMenu: [
+      { name: "Overview", path: "/services/overview" },
+      { name: "Rentals", path: "/services/rentals" },
+      { name: "BOLD Ads", path: "/services/bold-ads" },
+      { name: "BOLD Promotions", path: "/services/bold-promotions" },
+    ],
+  },
+  { name: "Partners", path: "/partners" },
+  { name: "Fuel Card", path: "/fuel-card" },
+];
+
+const Sidebar = () => {
+  const [openMenu, setOpenMenu] = useState(null);
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    menuItems.forEach((item) => {
+      if (
+        item.subMenu &&
+        item.subMenu.some((sub) => sub.path === location.pathname)
+      ) {
+        setOpenMenu(item.name);
+      }
+    });
+  }, [location.pathname]);
+
+  const handleMenuClick = (item) => {
+    if (item.subMenu) {
+      if (openMenu === item.name) {
+        // Close dropdown if already open
+        setOpenMenu(null);
+      } else {
+        // Open dropdown and navigate to first sub-item
+        setOpenMenu(item.name);
+        navigate(item.subMenu[0].path);
+      }
+    } else {
+      setOpenMenu(null);
+      navigate(item.path);
+    }
+  };
+
+  return (
+    <div className="bg-[#1C1B1B] text-white h-screen w-1/6 px-6 py-10 overflow-y-auto">
+      {/* Logo Section */}
+      <div className="flex flex-col gap-2">
+        <img src={superadminlogo} alt="logo" className="w-[33%]" />
+        <p className="font-sans font-semibold text-sm">Super Admin Controls</p>
+      </div>
+
+      {/* Menu Section */}
+      <ul className="mt-10">
+        {menuItems.map((item) => {
+          const isActive =
+            location.pathname === item.path ||
+            (item.subMenu &&
+              item.subMenu.some((sub) => location.pathname === sub.path));
+
+          return (
+            <li key={item.name} className="mb-2">
+              <div
+                onClick={() => handleMenuClick(item)}
+                className={`flex items-center justify-between px-3 py-3 cursor-pointer transition-all rounded-md
+                  ${
+                    isActive
+                      ? "font-bold text-white"
+                      : "text-gray-400 hover:text-white"
+                  }
+                `}
+              >
+                <span className="text-base">{item.name}</span>
+                {item.subMenu && (
+                  <span>
+                    {openMenu === item.name ? (
+                      <FaChevronUp />
+                    ) : (
+                      <FaChevronDown />
+                    )}
+                  </span>
+                )}
+              </div>
+              {item.subMenu && openMenu === item.name && (
+                <ul className="ml-4 border-l-[3px] border-gray-600 pl-3 mt-1">
+                  {item.subMenu.map((sub) => (
+                    <NavLink
+                      key={sub.name}
+                      to={sub.path}
+                      className={({ isActive }) =>
+                        `block py-2 px-3 text-sm transition-all rounded-md relative ${
+                          isActive
+                            ? "text-white font-semibold bg-[rgba(24,196,184,0.2)]"
+                            : "text-gray-400 hover:text-white"
+                        }`
+                      }
+                    >
+                      {({ isActive }) => (
+                        <div className="flex items-center">
+                          {isActive && (
+                            <div className="absolute left-[-15px] w-[3px] h-full bg-[#18C4B8] rounded-md"></div>
+                          )}
+                          {sub.name}
+                        </div>
+                      )}
+                    </NavLink>
+                  ))}
+                </ul>
+              )}
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  );
+};
+
+export default Sidebar;
