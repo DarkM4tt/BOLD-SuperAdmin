@@ -1,8 +1,18 @@
+import { Outlet, Navigate } from "react-router-dom";
+import { useAuth } from "../context/AuthProvider";
 import Sidebar from "../components/Sidebar";
 import Header from "../components/Header";
-import { Outlet } from "react-router-dom";
+import LoadingAnimation from "../components/common/LoadingAnimation";
 
 const MainLayout = () => {
+  const { isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) return <LoadingAnimation height={500} width={500} />;
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
   return (
     <div className="flex">
       <Sidebar />

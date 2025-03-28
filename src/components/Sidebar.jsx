@@ -10,13 +10,15 @@ const menuItems = [
     path: "/services",
     subMenu: [
       { name: "Overview", path: "/services/overview" },
-      { name: "Rentals", path: "/services/rentals" },
-      { name: "BOLD Ads", path: "/services/bold-ads" },
-      { name: "BOLD Promotions", path: "/services/bold-promotions" },
+      { name: "Jumpstart", path: "/services/jumpstart" },
+      { name: "Packages", path: "/services/packages" },
+      { name: "BOLD Miles", path: "/services/bold-miles" },
     ],
   },
   { name: "Partners", path: "/partners" },
-  { name: "Fuel Card", path: "/fuel-card" },
+  { name: "Coupons", path: "/coupons" },
+  { name: "Location", path: "/location" },
+  { name: "Zones", path: "/zones" },
 ];
 
 const Sidebar = () => {
@@ -38,10 +40,8 @@ const Sidebar = () => {
   const handleMenuClick = (item) => {
     if (item.subMenu) {
       if (openMenu === item.name) {
-        // Close dropdown if already open
         setOpenMenu(null);
       } else {
-        // Open dropdown and navigate to first sub-item
         setOpenMenu(item.name);
         navigate(item.subMenu[0].path);
       }
@@ -53,14 +53,12 @@ const Sidebar = () => {
 
   return (
     <div className="bg-[#1C1B1B] text-white h-screen w-1/6 px-6 py-10 overflow-y-auto">
-      {/* Logo Section */}
       <div className="flex flex-col gap-2">
         <img src={superadminlogo} alt="logo" className="w-[33%]" />
         <p className="font-sans font-semibold text-sm">Super Admin Controls</p>
       </div>
 
-      {/* Menu Section */}
-      <ul className="mt-10">
+      <ul className="mt-12">
         {menuItems.map((item) => {
           const isActive =
             location.pathname === item.path ||
@@ -71,15 +69,15 @@ const Sidebar = () => {
             <li key={item.name} className="mb-2">
               <div
                 onClick={() => handleMenuClick(item)}
-                className={`flex items-center justify-between px-3 py-3 cursor-pointer transition-all rounded-md
+                className={`flex items-center justify-between px-3 py-3 cursor-pointer transition-all rounded-md text-xl font-redHat font-normal
                   ${
                     isActive
-                      ? "font-bold text-white"
-                      : "text-gray-400 hover:text-white"
+                      ? "font-semibold text-white"
+                      : " text-textGray hover:text-white"
                   }
                 `}
               >
-                <span className="text-base">{item.name}</span>
+                <span className="">{item.name}</span>
                 {item.subMenu && (
                   <span>
                     {openMenu === item.name ? (
@@ -97,10 +95,10 @@ const Sidebar = () => {
                       key={sub.name}
                       to={sub.path}
                       className={({ isActive }) =>
-                        `block py-2 px-3 text-sm transition-all rounded-md relative ${
+                        `block py-2 px-3 transition-all rounded-md relative font-redhat font-normal text-base ${
                           isActive
                             ? "text-white font-semibold bg-[rgba(24,196,184,0.2)]"
-                            : "text-gray-400 hover:text-white"
+                            : "text-textGray hover:text-white"
                         }`
                       }
                     >
