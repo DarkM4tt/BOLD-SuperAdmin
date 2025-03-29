@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useLoginMutation } from "../store/authApi";
 import { useAuth } from "../context/AuthProvider";
 import LoadingAnimation from "./common/LoadingAnimation";
+import { useSnackbar } from "../context/SnackbarProvider";
 
 function LoginForm() {
   const [loginId, setLoginId] = useState("");
@@ -13,6 +14,7 @@ function LoginForm() {
   const [dataError, setDataError] = useState("");
   const navigate = useNavigate();
   const { setIsAuthenticated } = useAuth();
+  const showSnackbar = useSnackbar();
 
   const handleContinue = async (e) => {
     e.preventDefault();
@@ -28,9 +30,12 @@ function LoginForm() {
       if (response?.success) {
         setIsAuthenticated(true);
         navigate("/");
+        showSnackbar(response?.message, "success");
+      } else {
+        throw new Error(response?.message);
       }
-    } catch (err) {
-      console.error("Login failed", err);
+    } catch (error) {
+      showSnackbar(error.message, "error");
     }
   };
 

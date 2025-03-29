@@ -1,13 +1,15 @@
-import { IconButton } from "@mui/material";
+import { CircularProgress, IconButton } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useNavigate } from "react-router-dom";
 import { useLogoutMutation } from "../store/authApi";
 import { useAuth } from "../context/AuthProvider";
+import { useSnackbar } from "../context/SnackbarProvider";
 
 const Header = () => {
   const navigate = useNavigate();
-  const [logout] = useLogoutMutation();
+  const [logout, { isLoading }] = useLogoutMutation();
   const { setIsAuthenticated } = useAuth();
+  const showSnackbar = useSnackbar();
 
   const handleLogout = async () => {
     try {
@@ -15,9 +17,12 @@ const Header = () => {
       if (response?.success) {
         setIsAuthenticated(false);
         navigate("/login");
+        showSnackbar(response?.message, "success");
+      } else {
+        throw new Error(response?.message);
       }
     } catch (error) {
-      console.error("Logout failed:", error);
+      showSnackbar(error?.data?.message, "error");
     }
   };
 
@@ -33,19 +38,25 @@ const Header = () => {
         </p>
         <div
           className="flex flex-row items-center cursor-pointer hover:bg-gray-100 p-2 rounded-md group"
-          onClick={handleLogout}
+          onClick={!isLoading ? handleLogout : undefined}
         >
-          <IconButton
-            sx={{
-              color: "red",
-              "&:hover": { backgroundColor: "transparent" },
-            }}
-          >
-            <LogoutIcon />
-          </IconButton>
-          <p className="font-redhat text-2xl font-semibold ml-2 group-hover:text-red-600">
-            Log out
-          </p>
+          {isLoading ? (
+            <CircularProgress size={24} color="error" />
+          ) : (
+            <>
+              <IconButton
+                sx={{
+                  color: "red",
+                  "&:hover": { backgroundColor: "transparent" },
+                }}
+              >
+                <LogoutIcon />
+              </IconButton>
+              <p className="font-redhat text-2xl font-semibold ml-2 group-hover:text-red-600">
+                Log out
+              </p>{" "}
+            </>
+          )}
         </div>
       </div>
     </div>
