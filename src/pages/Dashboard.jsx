@@ -16,7 +16,7 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import DirectionsCarFilledIcon from "@mui/icons-material/DirectionsCarFilled";
 import PinkDriverIcon from "../assets/pinkDriverIcon.svg";
-import UsersIcon from "../assets/UsersIcon.svg";
+import UsersIcon from "../assets/usersIcon.svg";
 import AcceptanceChart from "../components/AcceptanceChart";
 import BookingGraph from "../components/BookingGraph";
 import Saletypechart from "../components/SaleTypeChart";
@@ -218,7 +218,7 @@ const Dashboard = ({
               style={{ boxShadow: "4px 4px 33px 0px #0000000A" }}
             >
               <div className="p-2 rounded-lg bg-[#006AFF21] h-fit">
-                <img src={UsersIcon} alt="DriverIcon" />
+                <img src={UsersIcon} alt="UsersIcon" />
               </div>
               <div className="">
                 <p className="font-redhat font-semibold text-base">
