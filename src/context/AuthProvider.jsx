@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (!isLoading && data?.success) {
       setIsAuthenticated(true);
-      showSnackbar("Logged in!", "success");
+      showSnackbar("Already logged in!", "success");
     } else {
       setIsAuthenticated(false);
       showSnackbar("Not logged in!", "error");

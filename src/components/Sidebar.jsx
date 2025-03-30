@@ -52,7 +52,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="bg-[#1C1B1B] text-white h-screen w-1/6 px-6 py-10 overflow-y-auto">
+    <div className="bg-[#1C1B1B] text-white h-screen w-1/6 px-6 py-10">
       <div className="flex flex-col gap-2">
         <img src={superadminlogo} alt="logo" className="w-[33%]" />
         <p className="font-sans font-semibold text-sm">Super Admin Controls</p>

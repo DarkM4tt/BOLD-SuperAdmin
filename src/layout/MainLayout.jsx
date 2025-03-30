@@ -14,11 +14,11 @@ const MainLayout = () => {
   }
 
   return (
-    <div className="flex">
+    <div className="flex h-screen overflow-hidden">
       <Sidebar />
-      <div className="flex-1">
+      <div className="flex-1 flex flex-col">
         <Header />
-        <div className="p-6">
+        <div className="flex-1 px-10 py-8 bg-[#F8F8F8] overflow-y-auto">
           <Outlet />
         </div>
       </div>
