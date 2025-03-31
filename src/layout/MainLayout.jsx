@@ -7,7 +7,8 @@ import LoadingAnimation from "../components/common/LoadingAnimation";
 const MainLayout = () => {
   const { isAuthenticated, isLoading } = useAuth();
 
-  if (isLoading) return <LoadingAnimation height={500} width={500} />;
+  if (isLoading || isAuthenticated === null)
+    return <LoadingAnimation height={500} width={500} />;
 
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;

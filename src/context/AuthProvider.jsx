@@ -6,16 +6,18 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const { data, isLoading } = useCheckSessionQuery();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(null);
   const showSnackbar = useSnackbar();
 
   useEffect(() => {
-    if (!isLoading && data?.success) {
-      setIsAuthenticated(true);
-      showSnackbar("Already logged in!", "success");
-    } else {
-      setIsAuthenticated(false);
-      showSnackbar("Not logged in!", "error");
+    if (!isLoading) {
+      if (data?.success) {
+        setIsAuthenticated(true);
+        showSnackbar("Already logged in!", "success");
+      } else {
+        setIsAuthenticated(false);
+        showSnackbar("Not logged in!", "error");
+      }
     }
   }, [data, isLoading]);
 

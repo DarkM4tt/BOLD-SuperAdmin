@@ -1,11 +1,8 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";
 import MainLayout from "../layout/MainLayout";
 import Dashboard from "../pages/Dashboard";
 import Overview from "../pages/Services/Overview";
-import Rentals from "../pages/Services/Rentals";
-import BoldAds from "../pages/Services/BoldAds";
-import BoldPromotions from "../pages/Services/BoldPromotions";
 import Partners from "../pages/Partners";
 import Vehicles from "../pages/Vehicles";
 import Drivers from "../pages/Drivers";
@@ -16,11 +13,41 @@ import NotFound from "../pages/NotFound";
 import Zones from "../pages/Zones";
 import Login from "../pages/Login";
 import LoadingAnimation from "../components/common/LoadingAnimation";
+import Location from "../pages/Location";
+import Coupons from "../pages/Coupons";
+import Jumpstart from "../pages/Services/Jumpstart";
+import Packages from "../pages/Services/Packages";
+import BoldMiles from "../pages/Services/BoldMiles";
 
 const LoginRedirect = () => {
   const { isAuthenticated, isLoading } = useAuth();
-  if (isLoading) return <LoadingAnimation width={500} height={500} />;
-  return isAuthenticated ? <Navigate to="/" replace /> : <Login />;
+  const location = useLocation(); // Get the current path before redirecting
+
+  console.log("LR: ", location);
+
+  if (isLoading || isAuthenticated === null)
+    return <LoadingAnimation width={500} height={500} />;
+
+  return isAuthenticated ? (
+    <Navigate to={location.state?.from || "/"} replace />
+  ) : (
+    <Login />
+  );
+};
+
+const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated, isLoading } = useAuth();
+  const location = useLocation();
+
+  if (isLoading || isAuthenticated === null) {
+    return <LoadingAnimation width={500} height={500} />;
+  }
+
+  return isAuthenticated ? (
+    children
+  ) : (
+    <Navigate to="/login" state={{ from: location.pathname }} replace />
+  );
 };
 
 const AppRoutes = () => {
@@ -28,19 +55,126 @@ const AppRoutes = () => {
     <Routes>
       <Route path="/login" element={<LoginRedirect />} />
       <Route path="/" element={<MainLayout />}>
-        <Route index element={<Dashboard />} />{" "}
-        <Route path="vehicles" element={<Vehicles />} />
-        <Route path="vehicles/:vehicleId" element={<VehicleDetails />} />
-        <Route path="drivers" element={<Drivers />} />
-        <Route path="drivers/:driverId" element={<DriverDetails />} />
-        <Route path="services" element={<Navigate to="/services/overview" />} />
-        <Route path="services/overview" element={<Overview />} />
-        <Route path="services/rentals" element={<Rentals />} />
-        <Route path="services/bold-ads" element={<BoldAds />} />
-        <Route path="services/bold-promotions" element={<BoldPromotions />} />
-        <Route path="partners" element={<Partners />} />
-        <Route path="partners/:partnerId" element={<PartnerInfo />} />
-        <Route path="zones" element={<Zones />} />
+        <Route
+          index
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="vehicles"
+          element={
+            <ProtectedRoute>
+              <Vehicles />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="vehicles/:vehicleId"
+          element={
+            <ProtectedRoute>
+              <VehicleDetails />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="drivers"
+          element={
+            <ProtectedRoute>
+              <Drivers />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="drivers/:driverId"
+          element={
+            <ProtectedRoute>
+              <DriverDetails />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="services"
+          element={
+            <ProtectedRoute>
+              <Navigate to="/services/overview" />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="services/overview"
+          element={
+            <ProtectedRoute>
+              <Overview />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="services/jumpstart"
+          element={
+            <ProtectedRoute>
+              <Jumpstart />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="services/packages"
+          element={
+            <ProtectedRoute>
+              <Packages />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="services/bold-miles"
+          element={
+            <ProtectedRoute>
+              <BoldMiles />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="partners"
+          element={
+            <ProtectedRoute>
+              <Partners />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="partners/:partnerId"
+          element={
+            <ProtectedRoute>
+              <PartnerInfo />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="coupons"
+          element={
+            <ProtectedRoute>
+              <Coupons />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="location"
+          element={
+            <ProtectedRoute>
+              <Location />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="zones"
+          element={
+            <ProtectedRoute>
+              <Zones />
+            </ProtectedRoute>
+          }
+        />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
