@@ -14,6 +14,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
+import { TextField, InputAdornment } from "@mui/material";
 import DirectionsCarFilledIcon from "@mui/icons-material/DirectionsCarFilled";
 import PinkDriverIcon from "../assets/pinkDriverIcon.svg";
 import UsersIcon from "../assets/usersIcon.svg";
@@ -111,16 +112,29 @@ const Dashboard = ({
 
   return (
     <>
-      <div className="flex justify-between items-center font-redhat text-base font-semibold ">
-        {"> Dashboard"}
-        <div className="py-3 px-4 bg-[#EEEEEE] flex items-center gap-3 rounded-lg">
-          <SearchIcon />
-          <input
-            type="text"
-            placeholder="Search anything..."
-            className="bg-transparent outline-none"
-          ></input>
-        </div>
+      <div className="flex items-center justify-between w-full font-redhat text-base font-semibold">
+        <p className="flex items-center gap-1">
+          <span>&gt;</span>
+          <span>Dashboard</span>
+        </p>
+        <TextField
+          variant="outlined"
+          placeholder="Search anything..."
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+            sx: {
+              bgcolor: "#EEEEEE",
+              borderRadius: "8px",
+              height: "40px",
+              width: "250px",
+              "& fieldset": { border: "none" },
+            },
+          }}
+        />
       </div>
       <p className="font-redhat font-semibold text-2xl pt-8">Overview</p>
       <p className="font-redhat font-normal text-sm  text-[#777777] pt-2">
