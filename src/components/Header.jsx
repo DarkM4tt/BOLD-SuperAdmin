@@ -1,7 +1,7 @@
 import { CircularProgress, IconButton } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { useNavigate } from "react-router-dom";
-import { useLogoutMutation } from "../store/authApi";
+import { useLogoutMutation } from "../features/authApi";
 import { useAuth } from "../context/AuthProvider";
 import { useSnackbar } from "../context/SnackbarProvider";
 

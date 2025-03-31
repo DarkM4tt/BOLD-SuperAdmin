@@ -8,7 +8,7 @@ import Vehicles from "../pages/Vehicles";
 import Drivers from "../pages/Drivers";
 import VehicleDetails from "../pages/VehicleDetails";
 import DriverDetails from "../pages/DriverDetails";
-import PartnerInfo from "../pages/PartnerInfo";
+import PartnerDetails from "../pages/PartnerDetails";
 import NotFound from "../pages/NotFound";
 import Zones from "../pages/Zones";
 import Login from "../pages/Login";
@@ -147,7 +147,7 @@ const AppRoutes = () => {
           path="partners/:partnerId"
           element={
             <ProtectedRoute>
-              <PartnerInfo />
+              <PartnerDetails />
             </ProtectedRoute>
           }
         />
