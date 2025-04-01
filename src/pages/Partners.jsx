@@ -23,7 +23,7 @@ const Partners = () => {
       case "REJECTED":
         return { status: "REJECTED" };
       case "INCOMPLETE":
-        return { isActive: true };
+        return { is_completed: false };
       default:
         return { status: "APPROVED" };
     }
@@ -45,7 +45,6 @@ const Partners = () => {
     );
 
   const partnerColumns = [
-    { key: "id", label: "S. No.", render: (_, row, idx) => idx + 1 },
     {
       key: "full_name",
       label: "Name",

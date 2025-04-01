@@ -60,6 +60,7 @@ const PaginatedTable = ({
             }}
           >
             <TableRow>
+              <TableCell>S. No.</TableCell>
               {columns.map((header) => (
                 <TableCell key={header.key}>{header.label}</TableCell>
               ))}
@@ -81,6 +82,7 @@ const PaginatedTable = ({
                   onClick={() => onRowClick && onRowClick(row._id)}
                   sx={{ cursor: onRowClick ? "pointer" : "default" }}
                 >
+                  <TableCell>{idx + 1}</TableCell>
                   {columns.map((col) => (
                     <TableCell key={col.key}>
                       {col.render
@@ -106,7 +108,7 @@ const PaginatedTable = ({
             {pageNumbers.map((pageNumber, index) => (
               <button
                 key={index}
-                className={`px-2 py-1 rounded-md transition-colors ${
+                className={`py-1 rounded-md transition-colors ${
                   pageNumber === page
                     ? "text-[#18C4B8] font-bold"
                     : "text-gray-600 hover:text-gray-800"
@@ -125,6 +127,25 @@ const PaginatedTable = ({
               disabled={!isPreviousPage}
               onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
               variant="outline"
+              sx={{
+                textTransform: "none",
+                fontSize: "14px",
+                fontWeight: "600",
+                color: "#374151",
+                border: "2px solid #D1D5DB",
+                borderRadius: "12px",
+                padding: "8px 14px",
+                backgroundColor: "white",
+                "&:hover": {
+                  backgroundColor: "white",
+                  borderColor: "#D1D5DB",
+                },
+                "&:disabled": {
+                  color: "#9CA3AF",
+                  borderColor: "#E5E7EB",
+                  fontWeight: "400",
+                },
+              }}
             >
               Previous
             </Button>
@@ -132,6 +153,26 @@ const PaginatedTable = ({
               disabled={!isNextPage}
               onClick={() => setPage((prev) => prev + 1)}
               variant="outline"
+              sx={{
+                textTransform: "none",
+                fontSize: "14px",
+                fontWeight: "600",
+                color: "#374151",
+                border: "2px solid #D1D5DB",
+                borderRadius: "12px",
+                padding: "8px 14px",
+                minWidth: "90px",
+                backgroundColor: "white",
+                "&:hover": {
+                  backgroundColor: "white",
+                  borderColor: "#D1D5DB",
+                },
+                "&:disabled": {
+                  color: "#9CA3AF",
+                  borderColor: "#E5E7EB",
+                  fontWeight: "400",
+                },
+              }}
             >
               Next
             </Button>
