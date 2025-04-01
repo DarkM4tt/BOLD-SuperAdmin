@@ -22,6 +22,7 @@ import AcceptanceChart from "../components/AcceptanceChart";
 import BookingGraph from "../components/BookingGraph";
 import Saletypechart from "../components/SaleTypeChart";
 import GenerateReportButton from "../components/common/GenerateReportButton";
+import InputSearchBar from "../components/common/InputSearchBar";
 
 ChartJS.register(
   CategoryScale,
@@ -117,24 +118,7 @@ const Dashboard = ({
           <span>&gt;</span>
           <span>Dashboard</span>
         </p>
-        <TextField
-          variant="outlined"
-          placeholder="Search anything..."
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon />
-              </InputAdornment>
-            ),
-            sx: {
-              bgcolor: "#EEEEEE",
-              borderRadius: "8px",
-              height: "40px",
-              width: "250px",
-              "& fieldset": { border: "none" },
-            },
-          }}
-        />
+        <InputSearchBar />
       </div>
       <p className="font-redhat font-semibold text-2xl pt-8">Overview</p>
       <p className="font-redhat font-normal text-sm  text-[#777777] pt-2">

@@ -21,9 +21,7 @@ import NotFound from "../components/NotFound";
 
 const LoginRedirect = () => {
   const { isAuthenticated, isLoading } = useAuth();
-  const location = useLocation(); // Get the current path before redirecting
-
-  console.log("LR: ", location);
+  const location = useLocation();
 
   if (isLoading || isAuthenticated === null)
     return <LoadingAnimation width={500} height={500} />;

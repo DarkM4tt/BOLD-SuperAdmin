@@ -27,7 +27,7 @@ const Header = () => {
   };
 
   return (
-    <div className="flex flex-row justify-between items-center shadow-md px-8 py-2 bg-white">
+    <div className="flex flex-row justify-between items-center px-8 py-2 bg-white border-b-[1px] border-gray-200">
       <p className="font-redhat text-2xl font-semibold">Owner Access</p>
       <div className="flex flex-row gap-10 items-center">
         <p

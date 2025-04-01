@@ -30,12 +30,12 @@ function LoginForm() {
       if (response?.success) {
         setIsAuthenticated(true);
         navigate("/");
-        showSnackbar(response?.message, "success");
+        showSnackbar("Logged in successfully!", "success");
       } else {
         throw new Error(response?.message);
       }
     } catch (error) {
-      showSnackbar(error.message, "error");
+      showSnackbar(error?.data?.message || "Invalid Credentials!", "error");
     }
   };
 
@@ -64,7 +64,11 @@ function LoginForm() {
           onChange={(e) => setAccessCode(e.target.value)}
         />
         {dataError && <p className="text-red-500 text-xs">{dataError}</p>}
-        {error && <p className="text-red-500 text-xs">{error}</p>}
+        {error && (
+          <p className="text-red-500 text-xs">
+            {error?.data?.message || "Invalid crdentials!"}
+          </p>
+        )}
       </div>
       <Button
         variant="contained"

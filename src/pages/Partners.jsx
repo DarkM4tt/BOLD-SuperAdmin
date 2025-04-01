@@ -1,10 +1,16 @@
 import { useState } from "react";
-import { CircularProgress, Button, Tabs, Tab } from "@mui/material";
+import { Tabs, Tab, Box } from "@mui/material";
 import { useFetchOrganizationsQuery } from "../features/organizationApi";
+import { formatCreatedAt } from "../utils/dates";
+import PaginatedTable from "../components/common/PaginatedTable";
+import { useNavigate } from "react-router-dom";
+import InputSearchBar from "../components/common/InputSearchBar";
+import LoadingAnimation from "../components/common/LoadingAnimation";
 
 const Partners = () => {
   const [selectedTab, setSelectedTab] = useState("ALL");
   const [page, setPage] = useState(1);
+  const navigate = useNavigate();
 
   const getQueryParams = () => {
     switch (selectedTab) {
@@ -14,6 +20,8 @@ const Partners = () => {
         return { status: "PENDING" };
       case "NEW_REQUESTS":
         return { status: "NEW-REQUEST" };
+      case "REJECTED":
+        return { status: "REJECTED" };
       case "INCOMPLETE":
         return { isActive: true };
       default:
@@ -28,8 +36,78 @@ const Partners = () => {
     page,
   });
 
-  if (isLoading) return <CircularProgress />;
-  if (error) return <p>Error fetching data</p>;
+  if (isLoading) return <LoadingAnimation width={500} height={500} />;
+  if (error)
+    return (
+      <p className="text-red-400 text-lg font-redhat font-semibold">
+        {error?.data?.message || "Error fetching data"}
+      </p>
+    );
+
+  const partnerColumns = [
+    { key: "id", label: "S. No.", render: (_, row, idx) => idx + 1 },
+    {
+      key: "full_name",
+      label: "Name",
+      render: (val) => (
+        <div className="flex items-center gap-2">
+          {/* <img src={PartnerIcon} alt="Icon" /> */}
+          {val || <p className="text-red-500">No name</p>}
+        </div>
+      ),
+    },
+    {
+      key: "createdAt",
+      label: "Operating Since",
+      render: (val) =>
+        formatCreatedAt(val) || <p className="text-red-200">Unknown</p>,
+    },
+    { key: "total_drivers", label: "Total Drivers" },
+    { key: "total_vehicles", label: "Total Vehicles" },
+    { key: "listing_assignments", label: "Listing Drivers" },
+    {
+      key: "documents",
+      label: "Documents Status",
+      render: (_, row) => (
+        <div className="flex">
+          {row.rejected_documents > 0 && (
+            <span
+              className={`bg-[#f9ecea] pl-4 pr-2 py-2 ${
+                row.pending_documents > 0 ? "rounded-l-2xl" : "rounded-2xl"
+              } text-[#D40038] flex items-center`}
+            >
+              {/* <img src={wrongIcon} alt="wrongIcon" className="mr-1" /> */}
+              <p>{row.rejected_documents}</p>
+            </span>
+          )}
+          {row.pending_documents > 0 && (
+            <span
+              className={`bg-[#f9ecea] pl-2 pr-4 py-2 ${
+                row.rejected_documents > 0 ? "rounded-r-2xl" : "rounded-2xl"
+              } text-[#C07000] flex items-center`}
+            >
+              {/* <img src={infoYellow} alt="infoYellow" className="mr-1" /> */}
+              <p>{row.pending_documents}</p>
+            </span>
+          )}
+          {row.total_documents === 6 && row.verified_documents === 6 && (
+            <p className="text-green-400 font-bold">Approved</p>
+          )}
+          {row.total_documents < 6 &&
+            row.total_documents > 0 &&
+            row.pending_documents === 0 &&
+            row.rejected_documents === 0 && (
+              <p className="text-red-400 font-bold">
+                {6 - row.total_documents} not uploaded!
+              </p>
+            )}
+          {row.total_documents === 0 && (
+            <p className="text-red-400 font-bold">Not Uploaded!</p>
+          )}
+        </div>
+      ),
+    },
+  ];
 
   const {
     results = [],
@@ -39,66 +117,55 @@ const Partners = () => {
   } = data.organizations || {};
 
   return (
-    <div className="p-4">
+    <Box>
+      <div className="flex items-center justify-between w-full font-redhat text-base font-semibold mb-8">
+        <p className="flex items-center gap-1">
+          <span>&gt;</span>
+          <span>Partners</span>
+        </p>
+        <InputSearchBar />
+      </div>
+
+      <Box sx={{ fontSize: "24px", fontWeight: "500", marginBottom: "20px" }}>
+        Manage & find organisation
+      </Box>
+
       <Tabs
         value={selectedTab}
-        onChange={(e, newValue) => setSelectedTab(newValue)}
+        onChange={(e, newValue) => {
+          setPage(1);
+          setSelectedTab(newValue);
+        }}
+        sx={{
+          borderBottom: "1px solid #d3d3d3",
+          width: "fit-content",
+          ".MuiTab-root": {
+            textTransform: "none",
+            fontWeight: 500,
+            color: "#9e9e9e",
+          },
+          ".Mui-selected": { color: "#1976d2", fontWeight: "bold" },
+          ".MuiTabs-indicator": { backgroundColor: "#1976d2" },
+        }}
       >
         <Tab label="All" value="ALL" />
         <Tab label="Pending" value="PENDING" />
         <Tab label="New Requests" value="NEW_REQUESTS" />
+        <Tab label="Rejected" value="REJECTED" />
         <Tab label="Incomplete Signup" value="INCOMPLETE" />
       </Tabs>
 
-      <div className="mt-4">
-        <table className="w-full border-collapse border border-gray-200">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="p-2 border">ID</th>
-              <th className="p-2 border">Name</th>
-              <th className="p-2 border">Operating Since</th>
-              <th className="p-2 border">Total Drivers</th>
-              <th className="p-2 border">Total Vehicles</th>
-              <th className="p-2 border">Listing Drivers</th>
-              <th className="p-2 border">Issues/Queries</th>
-            </tr>
-          </thead>
-          <tbody>
-            {results.map((org, idx) => (
-              <tr key={org._id} className="text-center border">
-                <td className="p-2 border">{idx + 1}</td>
-                <td className="p-2 border">{org?.full_name}</td>
-                <td className="p-2 border">{org?.operatingSince}</td>
-                <td className="p-2 border">{org?.totalDrivers}</td>
-                <td className="p-2 border">{org?.totalVehicles}</td>
-                <td className="p-2 border">{org?.listingDrivers}</td>
-                <td className="p-2 border">{org?.issuesQueries}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      <div className="mt-4 flex justify-between">
-        <Button
-          disabled={!isPreviousPage}
-          onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-          variant="contained"
-        >
-          Previous
-        </Button>
-        <span>
-          Page {page} of {totalPages}
-        </span>
-        <Button
-          disabled={!isNextPage}
-          onClick={() => setPage((prev) => prev + 1)}
-          variant="contained"
-        >
-          Next
-        </Button>
-      </div>
-    </div>
+      <PaginatedTable
+        columns={partnerColumns}
+        data={results || []}
+        onRowClick={(partnerId) => navigate(`/partners/${partnerId}`)}
+        isPreviousPage={isPreviousPage}
+        isNextPage={isNextPage}
+        page={page}
+        setPage={setPage}
+        totalPages={totalPages}
+      />
+    </Box>
   );
 };
 

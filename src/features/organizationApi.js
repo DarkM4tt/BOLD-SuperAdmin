@@ -14,7 +14,7 @@ export const organizationApi = createApi({
         const params = new URLSearchParams({
           status: status || "",
           page,
-          limit: 2,
+          limit: 10,
         }).toString();
 
         return `/organizations/super-admin/all-organizations?${params}`;
