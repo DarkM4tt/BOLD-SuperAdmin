@@ -87,7 +87,7 @@ const PaginatedTable = ({
                     <TableCell key={col.key}>
                       {col.render
                         ? col.render(row[col.key], row)
-                        : row[col.key] || "-"}
+                        : row[col.key] || 0}
                     </TableCell>
                   ))}
                 </TableRow>

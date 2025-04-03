@@ -10,9 +10,10 @@ export const organizationApi = createApi({
   baseQuery,
   endpoints: (builder) => ({
     fetchOrganizations: builder.query({
-      query: ({ status, page }) => {
+      query: ({ status, is_completed, page }) => {
         const params = new URLSearchParams({
-          status: status || "",
+          ...(status && { status }),
+          ...(is_completed !== undefined && { is_completed }),
           page,
           limit: 10,
         }).toString();
