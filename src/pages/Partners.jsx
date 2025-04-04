@@ -202,11 +202,10 @@ const Partners = () => {
 
   return (
     <Box>
-      <div className="flex items-center justify-between w-full font-redhat text-base font-semibold mb-5">
-        <p className="flex items-center gap-1">
-          <span>&gt;</span>
-          <span>Partners</span>
-        </p>
+      <div className="flex items-center justify-between w-full mb-5">
+        <span className="font-redhat font-semibold text-base text-gray-700">
+          {"> Partners"}
+        </span>
         <InputSearchBar />
       </div>
 
