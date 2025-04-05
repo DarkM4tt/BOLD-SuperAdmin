@@ -182,8 +182,25 @@ const Vehicles = () => {
     skip: !partnerId,
   });
 
+  const getQueryParams = () => {
+    return {
+      status:
+        selectedTab === "ALL"
+          ? "APPROVED"
+          : selectedTab === "PENDING"
+          ? "PENDING"
+          : selectedTab === "NEW-REQUEST"
+          ? "NEW-REQUEST"
+          : selectedTab === "REJECTED"
+          ? "REJECTED"
+          : "APPROVED",
+    };
+  };
+
+  const queryParams = getQueryParams();
+
   const { data, error, isLoading } = useFetchVehiclesQuery({
-    status: selectedTab,
+    ...queryParams,
     page,
     partnerId,
   });
