@@ -1,18 +1,20 @@
 import {
-  TableContainer,
   Table,
-  TableHead,
   TableBody,
-  TableRow,
   TableCell,
-  Button,
+  TableContainer,
+  TableHead,
+  TableRow,
   Box,
+  Button,
 } from "@mui/material";
 
-const PaginatedTable = ({
-  columns,
-  data,
-  onRowClick,
+const EntityPaginatedTable = ({
+  headers = [],
+  rows = [],
+  renderRow,
+  emptyMessage = "No data found!",
+  onRowClick = () => {},
   page,
   setPage,
   totalPages,
@@ -60,49 +62,39 @@ const PaginatedTable = ({
             }}
           >
             <TableRow>
-              <TableCell>S. No.</TableCell>
-              {columns.map((header) => (
-                <TableCell key={header.key}>{header.label}</TableCell>
+              {headers.map((header) => (
+                <TableCell key={header}>{header}</TableCell>
               ))}
             </TableRow>
           </TableHead>
 
-          <TableBody
-            sx={{
-              "& .MuiTableCell-root": {
-                fontWeight: "600",
-                fontSize: "16px",
-              },
-            }}
-          >
-            {data?.length > 0 ? (
-              data.map((row, idx) => (
+          {rows?.length > 0 ? (
+            <TableBody
+              sx={{
+                "& .MuiTableCell-root": {
+                  fontWeight: "600",
+                  fontSize: "16px",
+                },
+              }}
+            >
+              {rows.map((row, index) => (
                 <TableRow
-                  key={row._id || idx}
-                  onClick={() => onRowClick && onRowClick(row._id)}
-                  sx={{ cursor: onRowClick ? "pointer" : "default" }}
+                  key={index}
+                  onClick={() => onRowClick(row)}
+                  sx={{ cursor: "pointer" }}
                 >
-                  <TableCell>{idx + 1}</TableCell>
-                  {columns.map((col) => (
-                    <TableCell key={col.key}>
-                      {col.render
-                        ? col.render(row[col.key], row)
-                        : row[col.key] || 0}
-                    </TableCell>
-                  ))}
+                  {renderRow(row)}
                 </TableRow>
-              ))
-            ) : (
-              <TableCell>
-                <p className="text-red-400 text-lg font-redhat font-semibold">
-                  Empty data!
-                </p>
-              </TableCell>
-            )}
-          </TableBody>
+              ))}
+            </TableBody>
+          ) : (
+            <p className="text-lg text-red-400 font-bold font-redhat p-6">
+              {emptyMessage}
+            </p>
+          )}
         </Table>
       </TableContainer>
-      {data?.length > 0 && (
+      {rows?.length > 0 && (
         <div className="flex items-center justify-between p-4 border-t">
           <div className="flex items-center space-x-2 text-gray-700 text-lg font-medium">
             {pageNumbers.map((pageNumber, index) => (
@@ -183,4 +175,4 @@ const PaginatedTable = ({
   );
 };
 
-export default PaginatedTable;
+export default EntityPaginatedTable;

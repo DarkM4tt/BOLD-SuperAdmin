@@ -14,7 +14,6 @@ const NewOrgRequestCard = ({ partnerDetails }) => {
   const navigate = useNavigate();
   return (
     <div className="bg-white mt-4 rounded-md py-4 pr-6 pl-10 mb-4 relative border-b-[1px] border-[#344BFD]">
-      {/* Company Details */}
       <div className="flex justify-between items-center">
         <div className="flex gap-4 items-center">
           <img src={OrgBig} alt="OrgBig" />
@@ -26,7 +25,6 @@ const NewOrgRequestCard = ({ partnerDetails }) => {
           </div>
         </div>
 
-        {/* Location */}
         <div className="flex flex-col w-32">
           <p className="text-lg font-redhat font-bold">Location</p>
           <p className="text-base font-redhat font-medium text-gray">
@@ -38,7 +36,6 @@ const NewOrgRequestCard = ({ partnerDetails }) => {
           </p>
         </div>
 
-        {/* Signed Up On */}
         <div className="flex flex-col">
           <p className="text-lg font-redhat font-bold">Signed up on</p>
           <p className="text-base font-redhat font-medium text-gray">
@@ -50,7 +47,6 @@ const NewOrgRequestCard = ({ partnerDetails }) => {
           <p className="text-sm text-gray-600">{partnerDetails?.time}</p>
         </div>
 
-        {/* Action Button */}
         <Button
           variant="outlined"
           sx={{
@@ -231,10 +227,10 @@ const Partners = () => {
           ".MuiTabs-indicator": { backgroundColor: "#1976d2" },
         }}
       >
-        <Tab label="All" value="ALL" />
-        <Tab label="Pending" value="PENDING" />
+        <Tab label="All organizations" value="ALL" />
+        <Tab label="Pending organizations" value="PENDING" />
         <Tab label="New Requests" value="NEW_REQUESTS" />
-        <Tab label="Rejected" value="REJECTED" />
+        <Tab label="Rejected organizations" value="REJECTED" />
         <Tab label="Incomplete Signup" value="INCOMPLETE" />
       </Tabs>
 

@@ -150,6 +150,38 @@ const AppRoutes = () => {
           }
         />
         <Route
+          path="partners/:partnerId/vehicles"
+          element={
+            <ProtectedRoute>
+              <Vehicles />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="partners/:partnerId/vehicles/:vehicleId"
+          element={
+            <ProtectedRoute>
+              <VehicleDetails />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="partners/:partnerId/drivers"
+          element={
+            <ProtectedRoute>
+              <Drivers />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="partners/:partnerId/drivers/:driverId"
+          element={
+            <ProtectedRoute>
+              <DriverDetails />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="coupons"
           element={
             <ProtectedRoute>

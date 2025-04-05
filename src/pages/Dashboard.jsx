@@ -23,6 +23,7 @@ import BookingGraph from "../components/BookingGraph";
 import Saletypechart from "../components/SaleTypeChart";
 import GenerateReportButton from "../components/common/GenerateReportButton";
 import InputSearchBar from "../components/common/InputSearchBar";
+import { useNavigate } from "react-router-dom";
 
 ChartJS.register(
   CategoryScale,
@@ -34,13 +35,10 @@ ChartJS.register(
   Filler
 );
 
-const Dashboard = ({
-  onMenuItemClick,
-  setSelectedOrgId,
-  setSelectedDriverId,
-}) => {
+const Dashboard = () => {
   const chartRef = useRef(null);
   const [gradient, setGradient] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (chartRef.current) {
@@ -202,10 +200,7 @@ const Dashboard = ({
                 </p>
                 <button
                   className="pt-3 font-redhat text-sm font-light border-b-[2px] border-gray-600"
-                  onClick={() => {
-                    setSelectedOrgId(null);
-                    onMenuItemClick("AllVehicles");
-                  }}
+                  onClick={() => navigate("/vehicles")}
                 >
                   View list
                 </button>
@@ -228,7 +223,7 @@ const Dashboard = ({
                 </p>
                 <button
                   className="pt-3 font-redhat text-sm font-light border-b-[2px] border-gray-600"
-                  onClick={() => onMenuItemClick("AllCustomers")}
+                  onClick={() => navigate("/users")}
                 >
                   View list
                 </button>
@@ -262,10 +257,7 @@ const Dashboard = ({
                 </p>
                 <button
                   className="pt-3 font-redhat text-sm font-light border-b-[2px] border-gray-600"
-                  onClick={() => {
-                    setSelectedDriverId(null);
-                    onMenuItemClick("AllRides");
-                  }}
+                  onClick={() => navigate("/rides")}
                 >
                   View list
                 </button>
@@ -288,10 +280,7 @@ const Dashboard = ({
                 </p>
                 <button
                   className="pt-3 font-redhat text-sm font-light border-b-[2px] border-gray-600"
-                  onClick={() => {
-                    setSelectedOrgId(null);
-                    onMenuItemClick("AllDrivers");
-                  }}
+                  onClick={() => navigate("/drivers")}
                 >
                   View list
                 </button>

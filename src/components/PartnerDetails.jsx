@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -42,6 +42,7 @@ import RemarksModal from "../components/common/RemarkModal";
 import AcceptanceChart from "./AcceptanceChart";
 import Warning from "../assets/redWarning.svg";
 import LoadingAnimation from "./common/LoadingAnimation";
+import GenerateReportButton from "./common/GenerateReportButton";
 
 ChartJS.register(
   CategoryScale,
@@ -54,7 +55,7 @@ ChartJS.register(
   Filler
 );
 
-const PartnerInfo = ({ setActiveComponent }) => {
+const PartnerInfo = () => {
   const chartRef = useRef(null);
   const params = useParams();
   const [gradient, setGradient] = useState(null);
@@ -71,6 +72,7 @@ const PartnerInfo = ({ setActiveComponent }) => {
   const [updateOrgDocStatus, { isLoading: isUpdatingDocStatus }] =
     useUpdateOrgDocStatusMutation();
   const [updateOrgStatus] = useUpdateOrgStatusMutation();
+  const navigate = useNavigate();
   const partnerDetails = orgdata?.data;
 
   useEffect(() => {
@@ -388,9 +390,9 @@ const PartnerInfo = ({ setActiveComponent }) => {
             {partnerDetails?.full_name || "No name"}
           </p>
           <p className="font-redhat font-normal text-sm text-[#777777] pt-2">
-            Please note that the status change will hinder the organisation
-            operations & any vehicle in the organisation may not receive the
-            ride request from BOLD app.{" "}
+            Note: The status change will hinder the organisation operations &
+            any vehicle in the organisation may not receive the ride request
+            from BOLD app.{" "}
           </p>
         </div>
         <Button
@@ -414,15 +416,15 @@ const PartnerInfo = ({ setActiveComponent }) => {
       {/* Buttons */}
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-4 pt-8">
-          <div className="py-3 px-4 text-sm font-redhat bg-white rounded-[40px] cursor-pointer">
-            List of submitted documents{" "}
+          <div className="py-2 px-4 text-sm font-redhat bg-white rounded-[40px] cursor-pointer border-[1px] border-gray-200">
+            List of vehicles{" "}
             <span className="pl-2">
               {" "}
               <KeyboardDoubleArrowRightIcon />
             </span>{" "}
           </div>
-          <div className="py-3 px-4 text-sm font-redhat bg-white rounded-[40px] cursor-pointer">
-            List of submitted drivers/vehicle documents{" "}
+          <div className="py-2 px-4 text-sm font-redhat bg-white rounded-[40px] cursor-pointer border-[1px] border-gray-200">
+            List of drivers{" "}
             <span className="pl-2">
               {" "}
               <KeyboardDoubleArrowRightIcon />
@@ -430,9 +432,7 @@ const PartnerInfo = ({ setActiveComponent }) => {
           </div>
         </div>
         <div className="flex items-center gap-6 pt-8">
-          <div className="py-2 px-4 text-base font-redhat bg-[#FF935914] rounded-[56px] text-[#FF9359] border border-[#FF9359] cursor-pointer">
-            Generate report
-          </div>
+          <GenerateReportButton />
           <StatusDropdown
             allStatus={allOrgStatus}
             currentStatus={partnerDetails?.status}
@@ -469,7 +469,9 @@ const PartnerInfo = ({ setActiveComponent }) => {
                 </p>
                 <button
                   className="pt-3 font-redhat text-sm font-light border-b-[2px] border-black"
-                  onClick={() => setActiveComponent("Vehicles")}
+                  onClick={() =>
+                    navigate(`/partners/${params?.partnerId}/vehicles`)
+                  }
                 >
                   View list
                 </button>
@@ -494,7 +496,9 @@ const PartnerInfo = ({ setActiveComponent }) => {
                 </p>
                 <button
                   className="pt-3 font-redhat text-sm font-light border-b-[2px] border-black"
-                  onClick={() => setActiveComponent("Drivers")}
+                  onClick={() =>
+                    navigate(`/partners/${params?.partnerId}/drivers`)
+                  }
                 >
                   View list
                 </button>

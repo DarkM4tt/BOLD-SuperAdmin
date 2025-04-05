@@ -1,9 +1,9 @@
 import { CircularProgress, IconButton } from "@mui/material";
-import LogoutIcon from "@mui/icons-material/Logout";
 import { useNavigate } from "react-router-dom";
 import { useLogoutMutation } from "../features/authApi";
 import { useAuth } from "../context/AuthProvider";
 import { useSnackbar } from "../context/SnackbarProvider";
+import LogoutIcon from "@mui/icons-material/Logout";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -23,6 +23,8 @@ const Header = () => {
       }
     } catch (error) {
       showSnackbar(error?.data?.message, "error");
+    } finally {
+      window.location.reload();
     }
   };
 
