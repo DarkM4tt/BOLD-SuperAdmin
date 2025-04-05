@@ -1,17 +1,17 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Tabs, Tab, Box, Button, Avatar, TableCell } from "@mui/material";
+import { Tabs, Tab, Box, Button, TableCell } from "@mui/material";
 import { formatCreatedAt } from "../utils/dates";
 import {
   useFetchAssignedVehiclesQuery,
   useFetchVehiclesQuery,
 } from "../features/vehicleApi";
+import { useFetchOrganizationDetailsQuery } from "../features/organizationApi";
 import infoYellow from "../assets/infoYellow.svg";
 import wrongIcon from "../assets/wrongIcon.svg";
 import InputSearchBar from "./common/InputSearchBar";
 import LoadingAnimation from "./common/LoadingAnimation";
 import EntityPaginatedTable from "./common/EntityPaginatedTable";
-import { useFetchOrganizationDetailsQuery } from "../features/organizationApi";
 
 const NewVehicleRequestCard = ({ vehicleDetails }) => {
   const navigate = useNavigate();
@@ -178,7 +178,9 @@ const Vehicles = () => {
   const navigate = useNavigate();
   const params = useParams();
   const { partnerId } = params;
-  const { data: orgdata } = useFetchOrganizationDetailsQuery(partnerId);
+  const { data: orgdata } = useFetchOrganizationDetailsQuery(partnerId, {
+    skip: !partnerId,
+  });
 
   const { data, error, isLoading } = useFetchVehiclesQuery({
     status: selectedTab,

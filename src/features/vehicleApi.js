@@ -11,12 +11,10 @@ export const vehicleApi = createApi({
   tagTypes: ["Vehicles", "VehicleDetails"],
   endpoints: (builder) => ({
     fetchVehicles: builder.query({
-      query: ({ status, is_completed, page, partnerId }) => {
+      query: ({ status, page, partnerId }) => {
         const params = new URLSearchParams();
         if (partnerId) params.append("organization_id", partnerId);
         if (status) params.append("status", status);
-        if (typeof is_completed === "boolean")
-          params.append("is_completed", is_completed);
         params.append("page", page);
         params.append("limit", "10");
 
