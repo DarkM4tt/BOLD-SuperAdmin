@@ -62,6 +62,7 @@ const EntityPaginatedTable = ({
             }}
           >
             <TableRow>
+              <TableCell>S. No.</TableCell>
               {headers.map((header) => (
                 <TableCell key={header}>{header}</TableCell>
               ))}
@@ -83,6 +84,7 @@ const EntityPaginatedTable = ({
                   onClick={() => onRowClick(row)}
                   sx={{ cursor: "pointer" }}
                 >
+                  <TableCell>{index + 1}</TableCell>
                   {renderRow(row)}
                 </TableRow>
               ))}

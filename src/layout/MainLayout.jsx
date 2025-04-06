@@ -1,7 +1,7 @@
 import { Outlet, Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthProvider";
-import Sidebar from "../components/Sidebar";
-import Header from "../components/Header";
+import Sidebar from "./Sidebar";
+import Header from "./Header";
 import LoadingAnimation from "../components/common/LoadingAnimation";
 
 const MainLayout = () => {

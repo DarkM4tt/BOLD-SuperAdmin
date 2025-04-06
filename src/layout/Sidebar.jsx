@@ -26,6 +26,8 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  console.log(location.pathname);
+
   useEffect(() => {
     menuItems.forEach((item) => {
       if (
@@ -60,10 +62,33 @@ const Sidebar = () => {
 
       <ul className="mt-12">
         {menuItems.map((item) => {
-          const isActive =
-            location.pathname === item.path ||
-            (item.subMenu &&
-              item.subMenu.some((sub) => location.pathname === sub.path));
+          const isActive = (() => {
+            if (item.name === "Dashboard") {
+              const otherItems = menuItems.filter(
+                (i) => i.name !== "Dashboard"
+              );
+              const isInOtherPath = otherItems.some((other) => {
+                return (
+                  location.pathname === other.path ||
+                  location.pathname.startsWith(other.path + "/") ||
+                  (other.subMenu &&
+                    other.subMenu.some((sub) =>
+                      location.pathname.startsWith(sub.path)
+                    ))
+                );
+              });
+              return location.pathname === "/" || !isInOtherPath;
+            }
+
+            return (
+              location.pathname === item.path ||
+              location.pathname.startsWith(item.path + "/") ||
+              (item.subMenu &&
+                item.subMenu.some((sub) =>
+                  location.pathname.startsWith(sub.path)
+                ))
+            );
+          })();
 
           return (
             <li key={item.name} className="mb-2">
