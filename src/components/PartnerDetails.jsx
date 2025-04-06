@@ -75,23 +75,29 @@ const PartnerInfo = () => {
   const navigate = useNavigate();
   const partnerDetails = orgdata?.data;
 
-  useEffect(() => {
-    if (error) {
+  const handleOrgStatusChange = async (status) => {
+    try {
+      const response = await updateOrgStatus({
+        orgId: params?.partnerId,
+        status,
+      }).unwrap();
       showSnackbar(
-        error?.data?.message || "Error in fetching details!",
+        response?.message || "Organization status updated successfully!",
+        "success"
+      );
+    } catch (error) {
+      showSnackbar(
+        error?.data?.message || "Failed to update organization status",
         "error"
       );
     }
-  }, [error]);
+  };
 
   const handleDocStatusChange = async (status, documentId) => {
     if (status !== "APPROVED") {
-      console.log(partnerDetails);
-      console.log(status);
       const document = partnerDetails?.organizationDocuments?.find(
         (doc) => doc._id === documentId
       );
-      console.log(document);
       const updatedDocument = { ...document, status };
       setSelectedDocument(updatedDocument);
       setOpenRemarksModal(true);
@@ -135,24 +141,6 @@ const PartnerInfo = () => {
       setRemarks("");
       setSelectedDocument(null);
       setOpenRemarksModal(false);
-    }
-  };
-
-  const handleOrgStatusChange = async (status) => {
-    try {
-      const response = await updateOrgStatus({
-        orgId: params?.partnerId,
-        status,
-      }).unwrap();
-      showSnackbar(
-        response?.message || "Organization status updated successfully!",
-        "success"
-      );
-    } catch (error) {
-      showSnackbar(
-        error?.data?.message || "Failed to update organization status",
-        "error"
-      );
     }
   };
 
@@ -377,6 +365,15 @@ const PartnerInfo = () => {
   };
 
   if (isLoading) return <LoadingAnimation width={500} height={500} />;
+
+  if (error) {
+    showSnackbar(error?.data?.message || "Error in fetching details!", "error");
+    return (
+      <p className="text-lg font-bold font-redhat text-red-400">
+        {error?.data?.message || "Error in fetching details!"}
+      </p>
+    );
+  }
 
   return (
     <>

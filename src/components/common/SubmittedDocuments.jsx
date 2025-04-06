@@ -121,7 +121,7 @@ const SubmittedDocumentsCard = ({
                     className="font-redhat font-semibold text-sm underline cursor-pointer"
                     onClick={() => handleRemarksClick(document)}
                   >
-                    Remarks
+                    View remarks
                   </p>
                 )}
               </div>

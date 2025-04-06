@@ -26,8 +26,6 @@ const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  console.log(location.pathname);
-
   useEffect(() => {
     menuItems.forEach((item) => {
       if (

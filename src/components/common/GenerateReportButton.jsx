@@ -20,7 +20,7 @@ const GenerateReportButton = () => {
         },
       }}
     >
-      Generate overview report
+      Generate report
     </Button>
   );
 };
