@@ -26,8 +26,7 @@ export const driverApi = createApi({
     }),
 
     fetchDriverDetails: builder.query({
-      query: (driverId) =>
-        `/organizations/super-admin/get-driver-details/${driverId}`,
+      query: (driverId) => `/super-admin/driver-details/${driverId}`,
       providesTags: (result, error, driverId) => [
         { type: "DriverDetails", id: driverId },
       ],
@@ -35,7 +34,7 @@ export const driverApi = createApi({
 
     updateDriverDocStatus: builder.mutation({
       query: ({ documentId, status, remarks }) => ({
-        url: `/organizations/super-admin/update-driver-doc-status/${documentId}`,
+        url: `/super-admin/update-driver-doc-status/${documentId}`,
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: { status, ...(remarks && { remarks }) },
@@ -47,7 +46,7 @@ export const driverApi = createApi({
 
     updateDriverStatus: builder.mutation({
       query: ({ driverId, status }) => ({
-        url: `/organizations/super-admin/update-driver-status/${driverId}`,
+        url: `/super-admin/update-driver-status/${driverId}`,
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: { status },

@@ -59,7 +59,7 @@ const VehicleInfo = () => {
   const handleVehicleStatusChange = async (status) => {
     try {
       const response = await updateVehicleStatus({
-        vehicleId: vehicleId,
+        vehicleId,
         status,
       }).unwrap();
       showSnackbar(
