@@ -64,7 +64,7 @@ const NewVehicleRequestCard = ({ vehicleDetails }) => {
             },
           }}
           onClick={() =>
-            navigate(`vehicles/new-requests/${vehicleDetails?._id}`)
+            navigate(`/vehicles/new-requests/${vehicleDetails?._id}`)
           }
         >
           Accept and review

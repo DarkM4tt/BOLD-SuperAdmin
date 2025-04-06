@@ -112,7 +112,7 @@ const EntityTable = ({ rideHistory, onRideClick }) => {
   );
 };
 
-const DriverInfo = ({ onRideClick }) => {
+const DriverDetails = ({ onRideClick }) => {
   const params = useParams();
   const { driverId } = params;
   const {
@@ -140,12 +140,12 @@ const DriverInfo = ({ onRideClick }) => {
         status,
       }).unwrap();
       showSnackbar(
-        response?.message || "Organization status updated successfully!",
+        response?.message || "Driver status updated successfully!",
         "success"
       );
     } catch (error) {
       showSnackbar(
-        error?.data?.message || "Failed to update organization status",
+        error?.data?.message || "Failed to update driver status",
         "error"
       );
     }
@@ -310,11 +310,13 @@ const DriverInfo = ({ onRideClick }) => {
         </div>
         {driverDetails?.vehicle !== null ? (
           <div className="flex justify-between gap-6 items-center pt-4">
-            <img
-              src={driverDetails?.vehicle?.vehicle_image}
-              alt="partycar"
-              className="w-[15%]"
-            />
+            {driverDetails?.vehicle?.vehicle_image && (
+              <img
+                src={driverDetails?.vehicle?.vehicle_image}
+                alt="partycar"
+                className="w-32"
+              />
+            )}
             <div className="flex items-center gap-8 flex-grow">
               <div className="">
                 <p className="font-redhat text-xl text-[#777777]">
@@ -418,4 +420,4 @@ const DriverInfo = ({ onRideClick }) => {
   );
 };
 
-export default DriverInfo;
+export default DriverDetails;

@@ -65,6 +65,7 @@ export const vehicleApi = createApi({
       }),
       invalidatesTags: (result, error, { vehicleId }) => [
         { type: "VehicleDetails", id: vehicleId },
+        "Vehicles",
       ],
     }),
   }),

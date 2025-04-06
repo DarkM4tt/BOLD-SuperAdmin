@@ -18,6 +18,8 @@ import LoadingAnimation from "../components/common/LoadingAnimation";
 import Location from "../pages/Location";
 import Coupons from "../pages/Coupons";
 import NotFound from "../components/NotFound";
+import EntityNewRequest from "../components/EntityNewRequest";
+import DriverNewRequest from "../components/DriverNewRequest";
 
 const LoginRedirect = () => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -78,6 +80,14 @@ const AppRoutes = () => {
           }
         />
         <Route
+          path="vehicles/new-requests/:vehicleId"
+          element={
+            <ProtectedRoute>
+              <EntityNewRequest />
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="drivers"
           element={
             <ProtectedRoute>
@@ -90,6 +100,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <DriverDetails />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="drivers/new-requests/:driverId"
+          element={
+            <ProtectedRoute>
+              <DriverNewRequest />
             </ProtectedRoute>
           }
         />
@@ -146,6 +164,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <PartnerDetails />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="partners/new-requests/:partnerId"
+          element={
+            <ProtectedRoute>
+              <EntityNewRequest />
             </ProtectedRoute>
           }
         />

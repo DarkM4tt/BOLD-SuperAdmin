@@ -8,7 +8,7 @@ const baseQuery = fetchBaseQuery({
 export const rideApi = createApi({
   reducerPath: "rideApi",
   baseQuery,
-  tagTypes: ["Rides", "RideDetails"],
+  tagTypes: ["Rides", "RideDetails", "RideTypes"],
   endpoints: (builder) => ({
     fetchRides: builder.query({
       query: ({ page, driverId }) => {
@@ -28,7 +28,16 @@ export const rideApi = createApi({
         { type: "RideDetails", id: driverId },
       ],
     }),
+
+    fetchRideTypes: builder.query({
+      query: () => `/super-admin/ride-types`,
+      providesTags: ["RideTypes"],
+    }),
   }),
 });
 
-export const { useFetchRidesQuery, useFetchRideDetailsQuery } = rideApi;
+export const {
+  useFetchRidesQuery,
+  useFetchRideDetailsQuery,
+  useFetchRideTypesQuery,
+} = rideApi;

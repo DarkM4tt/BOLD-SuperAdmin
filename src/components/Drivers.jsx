@@ -62,7 +62,9 @@ const NewDriverRequestCard = ({ driverDetails }) => {
               backgroundColor: "rgba(0,0,0,0.05)",
             },
           }}
-          onClick={() => navigate(`drivers/new-requests/${driverDetails?._id}`)}
+          onClick={() =>
+            navigate(`/drivers/new-requests/${driverDetails?._id}`)
+          }
         >
           Accept and review
         </Button>

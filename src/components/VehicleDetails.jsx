@@ -27,7 +27,7 @@ import QuickConnect from "./common/QuickConnect";
 import BackArrow from "../assets/backArrow.svg";
 import TickIcon from "../assets/tick.svg";
 
-const VehicleInfo = () => {
+const VehicleDetails = () => {
   const [services, setServices] = useState({
     is_pet_friendly: false,
     is_assist: false,
@@ -495,4 +495,4 @@ const VehicleInfo = () => {
   );
 };
 
-export default VehicleInfo;
+export default VehicleDetails;

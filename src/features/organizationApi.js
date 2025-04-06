@@ -53,6 +53,7 @@ export const organizationApi = createApi({
       }),
       invalidatesTags: (result, error, { orgId }) => [
         { type: "PartnerDetails", id: orgId },
+        "Organizations",
       ],
     }),
   }),

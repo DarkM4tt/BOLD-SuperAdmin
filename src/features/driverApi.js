@@ -53,6 +53,7 @@ export const driverApi = createApi({
       }),
       invalidatesTags: (result, error, { driverId }) => [
         { type: "DriverDetails", id: driverId },
+        "Drivers",
       ],
     }),
   }),

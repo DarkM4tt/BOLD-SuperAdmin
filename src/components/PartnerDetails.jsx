@@ -36,7 +36,7 @@ import DirectionsCarFilledIcon from "@mui/icons-material/DirectionsCarFilled";
 import BusinessIcon from "@mui/icons-material/Business";
 import SubmittedDocumentsCard from "../components/common/SubmittedDocuments";
 import StatusDropdown from "../components/common/StatusDropdown";
-import CustomDropdown from "../components/common/CustomDropdown";
+// import CustomDropdown from "../components/common/CustomDropdown";
 import Locationmapcard from "./common/LocationMapCard";
 import RemarksModal from "../components/common/RemarkModal";
 import AcceptanceChart from "./AcceptanceChart";
@@ -219,10 +219,10 @@ const PartnerInfo = () => {
     },
   };
 
-  const dropdownOptions = [
-    { title: "Vehicles", value: "vehicles" },
-    { title: "Drivers", value: "drivers" },
-  ];
+  // const dropdownOptions = [
+  //   { title: "Vehicles", value: "vehicles" },
+  //   { title: "Drivers", value: "drivers" },
+  // ];
 
   const EntityTable = () => {
     const driversData = [
@@ -295,12 +295,12 @@ const PartnerInfo = () => {
           borderRadius: "8px",
         }}
       >
-        <div className="flex justify-between">
-          <p className="font-redhat font-semibold text-2xl">
-            List of approved vehicles/drivers
-          </p>
-          <CustomDropdown options={dropdownOptions} />
-        </div>
+        {/* <div className="flex justify-between"> */}
+        <p className="font-redhat font-semibold text-2xl">
+          List of approved vehicles
+        </p>
+        {/* <CustomDropdown options={dropdownOptions} />
+        </div> */}
         <TableContainer>
           <Table>
             {/* Table Header */}

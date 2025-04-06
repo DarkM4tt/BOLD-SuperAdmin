@@ -3,12 +3,12 @@ import { Tabs, Tab, Box, Button, Avatar } from "@mui/material";
 import { useFetchOrganizationsQuery } from "../features/organizationApi";
 import { formatCreatedAt } from "../utils/dates";
 import { useNavigate } from "react-router-dom";
-import OrgBig from "../assets/OrgBig.svg";
-import infoYellow from "../assets/infoYellow.svg";
-import wrongIcon from "../assets/wrongIcon.svg";
 import PaginatedTable from "../components/common/PaginatedTable";
 import InputSearchBar from "../components/common/InputSearchBar";
 import LoadingAnimation from "../components/common/LoadingAnimation";
+import OrgBig from "../assets/OrgBig.svg";
+import infoYellow from "../assets/infoYellow.svg";
+import wrongIcon from "../assets/wrongIcon.svg";
 
 const NewOrgRequestCard = ({ partnerDetails }) => {
   const navigate = useNavigate();
@@ -31,7 +31,7 @@ const NewOrgRequestCard = ({ partnerDetails }) => {
             {partnerDetails?.city && partnerDetails?.city + ","}{" "}
             {partnerDetails?.country}
             {!partnerDetails?.city && !partnerDetails?.country && (
-              <p className="text-red-400">Unknown</p>
+              <span className="text-red-400">Unknown!</span>
             )}
           </p>
         </div>
@@ -62,7 +62,7 @@ const NewOrgRequestCard = ({ partnerDetails }) => {
             },
           }}
           onClick={() =>
-            navigate(`partners/new-requests/${partnerDetails?._id}`)
+            navigate(`/partners/new-requests/${partnerDetails?._id}`)
           }
         >
           Accept and review
