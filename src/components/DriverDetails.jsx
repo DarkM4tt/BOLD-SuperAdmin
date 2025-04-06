@@ -119,7 +119,6 @@ const DriverInfo = ({ onRideClick }) => {
     data: driverData,
     error,
     isLoading,
-    refetch,
   } = useFetchDriverDetailsQuery(driverId);
   const { data: ridesData } = useFetchRidesQuery(driverId);
   const [updateDriverDocStatus, { isLoading: isUpdatingDocStatus }] =
@@ -371,7 +370,6 @@ const DriverInfo = ({ onRideClick }) => {
           setSelectedDocument(null);
           setRemarks("");
           setOpenRemarksModal(false);
-          refetch();
         }}
         handleAddRemarks={handleAddRemarks}
       />

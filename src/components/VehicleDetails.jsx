@@ -44,7 +44,6 @@ const VehicleInfo = () => {
     data: vehicleData,
     error,
     isLoading,
-    refetch,
   } = useFetchVehicleDetailsQuery(vehicleId);
   const [selectedDocument, setSelectedDocument] = useState({});
   const [openRemarksModal, setOpenRemarksModal] = useState(false);
@@ -489,7 +488,6 @@ const VehicleInfo = () => {
           setSelectedDocument(null);
           setRemarks("");
           setOpenRemarksModal(false);
-          refetch();
         }}
         handleAddRemarks={handleAddRemarks}
       />
