@@ -4,6 +4,7 @@ import { organizationApi } from "../features/organizationApi";
 import { vehicleApi } from "../features/vehicleApi";
 import { driverApi } from "../features/driverApi";
 import { rideApi } from "../features/rideApi";
+import { userApi } from "../features/userApi";
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     [vehicleApi.reducerPath]: vehicleApi.reducer,
     [driverApi.reducerPath]: driverApi.reducer,
     [rideApi.reducerPath]: rideApi.reducer,
+    [userApi.reducerPath]: userApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -19,6 +21,7 @@ export const store = configureStore({
       organizationApi.middleware,
       vehicleApi.middleware,
       driverApi.middleware,
-      rideApi.middleware
+      rideApi.middleware,
+      userApi.middleware
     ),
 });

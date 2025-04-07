@@ -22,6 +22,8 @@ import EntityNewRequest from "../components/EntityNewRequest";
 import DriverNewRequest from "../components/DriverNewRequest";
 import Rides from "../components/Rides";
 import RideDetails from "../components/RideDetails";
+import Users from "../components/Users";
+import UserDetails from "../components/UserDetails";
 
 const LoginRedirect = () => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -126,6 +128,22 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <RideDetails />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="users"
+          element={
+            <ProtectedRoute>
+              <Users />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="users/:userId"
+          element={
+            <ProtectedRoute>
+              <UserDetails />
             </ProtectedRoute>
           }
         />
