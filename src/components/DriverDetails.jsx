@@ -211,7 +211,6 @@ const DriverDetails = () => {
   if (isLoading) return <LoadingAnimation width={500} height={500} />;
 
   if (error) {
-    showSnackbar(error?.data?.message || "Error in fetching details!", "error");
     return (
       <p className="text-lg font-bold font-redhat text-red-400">
         {error?.data?.message || "Error in fetching details!"}

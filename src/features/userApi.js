@@ -22,7 +22,7 @@ export const userApi = createApi({
     }),
 
     fetchUserDetails: builder.query({
-      query: (userId) => `/ride/super-admin/details/${userId}`,
+      query: (userId) => `/super-admin/customer-details/${userId}`,
       providesTags: (result, error, userId) => [
         { type: "UserDetails", id: userId },
       ],

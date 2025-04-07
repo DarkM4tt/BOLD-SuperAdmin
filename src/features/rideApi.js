@@ -11,9 +11,10 @@ export const rideApi = createApi({
   tagTypes: ["Rides", "RideDetails", "RideTypes"],
   endpoints: (builder) => ({
     fetchRides: builder.query({
-      query: ({ page, driverId }) => {
+      query: ({ page, driverId, userId }) => {
         const params = new URLSearchParams();
         if (driverId) params.append("driver_id", driverId);
+        if (userId) params.append("customer_id", userId);
         params.append("page", page);
         params.append("limit", "10");
 
