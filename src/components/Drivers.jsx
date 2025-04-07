@@ -4,11 +4,12 @@ import { Tabs, Tab, Box, Button, Avatar, TableCell } from "@mui/material";
 import { formatCreatedAt } from "../utils/dates";
 import { useFetchOrganizationDetailsQuery } from "../features/organizationApi";
 import { useFetchDriversQuery } from "../features/driverApi";
-import infoYellow from "../assets/infoYellow.svg";
-import wrongIcon from "../assets/wrongIcon.svg";
 import InputSearchBar from "./common/InputSearchBar";
 import LoadingAnimation from "./common/LoadingAnimation";
 import EntityPaginatedTable from "./common/EntityPaginatedTable";
+import BackArrow from "../assets/backArrow.svg";
+import infoYellow from "../assets/infoYellow.svg";
+import wrongIcon from "../assets/wrongIcon.svg";
 
 const NewDriverRequestCard = ({ driverDetails }) => {
   const navigate = useNavigate();
@@ -237,11 +238,17 @@ const Drivers = () => {
         <InputSearchBar />
       </div>
 
-      <Box sx={{ fontSize: "24px", fontWeight: "500", marginBottom: "20px" }}>
+      <div className="flex items-center gap-4 text-2xl font-medium mb-5">
+        <img
+          src={BackArrow}
+          alt="BackArrow"
+          className="cursor-pointer"
+          onClick={() => navigate(-1)}
+        />
         {`${
           orgdata?.data?.full_name ? orgdata?.data?.full_name + " >> " : ""
         }  Manage & find drivers`}
-      </Box>
+      </div>
 
       <Tabs
         value={selectedTab}

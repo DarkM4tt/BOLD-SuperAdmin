@@ -34,15 +34,16 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import DirectionsCarFilledIcon from "@mui/icons-material/DirectionsCarFilled";
 import BusinessIcon from "@mui/icons-material/Business";
-import SubmittedDocumentsCard from "../components/common/SubmittedDocuments";
-import StatusDropdown from "../components/common/StatusDropdown";
-// import CustomDropdown from "../components/common/CustomDropdown";
-import Locationmapcard from "./common/LocationMapCard";
-import RemarksModal from "../components/common/RemarkModal";
 import AcceptanceChart from "./AcceptanceChart";
-import Warning from "../assets/redWarning.svg";
+import SubmittedDocumentsCard from "./common/SubmittedDocuments";
+import StatusDropdown from "./common/StatusDropdown";
+import RemarksModal from "./common/RemarkModal";
+// import CustomDropdown from "./common/CustomDropdown";
+import Locationmapcard from "./common/LocationMapCard";
 import LoadingAnimation from "./common/LoadingAnimation";
 import GenerateReportButton from "./common/GenerateReportButton";
+import Warning from "../assets/redWarning.svg";
+import BackArrow from "../assets/backArrow.svg";
 
 ChartJS.register(
   CategoryScale,
@@ -381,7 +382,14 @@ const PartnerInfo = () => {
         {"> Partners"}
       </span>
 
-      <div className="flex justify-between items-center mt-8">
+      <img
+        src={BackArrow}
+        alt="BackArrow"
+        className="cursor-pointer mt-8"
+        onClick={() => navigate(-1)}
+      />
+
+      <div className="flex justify-between items-center mt-5">
         <div className="flex flex-col max-w-[70%]">
           <p className="font-redhat font-semibold text-2xl">
             {partnerDetails?.full_name || "No name"}

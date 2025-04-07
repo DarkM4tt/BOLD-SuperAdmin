@@ -7,11 +7,12 @@ import {
   useFetchVehiclesQuery,
 } from "../features/vehicleApi";
 import { useFetchOrganizationDetailsQuery } from "../features/organizationApi";
-import infoYellow from "../assets/infoYellow.svg";
-import wrongIcon from "../assets/wrongIcon.svg";
 import InputSearchBar from "./common/InputSearchBar";
 import LoadingAnimation from "./common/LoadingAnimation";
 import EntityPaginatedTable from "./common/EntityPaginatedTable";
+import infoYellow from "../assets/infoYellow.svg";
+import wrongIcon from "../assets/wrongIcon.svg";
+import BackArrow from "../assets/backArrow.svg";
 
 const NewVehicleRequestCard = ({ vehicleDetails }) => {
   const navigate = useNavigate();
@@ -257,11 +258,17 @@ const Vehicles = () => {
         <InputSearchBar />
       </div>
 
-      <Box sx={{ fontSize: "24px", fontWeight: "500", marginBottom: "20px" }}>
+      <div className="flex items-center gap-4 text-2xl font-medium mb-5">
+        <img
+          src={BackArrow}
+          alt="BackArrow"
+          className="cursor-pointer"
+          onClick={() => navigate(-1)}
+        />
         {`${
           orgdata?.data?.full_name ? orgdata?.data?.full_name + " >> " : ""
         }  Manage & find vehicles`}
-      </Box>
+      </div>
 
       <Tabs
         value={selectedTab}

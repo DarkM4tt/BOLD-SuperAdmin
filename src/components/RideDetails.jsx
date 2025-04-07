@@ -95,7 +95,7 @@ const RideDetails = () => {
         <InputSearchBar />
       </div>
 
-      <div className="flex justify-between items-center mt-8">
+      <div className="flex justify-between items-center mt-5">
         <div className="flex items-center gap-4 font-redhat font-semibold text-2xl">
           <img
             src={BackArrow}

@@ -48,7 +48,7 @@ const VehicleDetails = () => {
   const [selectedDocument, setSelectedDocument] = useState({});
   const [openRemarksModal, setOpenRemarksModal] = useState(false);
   const [remarks, setRemarks] = useState("");
-  const vehicleDetails = vehicleData?.data?.vehicle;
+  const vehicleDetails = vehicleData?.data;
   const [updateVehicleDocStatus, { isLoading: isUpdatingDocStatus }] =
     useUpdateVehicleDocStatusMutation();
   const [updateVehicleStatus] = useUpdateVehicleStatusMutation();
@@ -75,7 +75,7 @@ const VehicleDetails = () => {
 
   const handleDocStatusChange = async (status, documentId) => {
     if (status !== "APPROVED") {
-      const document = vehicleData?.data?.documents?.find(
+      const document = vehicleDetails.documents?.find(
         (doc) => doc._id === documentId
       );
       const updatedDocument = { ...document, status };
@@ -169,7 +169,7 @@ const VehicleDetails = () => {
   return (
     <>
       <div className="flex justify-between items-center font-redhat text-base font-semibold ">
-        <span className="text-gray">{"> Partners"}</span>
+        <span className="text-gray">{"> Vehicle"}</span>
         <InputSearchBar />
       </div>
 
@@ -429,16 +429,16 @@ const VehicleDetails = () => {
           </div>
 
           <div className="bg-white w-full h-fit p-4 rounded-[8px] flex flex-col gap-2">
-            {vehicleData?.data?.assignments?.length > 0 ? (
+            {vehicleDetails?.assignment ? (
               <>
                 <p className="font-redHat font-semibold text-2xl">
                   Current driver
                 </p>
                 <CustomerCard
-                  image={vehicleData?.data?.assignments[0]?.driver?.profile_pic}
-                  name={vehicleData?.data?.assignments[0]?.driver?.full_name}
-                  email={vehicleData?.data?.assignments[0]?.driver?.email}
-                  contact={vehicleData?.data?.assignments[0]?.driver?.phone}
+                  image={vehicleDetails?.assignment?.driver?.profile_pic}
+                  name={vehicleDetails?.assignment?.driver?.full_name}
+                  email={vehicleDetails?.assignment?.driver?.email}
+                  contact={vehicleDetails?.assignment?.driver?.phone}
                   rating={4}
                 />
                 <TextField
@@ -470,7 +470,7 @@ const VehicleDetails = () => {
         <div className="w-[30%] flex flex-col gap-8">
           <SubmittedDocumentsCard
             handleRemarksClick={handleRemarksClick}
-            entityDocuments={vehicleData?.data?.documents}
+            entityDocuments={vehicleDetails?.documents}
             status={allDocumentStatus}
             onDocStatusChange={handleDocStatusChange}
           />
