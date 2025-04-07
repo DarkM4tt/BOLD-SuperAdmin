@@ -23,9 +23,9 @@ export const rideApi = createApi({
     }),
 
     fetchRideDetails: builder.query({
-      query: (driverId) => `/super-admin/driver-details/${driverId}`,
-      providesTags: (result, error, driverId) => [
-        { type: "RideDetails", id: driverId },
+      query: (rideId) => `/ride/super-admin/details/${rideId}`,
+      providesTags: (result, error, rideId) => [
+        { type: "RideDetails", id: rideId },
       ],
     }),
 

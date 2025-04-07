@@ -73,7 +73,7 @@ const NewDriverRequestCard = ({ driverDetails }) => {
   );
 };
 
-const renderVehicleRow = (driver, selectedTab) => {
+const renderDriverRow = (driver, selectedTab) => {
   return (
     <>
       <TableCell>
@@ -282,7 +282,7 @@ const Drivers = () => {
         <EntityPaginatedTable
           headers={headers}
           rows={results}
-          renderRow={(driver) => renderVehicleRow(driver, selectedTab)}
+          renderRow={(driver) => renderDriverRow(driver, selectedTab)}
           emptyMessage="No drivers!"
           onRowClick={(driver) => navigate(`/drivers/${driver?._id}`)}
           isPreviousPage={isPreviousPage}

@@ -20,6 +20,7 @@ const EntityPaginatedTable = ({
   totalPages,
   isPreviousPage,
   isNextPage,
+  maxHeight = "30rem",
 }) => {
   const pageNumbers = [];
 
@@ -41,8 +42,8 @@ const EntityPaginatedTable = ({
         boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
       }}
     >
-      <TableContainer>
-        <Table>
+      <TableContainer sx={{ maxHeight: maxHeight, overflowY: "auto" }}>
+        <Table stickyHeader>
           <TableHead
             sx={{
               "& .MuiTableCell-root": {
@@ -84,7 +85,7 @@ const EntityPaginatedTable = ({
                   onClick={() => onRowClick(row)}
                   sx={{ cursor: "pointer" }}
                 >
-                  <TableCell>{index + 1}</TableCell>
+                  <TableCell>{(page - 1) * 10 + index + 1}</TableCell>
                   {renderRow(row)}
                 </TableRow>
               ))}

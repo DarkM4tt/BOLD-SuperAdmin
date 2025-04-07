@@ -33,7 +33,8 @@ import LoadingAnimation from "./common/LoadingAnimation";
 import BackArrow from "../assets/backArrow.svg";
 import { useFetchRidesQuery } from "../features/rideApi";
 
-const EntityTable = ({ rideHistory, onRideClick }) => {
+const EntityTable = ({ rideHistory }) => {
+  const navigate = useNavigate();
   return (
     <Box
       sx={{
@@ -47,7 +48,7 @@ const EntityTable = ({ rideHistory, onRideClick }) => {
       }}
     >
       <p className="font-redhat font-semibold text-2xl">Ride history</p>
-      <TableContainer sx={{ maxHeight: "550px", overflowY: "auto" }}>
+      <TableContainer sx={{ maxHeight: "600px", overflowY: "auto" }}>
         <Table stickyHeader>
           <TableHead
             sx={{
@@ -84,7 +85,7 @@ const EntityTable = ({ rideHistory, onRideClick }) => {
                     fontWeight: "600",
                     fontSize: "16px",
                   }}
-                  onClick={() => onRideClick(ride?._id)}
+                  onClick={() => navigate(`/rides/${ride?._id}`)}
                 >
                   <TableCell>
                     {ride?.customer_info?.full_name || "No name"}
@@ -112,7 +113,7 @@ const EntityTable = ({ rideHistory, onRideClick }) => {
   );
 };
 
-const DriverDetails = ({ onRideClick }) => {
+const DriverDetails = () => {
   const params = useParams();
   const { driverId } = params;
   const {
@@ -348,7 +349,7 @@ const DriverDetails = ({ onRideClick }) => {
       {/* Cards */}
       <div className="flex justify-between pt-8">
         <div className="w-4/6">
-          <EntityTable rideHistory={rideHistory} onRideClick={onRideClick} />
+          <EntityTable rideHistory={rideHistory} />
         </div>
 
         <div className="w-[30%] flex flex-col gap-8">

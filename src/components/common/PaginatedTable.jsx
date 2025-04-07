@@ -18,6 +18,7 @@ const PaginatedTable = ({
   totalPages,
   isPreviousPage,
   isNextPage,
+  maxHeight = "30rem",
 }) => {
   const pageNumbers = [];
 
@@ -39,8 +40,8 @@ const PaginatedTable = ({
         boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
       }}
     >
-      <TableContainer>
-        <Table>
+      <TableContainer sx={{ maxHeight: maxHeight, overflowY: "auto" }}>
+        <Table stickyHeader>
           <TableHead
             sx={{
               "& .MuiTableCell-root": {

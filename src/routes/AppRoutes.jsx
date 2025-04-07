@@ -20,6 +20,8 @@ import Coupons from "../pages/Coupons";
 import NotFound from "../components/NotFound";
 import EntityNewRequest from "../components/EntityNewRequest";
 import DriverNewRequest from "../components/DriverNewRequest";
+import Rides from "../components/Rides";
+import RideDetails from "../components/RideDetails";
 
 const LoginRedirect = () => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -108,6 +110,22 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <DriverNewRequest />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="rides"
+          element={
+            <ProtectedRoute>
+              <Rides />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="rides/:rideId"
+          element={
+            <ProtectedRoute>
+              <RideDetails />
             </ProtectedRoute>
           }
         />
