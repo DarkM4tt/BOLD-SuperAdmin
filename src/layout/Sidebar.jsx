@@ -1,6 +1,7 @@
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import superadminlogo from "../assets/boldLogo.png";
 
 const menuItems = [
@@ -92,23 +93,24 @@ const Sidebar = () => {
             <li key={item.name} className="mb-2">
               <div
                 onClick={() => handleMenuClick(item)}
-                className={`flex items-center justify-between px-3 py-3 cursor-pointer transition-all rounded-md text-xl font-redHat font-normal
-                  ${
-                    isActive
-                      ? "font-semibold text-white"
-                      : " text-textGray hover:text-white"
-                  }
-                `}
+                className={`flex flex-col px-3 py-3 cursor-pointer transition-all rounded-md font-redHat font-normal
+    ${isActive ? "font-semibold text-white" : "text-textGray hover:text-white"}
+  `}
               >
-                <span className="">{item.name}</span>
-                {item.subMenu && (
-                  <span>
-                    {openMenu === item.name ? (
-                      <FaChevronUp />
-                    ) : (
-                      <FaChevronDown />
-                    )}
-                  </span>
+                <div className="flex items-center justify-between text-xl">
+                  <span>{item.name}</span>
+                  {item.subMenu && (
+                    <span>
+                      {openMenu === item.name ? (
+                        <KeyboardArrowUpIcon />
+                      ) : (
+                        <KeyboardArrowDownIcon />
+                      )}
+                    </span>
+                  )}
+                </div>
+                {isActive && !item.subMenu && (
+                  <div className="w-6 h-[3px] bg-boldCyan mt-1 rounded-sm"></div>
                 )}
               </div>
               {item.subMenu && openMenu === item.name && (

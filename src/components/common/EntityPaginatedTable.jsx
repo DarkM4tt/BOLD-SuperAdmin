@@ -39,7 +39,6 @@ const EntityPaginatedTable = ({
         padding: "10px",
         backgroundColor: "#fff",
         borderRadius: "8px",
-        boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
       }}
     >
       <TableContainer sx={{ maxHeight: maxHeight, overflowY: "auto" }}>

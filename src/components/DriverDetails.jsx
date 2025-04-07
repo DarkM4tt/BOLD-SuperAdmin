@@ -1,17 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  Avatar,
-  Box,
-  Dialog,
-  IconButton,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from "@mui/material";
+import { Avatar, Dialog, IconButton, TableCell } from "@mui/material";
 import { useSnackbar } from "../context/SnackbarProvider";
 import { allDocumentStatus, allDriverStatus } from "../utils/enums";
 import {
@@ -19,6 +8,7 @@ import {
   useUpdateDriverDocStatusMutation,
   useUpdateDriverStatusMutation,
 } from "../features/driverApi";
+import { useFetchRidesQuery } from "../features/rideApi";
 import CallIcon from "@mui/icons-material/Call";
 import EmailIcon from "@mui/icons-material/Email";
 import CloseIcon from "@mui/icons-material/Close";
@@ -31,89 +21,23 @@ import InputSearchBar from "./common/InputSearchBar";
 import GenerateReportButton from "./common/GenerateReportButton";
 import LoadingAnimation from "./common/LoadingAnimation";
 import BackArrow from "../assets/backArrow.svg";
-import { useFetchRidesQuery } from "../features/rideApi";
+import EntityPaginatedTable from "./common/EntityPaginatedTable";
 
-const EntityTable = ({ rideHistory }) => {
-  const navigate = useNavigate();
+const headers = ["User", "Vehicle", "Status", "Service type"];
+
+const renderRideRow = (ride) => {
   return (
-    <Box
-      sx={{
-        paddingInline: "15px",
-        paddingBlock: "30px",
-        backgroundColor: "#fff",
-        display: "flex",
-        flexDirection: "column",
-        gap: "30px",
-        borderRadius: "8px",
-      }}
-    >
-      <p className="font-redhat font-semibold text-2xl">Ride history</p>
-      <TableContainer sx={{ maxHeight: "600px", overflowY: "auto" }}>
-        <Table stickyHeader>
-          <TableHead
-            sx={{
-              "& .MuiTableCell-root": {
-                backgroundColor: "#EEEEEE",
-                fontWeight: "400",
-                fontSize: "16px",
-                borderBottom: "none",
-              },
-              "& .MuiTableCell-root:first-of-type": {
-                borderTopLeftRadius: "10px",
-                borderBottomLeftRadius: "10px",
-              },
-              "& .MuiTableCell-root:last-of-type": {
-                borderTopRightRadius: "10px",
-                borderBottomRightRadius: "10px",
-              },
-            }}
-          >
-            <TableRow>
-              {["User", "Vehicle", "Status", "Service type"].map((header) => (
-                <TableCell key={header}>{header}</TableCell>
-              ))}
-            </TableRow>
-          </TableHead>
-
-          <TableBody>
-            {rideHistory?.length > 0 ? (
-              rideHistory.map((ride) => (
-                <TableRow
-                  key={ride._id}
-                  sx={{
-                    cursor: "pointer",
-                    fontWeight: "600",
-                    fontSize: "16px",
-                  }}
-                  onClick={() => navigate(`/rides/${ride?._id}`)}
-                >
-                  <TableCell>
-                    {ride?.customer_info?.full_name || "No name"}
-                  </TableCell>
-                  <TableCell>
-                    {ride?.vehicle_info?.vin || "Not known!"}
-                  </TableCell>
-                  <TableCell>{ride?.status || "Not known!"}</TableCell>
-                  <TableCell>{ride?.ride_service || "Not known!"}</TableCell>
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={4} align="center">
-                  <p className="text-red-400 text-lg font-bold mt-8">
-                    No rides yet!
-                  </p>
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Box>
+    <>
+      <TableCell>{ride?.customer_info?.full_name || "No name"}</TableCell>
+      <TableCell>{ride?.vehicle_info?.vin || "Not known!"}</TableCell>
+      <TableCell>{ride?.status || "Not known!"}</TableCell>
+      <TableCell>{ride?.ride_service || "Not known!"}</TableCell>
+    </>
   );
 };
 
 const DriverDetails = () => {
+  const [page, setPage] = useState(1);
   const params = useParams();
   const { driverId } = params;
   const {
@@ -121,7 +45,13 @@ const DriverDetails = () => {
     error,
     isLoading,
   } = useFetchDriverDetailsQuery(driverId);
-  const { data: ridesData } = useFetchRidesQuery(driverId);
+  const { data: ridesData } = useFetchRidesQuery({ driverId, page });
+  const {
+    results = [],
+    totalPages,
+    isNextPage,
+    isPreviousPage,
+  } = ridesData?.data?.rides || {};
   const [updateDriverDocStatus, { isLoading: isUpdatingDocStatus }] =
     useUpdateDriverDocStatusMutation();
   const [updateDriverStatus] = useUpdateDriverStatusMutation();
@@ -130,7 +60,6 @@ const DriverDetails = () => {
   const [remarks, setRemarks] = useState("");
   const [selectedDocument, setSelectedDocument] = useState({});
   const driverDetails = driverData?.data;
-  const rideHistory = ridesData?.data?.rides?.results || [];
   const showSnackbar = useSnackbar();
   const navigate = useNavigate();
 
@@ -348,7 +277,19 @@ const DriverDetails = () => {
       {/* Cards */}
       <div className="flex justify-between pt-8">
         <div className="w-4/6">
-          <EntityTable rideHistory={rideHistory} />
+          <EntityPaginatedTable
+            headers={headers}
+            rows={results}
+            renderRow={(ride) => renderRideRow(ride)}
+            emptyMessage="No rides yet!"
+            onRowClick={(ride) => navigate(`/rides/${ride?._id}`)}
+            isPreviousPage={isPreviousPage}
+            isNextPage={isNextPage}
+            page={page}
+            setPage={setPage}
+            totalPages={totalPages}
+            maxHeight="620px"
+          />
         </div>
 
         <div className="w-[30%] flex flex-col gap-8">

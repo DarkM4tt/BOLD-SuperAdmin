@@ -13,7 +13,7 @@ import MapVehicle from "../assets/mapVehicle.svg";
 import PickupIcon from "../assets/pickup.svg";
 import DropoffIcon from "../assets/dropoff.svg";
 
-const RideInfo = () => {
+const RideDetails = () => {
   const params = useParams();
   const { rideId } = params;
   const navigate = useNavigate();
@@ -222,7 +222,7 @@ const RideInfo = () => {
           </div>
           <div className="col-span-1">{rideData?.status || "Not known!"}</div>
           <div className="col-span-1">
-            {getDateTime() !== null
+            {getDateTime()
               ? `${formatCreatedAt(getDateTime())} | ${formatToTime(
                   getDateTime()
                 )}`
@@ -295,4 +295,4 @@ const RideInfo = () => {
   );
 };
 
-export default RideInfo;
+export default RideDetails;
