@@ -24,6 +24,7 @@ import Rides from "../components/Rides";
 import RideDetails from "../components/RideDetails";
 import Users from "../components/Users";
 import UserDetails from "../components/UserDetails";
+import Conversation from "../components/Conversation";
 
 const LoginRedirect = () => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -128,6 +129,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <RideDetails />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="rides/:rideId/chat/:chatId"
+          element={
+            <ProtectedRoute>
+              <Conversation />
             </ProtectedRoute>
           }
         />

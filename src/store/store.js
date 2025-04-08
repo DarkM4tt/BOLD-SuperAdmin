@@ -5,6 +5,7 @@ import { vehicleApi } from "../features/vehicleApi";
 import { driverApi } from "../features/driverApi";
 import { rideApi } from "../features/rideApi";
 import { userApi } from "../features/userApi";
+import { chatApi } from "../features/chatApi";
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +15,7 @@ export const store = configureStore({
     [driverApi.reducerPath]: driverApi.reducer,
     [rideApi.reducerPath]: rideApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
+    [chatApi.reducerPath]: chatApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -22,6 +24,7 @@ export const store = configureStore({
       vehicleApi.middleware,
       driverApi.middleware,
       rideApi.middleware,
-      userApi.middleware
+      userApi.middleware,
+      chatApi.middleware
     ),
 });

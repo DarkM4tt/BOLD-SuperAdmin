@@ -1,14 +1,13 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { GoogleMap, Marker, Polyline } from "@react-google-maps/api";
-import { useSnackbar } from "../context/SnackbarProvider";
 import { formatCreatedAt, formatToTime } from "../utils/dates";
 import { useFetchRideDetailsQuery } from "../features/rideApi";
-import { Avatar } from "@mui/material";
+import { Avatar, Button } from "@mui/material";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
 import useGoogleMapsLoader from "../useGoogleMapsLoader";
 import LoadingAnimation from "./common/LoadingAnimation";
 import InputSearchBar from "./common/InputSearchBar";
-import GenerateReportButton from "./common/GenerateReportButton";
 import BackArrow from "../assets/backArrow.svg";
 import MapVehicle from "../assets/mapVehicle.svg";
 import PickupIcon from "../assets/pickup.svg";
@@ -21,10 +20,8 @@ const RideDetails = () => {
   const { isLoaded, loadError } = useGoogleMapsLoader();
   const { data, error, isLoading } = useFetchRideDetailsQuery(rideId);
   const rideData = data?.data;
-  const showSnackbar = useSnackbar();
 
   if (error || loadError) {
-    showSnackbar(error?.data?.message || "Error in loading data....");
     return (
       <p className="text-red-400 text-lg font-redhat font-semibold">
         {error?.data?.message || "Error loading data "}{" "}
@@ -154,7 +151,32 @@ const RideDetails = () => {
             </div>
           )}
         </div>
-        <GenerateReportButton />
+        {rideData?.conversation_id && (
+          <Button
+            variant="outlined"
+            startIcon={<ChatBubbleOutlineIcon />}
+            sx={{
+              textTransform: "none",
+              borderRadius: "999px",
+              borderColor: "#D0D5DD",
+              color: "#344054",
+              fontWeight: 500,
+              fontSize: "14px",
+              lineHeight: "20px",
+              padding: "6px 20px",
+              backgroundColor: "#FFFFFF",
+              "&:hover": {
+                backgroundColor: "#F9FAFB",
+                borderColor: "#D0D5DD",
+              },
+            }}
+            onClick={() => {
+              navigate(`chat/${rideData?.conversation_id}`);
+            }}
+          >
+            View chat history
+          </Button>
+        )}
       </div>
 
       <div className="bg-white rounded-lg p-6 w-full mx-auto mt-4 font-redhat text-base">
@@ -236,7 +258,7 @@ const RideDetails = () => {
           <div className="col-span-1">
             {rideData?.ride_service || "Not known!"}
           </div>
-          <div className="col-span-1">
+          <div className="col-span-1 max-w-44 break-words">
             {rideData?.vehicle_info?.vin || "Not assigned!"}
           </div>
           <div className="col-span-1">€ {rideData?.captured_amount}</div>
