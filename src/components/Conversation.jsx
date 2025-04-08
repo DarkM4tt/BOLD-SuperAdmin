@@ -173,7 +173,7 @@ const Conversation = () => {
           </Paper>
         </>
       ) : (
-        <p className="text-lg font-redhat font-bold text-red-400">
+        <p className="p-6 text-lg font-redhat font-bold text-red-400">
           No chats for this ride!
         </p>
       )}
