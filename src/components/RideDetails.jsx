@@ -1,9 +1,10 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { GoogleMap, Marker, Polyline } from "@react-google-maps/api";
-import { Avatar } from "@mui/material";
 import { useSnackbar } from "../context/SnackbarProvider";
 import { formatCreatedAt, formatToTime } from "../utils/dates";
 import { useFetchRideDetailsQuery } from "../features/rideApi";
+import { Avatar } from "@mui/material";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import useGoogleMapsLoader from "../useGoogleMapsLoader";
 import LoadingAnimation from "./common/LoadingAnimation";
 import InputSearchBar from "./common/InputSearchBar";
@@ -95,44 +96,66 @@ const RideDetails = () => {
         <InputSearchBar />
       </div>
 
-      <div className="flex justify-between items-center mt-5">
-        <div className="flex items-center gap-4 font-redhat font-semibold text-2xl">
-          <img
-            src={BackArrow}
-            alt="BackArrow"
-            className="cursor-pointer"
-            onClick={() => navigate(-1)}
-          />
-          <p>Overview</p>
+      {/* <div className="flex justify-between items-center mt-5"> */}
+      <div className="flex items-center gap-4 mt-5">
+        <img
+          src={BackArrow}
+          alt="BackArrow"
+          className="cursor-pointer"
+          onClick={() => navigate(-1)}
+        />
+        <p className="font-redhat font-semibold text-2xl">Overview</p>
+      </div>
+      {/* <GenerateReportButton /> */}
+      {/* </div> */}
+
+      <div className="flex justify-between items-center">
+        <div className="flex items-center gap-4">
+          {rideData?.driver_info && (
+            <div
+              className="py-3 px-4 text-sm font-redhat bg-white rounded-[40px] cursor-pointer"
+              onClick={() => {
+                navigate(`/drivers/${rideData?.driver_info?.id}`);
+              }}
+            >
+              Visit driver profile{" "}
+              <span className="pl-2">
+                {" "}
+                <KeyboardDoubleArrowRightIcon />
+              </span>{" "}
+            </div>
+          )}
+          {rideData?.customer_info && (
+            <div
+              className="py-3 px-4 text-sm font-redhat bg-white rounded-[40px] cursor-pointer"
+              onClick={() => {
+                navigate(`/users/${rideData?.customer_info?.id}`);
+              }}
+            >
+              Visit customer profile{" "}
+              <span className="pl-2">
+                {" "}
+                <KeyboardDoubleArrowRightIcon />
+              </span>{" "}
+            </div>
+          )}
+          {rideData?.vehicle_info && (
+            <div
+              className="py-3 px-4 text-sm font-redhat bg-white rounded-[40px] cursor-pointer"
+              onClick={() => {
+                navigate(`/vehicles/${rideData?.vehicle_info?.id}`);
+              }}
+            >
+              View vehicle details{" "}
+              <span className="pl-2">
+                {" "}
+                <KeyboardDoubleArrowRightIcon />
+              </span>{" "}
+            </div>
+          )}
         </div>
         <GenerateReportButton />
       </div>
-
-      {/* <div className="flex justify-between items-center">
-        <div className="flex items-center gap-4 pt-6">
-          <div className="py-3 px-4 text-sm font-redhat bg-white rounded-[40px]">
-            Visit 3rd Party partner profile{" "}
-            <span className="pl-2">
-              {" "}
-              <KeyboardDoubleArrowRightIcon />
-            </span>{" "}
-          </div>
-          <div className="py-3 px-4 text-sm font-redhat bg-white rounded-[40px]">
-            Visit customer profile{" "}
-            <span className="pl-2">
-              {" "}
-              <KeyboardDoubleArrowRightIcon />
-            </span>{" "}
-          </div>
-          <div className="py-3 px-4 text-sm font-redhat bg-white rounded-[40px]">
-            View vehicle details{" "}
-            <span className="pl-2">
-              {" "}
-              <KeyboardDoubleArrowRightIcon />
-            </span>{" "}
-          </div>
-        </div>
-      </div> */}
 
       <div className="bg-white rounded-lg p-6 w-full mx-auto mt-4 font-redhat text-base">
         {/* Top Row Labels */}
@@ -173,7 +196,7 @@ const RideDetails = () => {
                 alt={rideData?.driver_info?.full_name || "No name"}
               />
             )}
-            <span>{rideData?.driver_info?.full_name || "No name"}</span>
+            <span>{rideData?.driver_info?.full_name || "Not assigned!"}</span>
           </div>
           <div className="col-span-1">
             {rideData?.ride_request?.distance_in_meters
@@ -214,7 +237,7 @@ const RideDetails = () => {
             {rideData?.ride_service || "Not known!"}
           </div>
           <div className="col-span-1">
-            {rideData?.vehicle_info?.vin || "Not known!"}
+            {rideData?.vehicle_info?.vin || "Not assigned!"}
           </div>
           <div className="col-span-1">€ {rideData?.captured_amount}</div>
           <div className="col-span-1">

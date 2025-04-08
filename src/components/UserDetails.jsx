@@ -13,6 +13,7 @@ import CircularProgress from "./common/CircularProgress";
 import GenerateReportButton from "./common/GenerateReportButton";
 import InputSearchBar from "./common/InputSearchBar";
 import LoadingAnimation from "./common/LoadingAnimation";
+import ProfileModal from "./common/ProfileModal";
 import BackArrow from "../assets/backArrow.svg";
 import Incoming from "../assets/incoming.svg";
 import Outgoing from "../assets/outgoing.svg";
@@ -29,15 +30,29 @@ const headers = [
 ];
 
 const renderRideRow = (ride) => {
+  const capitalize = (str) =>
+    str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : str;
   return (
     <>
       <TableCell>{ride?.driver_info?.full_name || "No name"}</TableCell>
       <TableCell>{ride?.vehicle_info?.vin || "Not known!"}</TableCell>
-      <TableCell>{ride?.ride_service}</TableCell>
+      <TableCell>
+        {ride?.ride_service ? (
+          capitalize(ride.ride_service)
+        ) : (
+          <p className="text-red-500">Not known!</p>
+        )}
+      </TableCell>
       <TableCell>
         {ride?.createdAt ? formatCreatedAt(ride?.createdAt) : "Not known!"}
       </TableCell>
-      <TableCell>{ride?.status}</TableCell>
+      <TableCell>
+        {ride?.status ? (
+          capitalize(ride.status)
+        ) : (
+          <p className="text-red-500">Not known!</p>
+        )}
+      </TableCell>
       <TableCell>€ {ride?.captured_amount}</TableCell>
     </>
   );
@@ -46,6 +61,7 @@ const renderRideRow = (ride) => {
 const UserDetails = () => {
   const params = useParams();
   const navigate = useNavigate();
+  const [openProfileModal, setOpenProfileModal] = useState(false);
   const { userId } = params;
   const [page, setPage] = useState(1);
   const { data, error, isLoading } = useFetchUserDetailsQuery(userId);
@@ -94,7 +110,8 @@ const UserDetails = () => {
             <img
               src={customerData?.profile_pic}
               alt="any"
-              className="w-20 h-20 rounded-full"
+              className="w-20 h-20 rounded-full cursor-pointer"
+              onClick={() => setOpenProfileModal(true)}
             />
           ) : (
             <Avatar sx={{ width: "5rem", height: "5rem", borderRadius: "50%" }}>
@@ -241,6 +258,12 @@ const UserDetails = () => {
         page={page}
         setPage={setPage}
         totalPages={totalPages}
+      />
+
+      <ProfileModal
+        openProfileModal={openProfileModal}
+        setOpenProfileModal={setOpenProfileModal}
+        imageUrl={customerData?.profile_pic}
       />
     </div>
   );

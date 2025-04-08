@@ -17,30 +17,49 @@ const headers = [
 ];
 
 const renderRideRow = (ride) => {
+  const capitalize = (str) =>
+    str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : str;
+
   return (
     <>
       <TableCell>
         <div className="flex items-center gap-2">
-          {ride?.customer_info?.full_name || (
+          {ride?.customer_info?.full_name ? (
+            ride.customer_info.full_name
+          ) : (
             <p className="text-red-500">No user name!</p>
           )}
         </div>
       </TableCell>
       <TableCell>
-        {ride?.driver_info?.full_name || (
-          <p className="text-red-500">No driver name!</p>
+        {ride?.driver_info?.full_name ? (
+          ride.driver_info.full_name
+        ) : (
+          <p className="text-gray-500">Not assigned!</p>
         )}
       </TableCell>
       <TableCell>
-        {ride?.vehicle_info?.vin || (
-          <p className="text-red-400">Not vehicle number!</p>
+        {ride?.vehicle_info?.vin ? (
+          ride.vehicle_info.vin
+        ) : (
+          <p className="text-gray-500">Not assigned!</p>
         )}
       </TableCell>
       <TableCell>
-        {ride?.ride_service || <p className="text-red-500">No known!</p>}
+        {ride?.ride_service ? (
+          capitalize(ride.ride_service)
+        ) : (
+          <p className="text-red-500">Not known!</p>
+        )}
       </TableCell>
-      <TableCell>{ride?.status}</TableCell>
-      <TableCell>{ride?.captured_amount}</TableCell>
+      <TableCell>
+        {ride?.status ? (
+          capitalize(ride.status)
+        ) : (
+          <p className="text-red-500">Not known!</p>
+        )}
+      </TableCell>
+      <TableCell>{ride?.captured_amount || "-"}</TableCell>
     </>
   );
 };

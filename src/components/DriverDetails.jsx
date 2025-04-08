@@ -11,9 +11,9 @@ import {
 import { useFetchRidesQuery } from "../features/rideApi";
 import CallIcon from "@mui/icons-material/Call";
 import EmailIcon from "@mui/icons-material/Email";
-import CloseIcon from "@mui/icons-material/Close";
 import StarIcon from "@mui/icons-material/Star";
 import SubmittedDocumentsCard from "./common/SubmittedDocuments";
+import ProfileModal from "./common/ProfileModal";
 import StatusDropdown from "./common/StatusDropdown";
 import QuickConnect from "./common/QuickConnect";
 import RemarksModal from "./common/RemarkModal";
@@ -26,12 +26,26 @@ import EntityPaginatedTable from "./common/EntityPaginatedTable";
 const headers = ["User", "Vehicle", "Status", "Service type"];
 
 const renderRideRow = (ride) => {
+  const capitalize = (str) =>
+    str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : str;
   return (
     <>
       <TableCell>{ride?.customer_info?.full_name || "No name"}</TableCell>
       <TableCell>{ride?.vehicle_info?.vin || "Not known!"}</TableCell>
-      <TableCell>{ride?.status || "Not known!"}</TableCell>
-      <TableCell>{ride?.ride_service || "Not known!"}</TableCell>
+      <TableCell>
+        {ride?.status ? (
+          capitalize(ride.status)
+        ) : (
+          <p className="text-red-500">Not known!</p>
+        )}
+      </TableCell>
+      <TableCell>
+        {ride?.ride_service ? (
+          capitalize(ride.ride_service)
+        ) : (
+          <p className="text-red-500">Not known!</p>
+        )}
+      </TableCell>
     </>
   );
 };
@@ -317,46 +331,13 @@ const DriverDetails = () => {
         handleAddRemarks={handleAddRemarks}
       />
 
-      <Dialog
-        open={openProfileModal}
-        onClose={() => setOpenProfileModal(false)}
-        sx={{
-          ".MuiDialog-paper": {
-            borderRadius: "50%",
-            width: 500,
-            height: 500,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            position: "relative",
-            overflow: "hidden",
-          },
-        }}
-      >
-        <IconButton
-          onClick={() => setOpenProfileModal(false)}
-          sx={{
-            position: "absolute",
-            top: 8,
-            right: 8,
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            color: "white",
-            "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.7)" },
-          }}
-        >
-          <CloseIcon />
-        </IconButton>
-        <img
-          src={driverDetails?.profile_pic}
-          alt="driver-pic"
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            borderRadius: "50%",
-          }}
+      {driverDetails?.profile_pic && (
+        <ProfileModal
+          openProfileModal={openProfileModal}
+          setOpenProfileModal={setOpenProfileModal}
+          imageUrl={driverDetails?.profile_pic}
         />
-      </Dialog>
+      )}
     </>
   );
 };
