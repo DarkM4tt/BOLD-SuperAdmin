@@ -21,6 +21,7 @@ import InputSearchBar from "./common/InputSearchBar";
 import LoadingAnimation from "./common/LoadingAnimation";
 import StatusDropdown from "./common/StatusDropdown";
 import RemarksModal from "./common/RemarkModal";
+import RejectionReasonModal from "./common/RejectionReasonModal";
 import AddRideTypeModal from "../components/AddRideTypeModal";
 import BackArrow from "../assets/backArrow.svg";
 import OrgBig from "../assets/OrgBig.svg";
@@ -32,6 +33,7 @@ const EntityNewRequest = () => {
   const [openRideTypeModal, setOpenRideTypeModal] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState({});
   const [open, setOpen] = useState(false);
+  const [openRejectionModal, setOpenRejectionModal] = useState(false);
   const [remarks, setRemarks] = useState("");
   const params = useParams();
   const navigate = useNavigate();
@@ -84,6 +86,13 @@ const EntityNewRequest = () => {
       setOpenRideTypeModal(true);
       return;
     }
+
+    if (partnerId && status === "REJECTED") {
+      setRemarks("");
+      setOpenRejectionModal(true);
+      return;
+    }
+
     try {
       const response = await (vehicleId
         ? updateVehicleStatus({
@@ -106,6 +115,28 @@ const EntityNewRequest = () => {
         error?.data?.message || "Failed to update organization status",
         "error"
       );
+    }
+  };
+
+  const handleRejectOrg = async () => {
+    try {
+      const response = await updateOrgStatus({
+        orgId: params?.partnerId,
+        status: "REJECTED",
+        remarks,
+      }).unwrap();
+      showSnackbar(
+        response?.message || "Organization status updated successfully!",
+        "success"
+      );
+    } catch (error) {
+      showSnackbar(
+        error?.data?.message || "Failed to update organization status",
+        "error"
+      );
+    } finally {
+      setRemarks("");
+      setOpenRejectionModal(false);
     }
   };
 
@@ -405,6 +436,18 @@ const EntityNewRequest = () => {
         open={openRideTypeModal}
         handleClose={() => setOpenRideTypeModal(false)}
         vehicleId={vehicleId}
+      />
+
+      <RejectionReasonModal
+        remarks={remarks}
+        setRemarks={setRemarks}
+        buttonLoading={isUpdatingOrgStatus}
+        open={openRejectionModal}
+        handleClose={() => {
+          setRemarks("");
+          setOpenRejectionModal(false);
+        }}
+        handleReject={handleRejectOrg}
       />
     </>
   );

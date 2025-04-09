@@ -45,11 +45,16 @@ export const organizationApi = createApi({
     }),
 
     updateOrgStatus: builder.mutation({
-      query: ({ orgId, status }) => ({
+      query: ({ orgId, status, remarks }) => ({
         url: `/organizations/super-admin/update-organization-status/${orgId}`,
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: { status },
+        body: {
+          status,
+          ...(status === "REJECTED" &&
+            remarks != null &&
+            remarks && { remarks }),
+        },
       }),
       invalidatesTags: (result, error, { orgId }) => [
         { type: "PartnerDetails", id: orgId },

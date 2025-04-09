@@ -42,6 +42,7 @@ import RemarksModal from "./common/RemarkModal";
 import Locationmapcard from "./common/LocationMapCard";
 import LoadingAnimation from "./common/LoadingAnimation";
 import GenerateReportButton from "./common/GenerateReportButton";
+import RejectionReasonModal from "./common/RejectionReasonModal";
 import Warning from "../assets/redWarning.svg";
 import BackArrow from "../assets/backArrow.svg";
 
@@ -62,21 +63,27 @@ const PartnerInfo = () => {
   const [gradient, setGradient] = useState(null);
   const [selectedDocument, setSelectedDocument] = useState({});
   const [openRemarksModal, setOpenRemarksModal] = useState(false);
+  const [openRejectionModal, setOpenRejectionModal] = useState(false);
   const [remarks, setRemarks] = useState("");
   const showSnackbar = useSnackbar();
   const {
     data: orgdata,
     error,
     isLoading,
-    refetch,
   } = useFetchOrganizationDetailsQuery(params?.partnerId);
   const [updateOrgDocStatus, { isLoading: isUpdatingDocStatus }] =
     useUpdateOrgDocStatusMutation();
-  const [updateOrgStatus] = useUpdateOrgStatusMutation();
+  const [updateOrgStatus, { isLoading: isRejectingOrg }] =
+    useUpdateOrgStatusMutation();
   const navigate = useNavigate();
   const partnerDetails = orgdata?.data;
 
   const handleOrgStatusChange = async (status) => {
+    if (status === "REJECTED") {
+      setRemarks("");
+      setOpenRejectionModal(true);
+      return;
+    }
     try {
       const response = await updateOrgStatus({
         orgId: params?.partnerId,
@@ -91,6 +98,28 @@ const PartnerInfo = () => {
         error?.data?.message || "Failed to update organization status",
         "error"
       );
+    }
+  };
+
+  const handleRejectOrg = async () => {
+    try {
+      const response = await updateOrgStatus({
+        orgId: params?.partnerId,
+        status: "REJECTED",
+        remarks,
+      }).unwrap();
+      showSnackbar(
+        response?.message || "Organization status updated successfully!",
+        "success"
+      );
+    } catch (error) {
+      showSnackbar(
+        error?.data?.message || "Failed to update organization status",
+        "error"
+      );
+    } finally {
+      setRemarks("");
+      setOpenRejectionModal(false);
     }
   };
 
@@ -610,9 +639,20 @@ const PartnerInfo = () => {
           setSelectedDocument(null);
           setRemarks("");
           setOpenRemarksModal(false);
-          refetch();
         }}
         handleAddRemarks={handleAddRemarks}
+      />
+
+      <RejectionReasonModal
+        remarks={remarks}
+        setRemarks={setRemarks}
+        buttonLoading={isRejectingOrg}
+        open={openRejectionModal}
+        handleClose={() => {
+          setRemarks("");
+          setOpenRejectionModal(false);
+        }}
+        handleReject={handleRejectOrg}
       />
     </>
   );
