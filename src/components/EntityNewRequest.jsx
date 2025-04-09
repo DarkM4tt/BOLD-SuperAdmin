@@ -61,7 +61,7 @@ const EntityNewRequest = () => {
     useUpdateOrgStatusMutation();
   const showSnackbar = useSnackbar();
   const rideTypes = rideTypesData?.data?.rideTypes?.results;
-  const entityDetails = vehicleId ? vehicleData?.data?.vehicle : orgData?.data;
+  const entityDetails = vehicleId ? vehicleData?.data : orgData?.data;
 
   const entityDocuments = useCallback(() => {
     if (vehicleId) return vehicleData?.data?.documents;

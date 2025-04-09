@@ -75,7 +75,7 @@ const NewVehicleRequestCard = ({ vehicleDetails }) => {
   );
 };
 
-const renderVehicleRow = (vehicle, selectedTab) => {
+const renderVehicleRow = (vehicle, selectedTab, partnerId) => {
   if (selectedTab === "ASSIGNED") {
     return (
       <>
@@ -93,7 +93,9 @@ const renderVehicleRow = (vehicle, selectedTab) => {
             : "Not provided!"}
         </TableCell>
         <TableCell>
-          {vehicle?.organization_id?.full_name || "Not added yet!"}
+          {partnerId
+            ? vehicle?.vehicle_id?.ride_type?.type || "Not added yet!"
+            : vehicle?.organization_id?.full_name || "Not added yet!"}
         </TableCell>
         <TableCell>{vehicle?.vehicle_id?.vin || "Null"}</TableCell>
         <TableCell>
@@ -117,7 +119,9 @@ const renderVehicleRow = (vehicle, selectedTab) => {
           : "Not provided!"}
       </TableCell>
       <TableCell>
-        {vehicle?.organization_id?.full_name || "Not added yet!"}
+        {partnerId
+          ? vehicle?.ride_type?.type || "Not assigned yet!"
+          : vehicle?.organization_id?.full_name || "Not added yet!"}
       </TableCell>
       <TableCell>{vehicle?.vin || "Null"}</TableCell>
       <TableCell>{formatCreatedAt(vehicle?.createdAt)}</TableCell>
@@ -240,9 +244,9 @@ const Vehicles = () => {
 
   const headers = [
     "Vehicle model",
-    "Organization",
+    partnerId ? "Type" : "Organization",
     "Plate number",
-    "Added on",
+    "Operating since",
     selectedTab === "ASSIGNED" ? "Assigned Driver" : "Seats",
     selectedTab !== "APPROVED" && selectedTab !== "ASSIGNED"
       ? "Documents Status"
@@ -312,7 +316,9 @@ const Vehicles = () => {
         <EntityPaginatedTable
           headers={headers}
           rows={assignedResults}
-          renderRow={(vehicle) => renderVehicleRow(vehicle, selectedTab)}
+          renderRow={(vehicle) =>
+            renderVehicleRow(vehicle, selectedTab, partnerId)
+          }
           emptyMessage="No vehicles!"
           onRowClick={(vehicle) =>
             navigate(`/vehicles/${vehicle?.vehicle_id?._id}`)
@@ -327,7 +333,9 @@ const Vehicles = () => {
         <EntityPaginatedTable
           headers={headers}
           rows={results}
-          renderRow={(vehicle) => renderVehicleRow(vehicle, selectedTab)}
+          renderRow={(vehicle) =>
+            renderVehicleRow(vehicle, selectedTab, partnerId)
+          }
           emptyMessage="No vehicles!"
           onRowClick={(vehicle) => navigate(`/vehicles/${vehicle?._id}`)}
           isPreviousPage={isPreviousPage}
