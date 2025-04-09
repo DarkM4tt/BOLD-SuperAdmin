@@ -261,11 +261,16 @@ const DriverDetails = () => {
               />
             )}
             <div className="flex items-center gap-8 flex-grow">
-              <div className="">
+              <div
+                className="cursor-pointer"
+                onClick={() =>
+                  navigate(`/vehicles/${driverDetails?.vehicle?.vehicle_id}`)
+                }
+              >
                 <p className="font-redhat text-xl text-[#777777]">
                   Assigned vehicle
                 </p>
-                <p className="font-redhat text-xl pt-2 font-semibold">
+                <p className="font-redhat text-xl pt-2 font-semibold underline">
                   {" "}
                   {driverDetails?.vehicle?.vin}{" "}
                 </p>

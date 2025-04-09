@@ -226,6 +226,16 @@ const VehicleDetails = () => {
                   )}
                 </p>
               </div>
+              <div className="mt-2 flex gap-2 items-center font-semibold">
+                Ride Type:
+                <p className="font-sans text-base text-[#777777] font-normal">
+                  {vehicleDetails?.ride_type?.type || (
+                    <p className="text-red-400 text-sm font-bold">
+                      Ride type not known
+                    </p>
+                  )}
+                </p>
+              </div>
             </div>
           </div>
           <div className="">
@@ -431,9 +441,29 @@ const VehicleDetails = () => {
           <div className="bg-white w-full h-fit p-4 rounded-[8px] flex flex-col gap-2">
             {vehicleDetails?.assignment ? (
               <>
-                <p className="font-redHat font-semibold text-2xl">
-                  Current driver
-                </p>
+                <div className="font-redhat flex justify-between items-center">
+                  <p className="font-redHat font-semibold text-2xl">
+                    Current driver
+                  </p>
+                  <Button
+                    variant="outlined"
+                    sx={{
+                      backgroundColor: "white",
+                      color: "black",
+                      textTransform: "none",
+                      fontSize: "14px",
+                      borderRadius: "8px",
+                      border: "1px solid black",
+                    }}
+                    onClick={() =>
+                      navigate(
+                        `/drivers/${vehicleDetails?.assignment?.driver?.driver_id}`
+                      )
+                    }
+                  >
+                    View Profile
+                  </Button>
+                </div>
                 <CustomerCard
                   image={vehicleDetails?.assignment?.driver?.profile_pic}
                   name={vehicleDetails?.assignment?.driver?.full_name}

@@ -1,6 +1,5 @@
 import EmailIcon from "@mui/icons-material/Email";
 import PhoneIcon from "@mui/icons-material/Phone";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
 import StarIcon from "@mui/icons-material/Star";
 
 const CustomerCard = ({ image, name, email, contact, rating }) => {
@@ -18,7 +17,7 @@ const CustomerCard = ({ image, name, email, contact, rating }) => {
             {name || "No name"}
           </p>
 
-          <div className="flex items-center text-sm text-gray-600 gap-4 mt-1">
+          <div className="flex flex-col text-sm text-gray-600 mt-2">
             <div className="flex items-center gap-1">
               <EmailIcon fontSize="small" sx={{ color: "gray" }} />
               <p className="text-gray underline font-normal text-base">
