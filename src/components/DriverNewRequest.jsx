@@ -1,22 +1,23 @@
 import { useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { allDocumentStatus } from "../utils/enums";
 import { useSnackbar } from "../context/SnackbarProvider";
 import { Avatar, Box, Button, Divider } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import LoadingAnimation from "./common/LoadingAnimation";
-import StatusDropdown from "./common/StatusDropdown";
-import pdfIcon from "../assets/pdf.png";
-import BackArrow from "../assets/backArrow.svg";
-import RemarksModal from "./common/RemarkModal";
-import DocumentModal from "./common/DocumentModal";
-import { useNavigate, useParams } from "react-router-dom";
 import {
   useFetchDriverDetailsQuery,
   useUpdateDriverDocStatusMutation,
   useUpdateDriverStatusMutation,
 } from "../features/driverApi";
+import CallIcon from "@mui/icons-material/Call";
+import EmailIcon from "@mui/icons-material/Email";
+import LoadingAnimation from "./common/LoadingAnimation";
+import StatusDropdown from "./common/StatusDropdown";
+import RemarksModal from "./common/RemarkModal";
+import DocumentModal from "./common/DocumentModal";
 import InputSearchBar from "./common/InputSearchBar";
 import RejectionReasonModal from "./common/RejectionReasonModal";
+import pdfIcon from "../assets/pdf.png";
+import BackArrow from "../assets/backArrow.svg";
 
 const DriverNewRequest = () => {
   const params = useParams();
@@ -157,9 +158,12 @@ const DriverNewRequest = () => {
           <p className="font-semibold text-2xl">
             {entityDetails?.full_name || "No name"}
           </p>
-          <div className="flex items-center text-gray gap-1">
+          <div className="flex items-center text-gray gap-3">
             <p className="font-normal text-base text-gray">
-              {entityDetails?.username}
+              <EmailIcon fontSize="small" /> {entityDetails?.email}
+            </p>
+            <p className="font-normal text-base text-gray">
+              <CallIcon fontSize="small" /> {entityDetails?.phone}
             </p>
           </div>
         </div>

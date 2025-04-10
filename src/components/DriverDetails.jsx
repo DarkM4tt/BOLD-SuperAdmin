@@ -20,8 +20,9 @@ import RemarksModal from "./common/RemarkModal";
 import InputSearchBar from "./common/InputSearchBar";
 import GenerateReportButton from "./common/GenerateReportButton";
 import LoadingAnimation from "./common/LoadingAnimation";
-import BackArrow from "../assets/backArrow.svg";
 import EntityPaginatedTable from "./common/EntityPaginatedTable";
+import RejectionReasonModal from "./common/RejectionReasonModal";
+import BackArrow from "../assets/backArrow.svg";
 
 const headers = ["User", "Vehicle", "Status", "Service type"];
 
