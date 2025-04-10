@@ -68,9 +68,11 @@ const DriverDetails = () => {
   } = ridesData?.data?.rides || {};
   const [updateDriverDocStatus, { isLoading: isUpdatingDocStatus }] =
     useUpdateDriverDocStatusMutation();
-  const [updateDriverStatus] = useUpdateDriverStatusMutation();
+  const [updateDriverStatus, { isLoading: isRejectingDriver }] =
+    useUpdateDriverStatusMutation();
   const [openProfileModal, setOpenProfileModal] = useState(false);
   const [openRemarksModal, setOpenRemarksModal] = useState(false);
+  const [openRejectionModal, setOpenRejectionModal] = useState(false);
   const [remarks, setRemarks] = useState("");
   const [selectedDocument, setSelectedDocument] = useState({});
   const driverDetails = driverData?.data;
@@ -78,6 +80,11 @@ const DriverDetails = () => {
   const navigate = useNavigate();
 
   const handleDriverStatusChange = async (status) => {
+    if (status === "REJECTED") {
+      setRemarks("");
+      setOpenRejectionModal(true);
+      return;
+    }
     try {
       const response = await updateDriverStatus({
         driverId,
@@ -92,6 +99,28 @@ const DriverDetails = () => {
         error?.data?.message || "Failed to update driver status",
         "error"
       );
+    }
+  };
+
+  const handleRejectDriver = async () => {
+    try {
+      const response = await updateDriverStatus({
+        driverId,
+        status: "REJECTED",
+        remarks,
+      }).unwrap();
+      showSnackbar(
+        response?.message || "Driver status updated successfully!",
+        "success"
+      );
+    } catch (error) {
+      showSnackbar(
+        error?.data?.message || "Failed to update driver status",
+        "error"
+      );
+    } finally {
+      setRemarks("");
+      setOpenRejectionModal(false);
     }
   };
 
@@ -343,6 +372,18 @@ const DriverDetails = () => {
           imageUrl={driverDetails?.profile_pic}
         />
       )}
+
+      <RejectionReasonModal
+        remarks={remarks}
+        setRemarks={setRemarks}
+        buttonLoading={isRejectingDriver}
+        open={openRejectionModal}
+        handleClose={() => {
+          setRemarks("");
+          setOpenRejectionModal(false);
+        }}
+        handleReject={handleRejectDriver}
+      />
     </>
   );
 };

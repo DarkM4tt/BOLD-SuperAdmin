@@ -45,11 +45,16 @@ export const driverApi = createApi({
     }),
 
     updateDriverStatus: builder.mutation({
-      query: ({ driverId, status }) => ({
+      query: ({ driverId, status, remarks }) => ({
         url: `/super-admin/update-driver-status/${driverId}`,
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: { status },
+        body: {
+          status,
+          ...(status === "REJECTED" &&
+            remarks != null &&
+            remarks && { remarks }),
+        },
       }),
       invalidatesTags: (result, error, { driverId }) => [
         { type: "DriverDetails", id: driverId },

@@ -89,12 +89,12 @@ const VehicleDetails = () => {
         remarks,
       }).unwrap();
       showSnackbar(
-        response?.message || "Organization status updated successfully!",
+        response?.message || "Vehicle status updated successfully!",
         "success"
       );
     } catch (error) {
       showSnackbar(
-        error?.data?.message || "Failed to update organization status",
+        error?.data?.message || "Failed to update vehicle status",
         "error"
       );
     } finally {

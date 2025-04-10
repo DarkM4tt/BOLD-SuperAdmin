@@ -16,6 +16,7 @@ import {
   useUpdateDriverStatusMutation,
 } from "../features/driverApi";
 import InputSearchBar from "./common/InputSearchBar";
+import RejectionReasonModal from "./common/RejectionReasonModal";
 
 const DriverNewRequest = () => {
   const params = useParams();
@@ -32,6 +33,7 @@ const DriverNewRequest = () => {
     useUpdateDriverStatusMutation();
   const [openDocumentModal, setOpenDocumentModal] = useState(false);
   const [selectedDocument, setSelectedDocument] = useState({});
+  const [openRejectionModal, setOpenRejectionModal] = useState(false);
   const [open, setOpen] = useState(false);
   const [remarks, setRemarks] = useState("");
   const showSnackbar = useSnackbar();
@@ -43,6 +45,11 @@ const DriverNewRequest = () => {
   };
 
   const handleEntityStatusChange = async (status) => {
+    if (status === "REJECTED") {
+      setRemarks("");
+      setOpenRejectionModal(true);
+      return;
+    }
     try {
       const response = await updateDriverStatus({
         driverId,
@@ -60,6 +67,28 @@ const DriverNewRequest = () => {
         error?.data?.message || "Failed to update driver status",
         "error"
       );
+    }
+  };
+
+  const handleRejectDriver = async () => {
+    try {
+      const response = await updateDriverStatus({
+        driverId,
+        status: "REJECTED",
+        remarks,
+      }).unwrap();
+      showSnackbar(
+        response?.message || "Driver status updated successfully!",
+        "success"
+      );
+    } catch (error) {
+      showSnackbar(
+        error?.data?.message || "Failed to update driver status",
+        "error"
+      );
+    } finally {
+      setRemarks("");
+      setOpenRejectionModal(false);
     }
   };
 
@@ -311,6 +340,18 @@ const DriverNewRequest = () => {
           setOpen(false);
         }}
         handleAddRemarks={handleAddRemarks}
+      />
+
+      <RejectionReasonModal
+        remarks={remarks}
+        setRemarks={setRemarks}
+        buttonLoading={isUpdatingDriverStatus}
+        open={openRejectionModal}
+        handleClose={() => {
+          setRemarks("");
+          setOpenRejectionModal(false);
+        }}
+        handleReject={handleRejectDriver}
       />
     </>
   );
