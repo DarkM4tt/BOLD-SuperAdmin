@@ -57,11 +57,16 @@ export const vehicleApi = createApi({
     }),
 
     updateVehicleStatus: builder.mutation({
-      query: ({ vehicleId, status }) => ({
+      query: ({ vehicleId, status, remarks }) => ({
         url: `/organizations/super-admin/update-vehicle-status/${vehicleId}`,
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: { status },
+        body: {
+          status,
+          ...(status === "REJECTED" &&
+            remarks != null &&
+            remarks && { remarks }),
+        },
       }),
       invalidatesTags: (result, error, { vehicleId }) => [
         { type: "VehicleDetails", id: vehicleId },

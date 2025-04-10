@@ -87,7 +87,7 @@ const EntityNewRequest = () => {
       return;
     }
 
-    if (partnerId && status === "REJECTED") {
+    if (status === "REJECTED") {
       setRemarks("");
       setOpenRejectionModal(true);
       return;
@@ -118,17 +118,26 @@ const EntityNewRequest = () => {
     }
   };
 
-  const handleRejectOrg = async () => {
+  const handleReject = async () => {
     try {
-      const response = await updateOrgStatus({
-        orgId: params?.partnerId,
-        status: "REJECTED",
-        remarks,
-      }).unwrap();
+      const response = await (partnerId
+        ? updateOrgStatus({
+            orgId: partnerId,
+            status: "REJECTED",
+            remarks,
+          }).unwrap()
+        : updateVehicleStatus({
+            vehicleId,
+            status: "REJECTED",
+            remarks,
+          }).unwrap());
       showSnackbar(
         response?.message || "Organization status updated successfully!",
         "success"
       );
+      if (response?.success) {
+        navigate(-1);
+      }
     } catch (error) {
       showSnackbar(
         error?.data?.message || "Failed to update organization status",
@@ -441,13 +450,13 @@ const EntityNewRequest = () => {
       <RejectionReasonModal
         remarks={remarks}
         setRemarks={setRemarks}
-        buttonLoading={isUpdatingOrgStatus}
+        buttonLoading={isUpdatingOrgStatus || isUpdatingVehicleStatus}
         open={openRejectionModal}
         handleClose={() => {
           setRemarks("");
           setOpenRejectionModal(false);
         }}
-        handleReject={handleRejectOrg}
+        handleReject={handleReject}
       />
     </>
   );

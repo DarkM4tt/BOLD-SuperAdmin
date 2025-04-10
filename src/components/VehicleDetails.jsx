@@ -24,6 +24,7 @@ import SubmittedDocumentsCard from "./common/SubmittedDocuments";
 import RemarksModal from "./common/RemarkModal";
 import CustomerCard from "./common/CustomerCard";
 import QuickConnect from "./common/QuickConnect";
+import RejectionReasonModal from "./common/RejectionReasonModal";
 import BackArrow from "../assets/backArrow.svg";
 import TickIcon from "../assets/tick.svg";
 
@@ -47,15 +48,22 @@ const VehicleDetails = () => {
   } = useFetchVehicleDetailsQuery(vehicleId);
   const [selectedDocument, setSelectedDocument] = useState({});
   const [openRemarksModal, setOpenRemarksModal] = useState(false);
+  const [openRejectionModal, setOpenRejectionModal] = useState(false);
   const [remarks, setRemarks] = useState("");
   const vehicleDetails = vehicleData?.data;
   const [updateVehicleDocStatus, { isLoading: isUpdatingDocStatus }] =
     useUpdateVehicleDocStatusMutation();
-  const [updateVehicleStatus] = useUpdateVehicleStatusMutation();
+  const [updateVehicleStatus, { isLoading: isRejectingVehicle }] =
+    useUpdateVehicleStatusMutation();
   const showSnackbar = useSnackbar();
   const navigate = useNavigate();
 
   const handleVehicleStatusChange = async (status) => {
+    if (status === "REJECTED") {
+      setRemarks("");
+      setOpenRejectionModal(true);
+      return;
+    }
     try {
       const response = await updateVehicleStatus({
         vehicleId,
@@ -70,6 +78,28 @@ const VehicleDetails = () => {
         error?.data?.message || "Failed to update organization status",
         "error"
       );
+    }
+  };
+
+  const handleRejectVehicle = async () => {
+    try {
+      const response = await updateVehicleStatus({
+        vehicleId,
+        status: "REJECTED",
+        remarks,
+      }).unwrap();
+      showSnackbar(
+        response?.message || "Organization status updated successfully!",
+        "success"
+      );
+    } catch (error) {
+      showSnackbar(
+        error?.data?.message || "Failed to update organization status",
+        "error"
+      );
+    } finally {
+      setRemarks("");
+      setOpenRejectionModal(false);
     }
   };
 
@@ -520,6 +550,18 @@ const VehicleDetails = () => {
           setOpenRemarksModal(false);
         }}
         handleAddRemarks={handleAddRemarks}
+      />
+
+      <RejectionReasonModal
+        remarks={remarks}
+        setRemarks={setRemarks}
+        buttonLoading={isRejectingVehicle}
+        open={openRejectionModal}
+        handleClose={() => {
+          setRemarks("");
+          setOpenRejectionModal(false);
+        }}
+        handleReject={handleRejectVehicle}
       />
     </>
   );
