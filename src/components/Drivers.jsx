@@ -7,6 +7,7 @@ import { useFetchDriversQuery } from "../features/driverApi";
 import InputSearchBar from "./common/InputSearchBar";
 import LoadingAnimation from "./common/LoadingAnimation";
 import EntityPaginatedTable from "./common/EntityPaginatedTable";
+import Pagination from "./common/Pagination";
 import BackArrow from "../assets/backArrow.svg";
 import infoYellow from "../assets/infoYellow.svg";
 import wrongIcon from "../assets/wrongIcon.svg";
@@ -218,6 +219,16 @@ const Drivers = () => {
     isPreviousPage,
   } = data.drivers || {};
 
+  const pageNumbers = [];
+
+  for (let i = 1; i <= totalPages; i++) {
+    if (i === 1 || i === totalPages || (i >= page - 1 && i <= page + 1)) {
+      pageNumbers.push(i);
+    } else if (i === page - 2 || i === page + 2) {
+      pageNumbers.push("...");
+    }
+  }
+
   const headers = [
     "Name",
     "Joined on",
@@ -277,9 +288,25 @@ const Drivers = () => {
 
       {selectedTab === "NEW-REQUEST" ? (
         results?.length > 0 ? (
-          results?.map((driver) => (
-            <NewDriverRequestCard driverDetails={driver} key={driver?._id} />
-          ))
+          <>
+            <div className="flex flex-col max-h-[500px] overflow-y-auto">
+              {results?.map((driver) => (
+                <NewDriverRequestCard
+                  driverDetails={driver}
+                  key={driver?._id}
+                />
+              ))}
+            </div>
+            {results?.length > 0 && (
+              <Pagination
+                pageNumbers={pageNumbers}
+                page={page}
+                setPage={setPage}
+                isPreviousPage={isPreviousPage}
+                isNextPage={isNextPage}
+              />
+            )}
+          </>
         ) : (
           <p className="text-lg font-bold text-red-400 font-redhat mt-5">
             No new drivers!

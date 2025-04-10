@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import PaginatedTable from "../components/common/PaginatedTable";
 import InputSearchBar from "../components/common/InputSearchBar";
 import LoadingAnimation from "../components/common/LoadingAnimation";
+import Pagination from "../components/common/Pagination";
 import OrgBig from "../assets/OrgBig.svg";
 import infoYellow from "../assets/infoYellow.svg";
 import wrongIcon from "../assets/wrongIcon.svg";
@@ -196,6 +197,16 @@ const Partners = () => {
     isPreviousPage,
   } = data.organizations || {};
 
+  const pageNumbers = [];
+
+  for (let i = 1; i <= totalPages; i++) {
+    if (i === 1 || i === totalPages || (i >= page - 1 && i <= page + 1)) {
+      pageNumbers.push(i);
+    } else if (i === page - 2 || i === page + 2) {
+      pageNumbers.push("...");
+    }
+  }
+
   return (
     <Box>
       <div className="flex items-center justify-between w-full mb-5">
@@ -236,9 +247,25 @@ const Partners = () => {
 
       {selectedTab === "NEW_REQUESTS" ? (
         results?.length > 0 ? (
-          results?.map((partner) => (
-            <NewOrgRequestCard partnerDetails={partner} key={partner?._id} />
-          ))
+          <>
+            <div className="flex flex-col max-h-[500px] overflow-y-auto">
+              {results?.map((partner) => (
+                <NewOrgRequestCard
+                  partnerDetails={partner}
+                  key={partner?._id}
+                />
+              ))}
+            </div>
+            {results?.length > 0 && (
+              <Pagination
+                pageNumbers={pageNumbers}
+                page={page}
+                setPage={setPage}
+                isPreviousPage={isPreviousPage}
+                isNextPage={isNextPage}
+              />
+            )}
+          </>
         ) : (
           <p className="text-lg font-bold text-red-400 font-redhat">
             No new organizations!

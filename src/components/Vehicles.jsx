@@ -10,6 +10,7 @@ import { useFetchOrganizationDetailsQuery } from "../features/organizationApi";
 import InputSearchBar from "./common/InputSearchBar";
 import LoadingAnimation from "./common/LoadingAnimation";
 import EntityPaginatedTable from "./common/EntityPaginatedTable";
+import Pagination from "./common/Pagination";
 import infoYellow from "../assets/infoYellow.svg";
 import wrongIcon from "../assets/wrongIcon.svg";
 import BackArrow from "../assets/backArrow.svg";
@@ -235,6 +236,16 @@ const Vehicles = () => {
     isPreviousPage,
   } = data.vehicles || {};
 
+  const pageNumbers = [];
+
+  for (let i = 1; i <= totalPages; i++) {
+    if (i === 1 || i === totalPages || (i >= page - 1 && i <= page + 1)) {
+      pageNumbers.push(i);
+    } else if (i === page - 2 || i === page + 2) {
+      pageNumbers.push("...");
+    }
+  }
+
   const {
     results: assignedResults = [],
     totalPages: assignedTotalPages,
@@ -301,12 +312,25 @@ const Vehicles = () => {
 
       {selectedTab === "NEW-REQUEST" ? (
         results?.length > 0 ? (
-          results?.map((vehicle) => (
-            <NewVehicleRequestCard
-              vehicleDetails={vehicle}
-              key={vehicle?._id}
-            />
-          ))
+          <>
+            <div className="flex flex-col max-h-[500px] overflow-y-auto">
+              {results?.map((vehicle) => (
+                <NewVehicleRequestCard
+                  vehicleDetails={vehicle}
+                  key={vehicle?._id}
+                />
+              ))}
+            </div>
+            {results?.length > 0 && (
+              <Pagination
+                pageNumbers={pageNumbers}
+                page={page}
+                setPage={setPage}
+                isPreviousPage={isPreviousPage}
+                isNextPage={isNextPage}
+              />
+            )}
+          </>
         ) : (
           <p className="text-lg font-bold text-red-400 font-redhat mt-5">
             No new vehicles!
