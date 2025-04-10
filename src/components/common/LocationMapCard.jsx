@@ -32,7 +32,7 @@ const Locationmapcard = ({
 
   return (
     <div
-      className="rounded-lg flex-grow flex flex-col bg-white py-6 px-4"
+      className="rounded-lg flex-grow flex flex-col bg-white py-6 px-4 min-h-[600px]"
       style={{ boxShadow: "4px 4px 33px 0px #0000000A" }}
     >
       <div className="flex justify-between items-center">

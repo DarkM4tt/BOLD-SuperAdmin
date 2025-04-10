@@ -29,6 +29,7 @@ import {
   useUpdateOrgDocStatusMutation,
   useUpdateOrgStatusMutation,
 } from "../features/organizationApi";
+import { useFetchVehiclesQuery } from "../features/vehicleApi";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
@@ -45,6 +46,7 @@ import GenerateReportButton from "./common/GenerateReportButton";
 import RejectionReasonModal from "./common/RejectionReasonModal";
 import Warning from "../assets/redWarning.svg";
 import BackArrow from "../assets/backArrow.svg";
+import { formatCreatedAt } from "../utils/dates";
 
 ChartJS.register(
   CategoryScale,
@@ -58,8 +60,9 @@ ChartJS.register(
 );
 
 const PartnerInfo = () => {
-  const chartRef = useRef(null);
+  const navigate = useNavigate();
   const params = useParams();
+  const chartRef = useRef(null);
   const [gradient, setGradient] = useState(null);
   const [selectedDocument, setSelectedDocument] = useState({});
   const [openRemarksModal, setOpenRemarksModal] = useState(false);
@@ -75,8 +78,13 @@ const PartnerInfo = () => {
     useUpdateOrgDocStatusMutation();
   const [updateOrgStatus, { isLoading: isRejectingOrg }] =
     useUpdateOrgStatusMutation();
-  const navigate = useNavigate();
+  const { data: vehicleData } = useFetchVehiclesQuery({
+    status: "APPROVED",
+    page: 1,
+    partnerId: params?.partnerId,
+  });
   const partnerDetails = orgdata?.data;
+  const vehicles = vehicleData?.vehicles?.results || [];
 
   const handleOrgStatusChange = async (status) => {
     if (status === "REJECTED") {
@@ -249,69 +257,7 @@ const PartnerInfo = () => {
     },
   };
 
-  // const dropdownOptions = [
-  //   { title: "Vehicles", value: "vehicles" },
-  //   { title: "Drivers", value: "drivers" },
-  // ];
-
   const EntityTable = () => {
-    const driversData = [
-      {
-        id: 1,
-        name: "Omar Botosh",
-        assignedVehicle: "MX 019MMA9",
-        totalRides: 789,
-      },
-      {
-        id: 2,
-        name: "Omar Botosh",
-        assignedVehicle: "MX 019MMA9",
-        totalRides: 789,
-      },
-      {
-        id: 3,
-        name: "Omar Botosh",
-        assignedVehicle: "MX 019MMA9",
-        totalRides: 789,
-      },
-      {
-        id: 4,
-        name: "Omar Botosh",
-        assignedVehicle: "MX 019MMA9",
-        totalRides: 789,
-      },
-      {
-        id: 5,
-        name: "Omar Botosh",
-        assignedVehicle: "MX 019MMA9",
-        totalRides: 789,
-      },
-      {
-        id: 6,
-        name: "Omar Botosh",
-        assignedVehicle: "MX 019MMA9",
-        totalRides: 789,
-      },
-      {
-        id: 7,
-        name: "Omar Botosh",
-        assignedVehicle: "MX 019MMA9",
-        totalRides: 789,
-      },
-      {
-        id: 8,
-        name: "Omar Botosh",
-        assignedVehicle: "MX 019MMA9",
-        totalRides: 789,
-      },
-      {
-        id: 9,
-        name: "Omar Botosh",
-        assignedVehicle: "MX 019MMA9",
-        totalRides: 789,
-      },
-    ];
-
     return (
       <Box
         sx={{
@@ -325,12 +271,9 @@ const PartnerInfo = () => {
           borderRadius: "8px",
         }}
       >
-        {/* <div className="flex justify-between"> */}
         <p className="font-redhat font-semibold text-2xl">
           List of approved vehicles
         </p>
-        {/* <CustomDropdown options={dropdownOptions} />
-        </div> */}
         <TableContainer>
           <Table>
             {/* Table Header */}
@@ -360,33 +303,50 @@ const PartnerInfo = () => {
                   fontSize: "16px",
                 }}
               >
-                {["Name", "Assigned vehicle", "Total rides", "Options"].map(
-                  (header) => (
-                    <TableCell key={header}>{header}</TableCell>
-                  )
-                )}
+                {[
+                  "Vehicle model",
+                  "Category",
+                  "Plate number",
+                  "Oprating since",
+                  "Seats",
+                ].map((header) => (
+                  <TableCell key={header}>{header}</TableCell>
+                ))}
               </TableRow>
             </TableHead>
 
             {/* Table Body */}
             <TableBody>
-              {driversData.map((org) => (
-                <TableRow
-                  key={org.id}
-                  sx={{
-                    cursor: "pointer",
-                  }}
-                >
-                  <TableCell>{org.name}</TableCell>
-                  <TableCell>{org.assignedVehicle}</TableCell>
-                  <TableCell>{org.totalRides}</TableCell>
-                  <TableCell>
-                    <button>
-                      <MoreHorizIcon className="text-[#777777]" />
-                    </button>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {vehicles.length > 0 ? (
+                vehicles.map((vehicle) => (
+                  <TableRow
+                    key={vehicle._id}
+                    sx={{
+                      cursor: "pointer",
+                    }}
+                  >
+                    <TableCell>
+                      {vehicle?.vehicle_model
+                        ? `${vehicle?.vehicle_model} ${vehicle?.brand_name}`
+                        : "Not provided!"}
+                    </TableCell>
+                    <TableCell>
+                      {vehicle?.ride_type?.type || "Not assigned yet!"}
+                    </TableCell>
+                    <TableCell>{vehicle?.vin || "Null"}</TableCell>
+                    <TableCell>
+                      {vehicle?.createdAt
+                        ? formatCreatedAt(vehicle?.createdAt)
+                        : "Null"}
+                    </TableCell>
+                    <TableCell>{vehicle?.seats || "Not provided!"}</TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <p className="text-red-400 text-lg font-semibold p-4 font-redhat">
+                  No approved vehicles in this partner!
+                </p>
+              )}
             </TableBody>
           </Table>
         </TableContainer>
@@ -450,14 +410,20 @@ const PartnerInfo = () => {
       {/* Buttons */}
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-4 pt-8">
-          <div className="py-2 px-4 text-sm font-redhat bg-white rounded-[40px] cursor-pointer border-[1px] border-gray-200">
+          <div
+            className="py-2 px-4 text-sm font-redhat bg-white rounded-[40px] cursor-pointer border-[1px] border-gray-200"
+            onClick={() => navigate("vehicles")}
+          >
             List of vehicles{" "}
             <span className="pl-2">
               {" "}
               <KeyboardDoubleArrowRightIcon />
             </span>{" "}
           </div>
-          <div className="py-2 px-4 text-sm font-redhat bg-white rounded-[40px] cursor-pointer border-[1px] border-gray-200">
+          <div
+            className="py-2 px-4 text-sm font-redhat bg-white rounded-[40px] cursor-pointer border-[1px] border-gray-200"
+            onClick={() => navigate("drivers")}
+          >
             List of drivers{" "}
             <span className="pl-2">
               {" "}

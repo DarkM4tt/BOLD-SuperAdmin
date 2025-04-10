@@ -326,19 +326,24 @@ const DriverDetails = () => {
       {/* Cards */}
       <div className="flex justify-between pt-8">
         <div className="w-4/6">
-          <EntityPaginatedTable
-            headers={headers}
-            rows={results}
-            renderRow={(ride) => renderRideRow(ride)}
-            emptyMessage="No rides yet!"
-            onRowClick={(ride) => navigate(`/rides/${ride?._id}`)}
-            isPreviousPage={isPreviousPage}
-            isNextPage={isNextPage}
-            page={page}
-            setPage={setPage}
-            totalPages={totalPages}
-            maxHeight="620px"
-          />
+          <div className="bg-white p-2 rounded-lg flex flex-col">
+            <p className="font-redhat font-semibold text-2xl p-2">
+              Ride history
+            </p>
+            <EntityPaginatedTable
+              headers={headers}
+              rows={results}
+              renderRow={(ride) => renderRideRow(ride)}
+              emptyMessage="No rides yet!"
+              onRowClick={(ride) => navigate(`/rides/${ride?._id}`)}
+              isPreviousPage={isPreviousPage}
+              isNextPage={isNextPage}
+              page={page}
+              setPage={setPage}
+              totalPages={totalPages}
+              maxHeight="620px"
+            />
+          </div>
         </div>
 
         <div className="w-[30%] flex flex-col gap-8">

@@ -82,8 +82,10 @@ const Conversation = () => {
   return (
     <>
       <p className="font-redhat font-semibold text-base flex items-center">
-        <span className="text-[#777777] pr-1">{"Dashboard > Rides"}</span>
-        {"> Ride details > Chat"}
+        <span className="text-[#777777] pr-1">
+          {"Dashboard > Ride details"}
+        </span>
+        {"> Chat history"}
       </p>
 
       <div className="flex items-center gap-4 mt-8">
@@ -145,7 +147,7 @@ const Conversation = () => {
                       wordWrap: "break-word",
                     }}
                   >
-                    <Typography sx={{ fontSize: "18px", fontWeight: 600 }}>
+                    <Typography sx={{ fontSize: "22px", fontWeight: 600 }}>
                       {msg.text}
                     </Typography>
                     <Typography
@@ -153,7 +155,7 @@ const Conversation = () => {
                       sx={{
                         display: "block",
                         textAlign: "right",
-                        fontSize: "0.6rem",
+                        fontSize: "0.7rem",
                         opacity: 0.6,
                         mt: 0.5,
                       }}

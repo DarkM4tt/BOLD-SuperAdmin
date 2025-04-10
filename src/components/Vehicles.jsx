@@ -125,7 +125,9 @@ const renderVehicleRow = (vehicle, selectedTab, partnerId) => {
           : vehicle?.organization_id?.full_name || "Not added yet!"}
       </TableCell>
       <TableCell>{vehicle?.vin || "Null"}</TableCell>
-      <TableCell>{formatCreatedAt(vehicle?.createdAt)}</TableCell>
+      <TableCell>
+        {vehicle?.createdAt ? formatCreatedAt(vehicle?.createdAt) : "Null"}
+      </TableCell>
       <TableCell>{vehicle?.seats || "Not provided!"}</TableCell>
       {selectedTab === "APPROVED" ? (
         <TableCell>{vehicle?.color}</TableCell>
@@ -255,7 +257,7 @@ const Vehicles = () => {
 
   const headers = [
     "Vehicle model",
-    partnerId ? "Type" : "Organization",
+    partnerId ? "Category" : "Organization",
     "Plate number",
     "Operating since",
     selectedTab === "ASSIGNED" ? "Assigned Driver" : "Seats",

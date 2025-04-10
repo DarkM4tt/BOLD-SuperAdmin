@@ -15,6 +15,7 @@ export const chatApi = createApi({
         const params = new URLSearchParams();
         params.append("page", page);
         params.append("limit", "10");
+        params.append("sortBy", "asc");
 
         return `/messages/super-admin/${chatId}?${params.toString()}`;
       },

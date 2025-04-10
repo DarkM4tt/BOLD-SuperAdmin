@@ -1,10 +1,7 @@
-import { useState } from "react";
 import { MenuItem, Select } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
-const CustomDropdown = ({ options }) => {
-  const [selectedOption, setSelectedOption] = useState(options[0]?.value || "");
-
+const CustomDropdown = ({ options, selectedOption, setSelectedOption }) => {
   const handleChange = (event) => {
     setSelectedOption(event.target.value);
   };
