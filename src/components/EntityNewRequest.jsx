@@ -1,11 +1,12 @@
 import { useCallback, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
+  useAssignRideCategoryMutation,
   useFetchVehicleDetailsQuery,
   useUpdateVehicleDocStatusMutation,
   useUpdateVehicleStatusMutation,
 } from "../features/vehicleApi";
-import { useFetchRideTypesQuery } from "../features/rideApi";
+import { useFetchRideCategoriesQuery } from "../features/rideApi";
 import {
   useFetchOrganizationDetailsQuery,
   useUpdateOrgDocStatusMutation,
@@ -52,7 +53,7 @@ const EntityNewRequest = () => {
   } = useFetchVehicleDetailsQuery(vehicleId, {
     skip: !vehicleId,
   });
-  const { data: rideTypesData } = useFetchRideTypesQuery();
+  const { data: rideTypesData } = useFetchRideCategoriesQuery();
   const [updateVehicleDocStatus, { isLoading: isUpdatingVehicleDocStatus }] =
     useUpdateVehicleDocStatusMutation();
   const [updateVehicleStatus, { isLoading: isUpdatingVehicleStatus }] =
@@ -61,8 +62,10 @@ const EntityNewRequest = () => {
     useUpdateOrgDocStatusMutation();
   const [updateOrgStatus, { isLoading: isUpdatingOrgStatus }] =
     useUpdateOrgStatusMutation();
+  const [assignRideCategory, { isLoading: isAssigning }] =
+    useAssignRideCategoryMutation();
   const showSnackbar = useSnackbar();
-  const rideTypes = rideTypesData?.data?.rideTypes?.results;
+  const rideTypes = rideTypesData?.data?.rideTypeCategories?.results;
   const entityDetails = vehicleId ? vehicleData?.data : orgData?.data;
 
   const entityDocuments = useCallback(() => {
@@ -149,6 +152,27 @@ const EntityNewRequest = () => {
     }
   };
 
+  const handleApproveVehicle = async () => {
+    try {
+      const response = await updateVehicleStatus({
+        vehicleId,
+        status: "APPROVED",
+      }).unwrap();
+      showSnackbar(
+        response?.message || "Vehicle approved successfully!",
+        "success"
+      );
+      if (response?.success) {
+        navigate(-1);
+      }
+    } catch (error) {
+      showSnackbar(
+        error?.data?.message || "Failed to approve vehicle",
+        "error"
+      );
+    }
+  };
+
   const handleDocStatusChange = async (status, documentId) => {
     if (status !== "APPROVED") {
       const document = entityDocuments()?.find((doc) => doc._id === documentId);
@@ -206,6 +230,29 @@ const EntityNewRequest = () => {
       setRemarks("");
       setSelectedDocument(null);
       setOpen(false);
+    }
+  };
+
+  const handleAssignRideType = async (type_id, type) => {
+    try {
+      const response = await assignRideCategory({
+        vehicleId,
+        type_id,
+        type,
+      }).unwrap();
+      showSnackbar(
+        response?.message || "Ride type assigned successfully!",
+        "success"
+      );
+      if (response?.success) {
+        setOpenRideTypeModal(false);
+        handleApproveVehicle();
+      }
+    } catch (error) {
+      showSnackbar(
+        error?.data?.message || "Failed to assign ride type",
+        "error"
+      );
     }
   };
 
@@ -444,7 +491,8 @@ const EntityNewRequest = () => {
         rideTypes={rideTypes}
         open={openRideTypeModal}
         handleClose={() => setOpenRideTypeModal(false)}
-        vehicleId={vehicleId}
+        handleAssignRideType={handleAssignRideType}
+        isLoading={isUpdatingVehicleStatus || isAssigning}
       />
 
       <RejectionReasonModal

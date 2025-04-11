@@ -73,6 +73,22 @@ export const vehicleApi = createApi({
         "Vehicles",
       ],
     }),
+
+    assignRideCategory: builder.mutation({
+      query: ({ vehicleId, type_id, type }) => ({
+        url: `/organizations/super-admin/assign-vehicle-category/${vehicleId}`,
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: {
+          type_id,
+          type,
+        },
+      }),
+      invalidatesTags: (result, error, { vehicleId }) => [
+        { type: "VehicleDetails", id: vehicleId },
+        "Vehicles",
+      ],
+    }),
   }),
 });
 
@@ -82,4 +98,5 @@ export const {
   useFetchVehiclesQuery,
   useUpdateVehicleDocStatusMutation,
   useUpdateVehicleStatusMutation,
+  useAssignRideCategoryMutation,
 } = vehicleApi;

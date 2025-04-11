@@ -8,7 +8,7 @@ const baseQuery = fetchBaseQuery({
 export const rideApi = createApi({
   reducerPath: "rideApi",
   baseQuery,
-  tagTypes: ["Rides", "RideDetails", "RideTypes"],
+  tagTypes: ["Rides", "RideDetails", "RideCategories", "RideTypes"],
   endpoints: (builder) => ({
     fetchRides: builder.query({
       query: ({ page, driverId, userId }) => {
@@ -34,6 +34,11 @@ export const rideApi = createApi({
       query: () => `/super-admin/ride-types`,
       providesTags: ["RideTypes"],
     }),
+
+    fetchRideCategories: builder.query({
+      query: () => `/super-admin/ride-type-categories`,
+      providesTags: ["RideCategories"],
+    }),
   }),
 });
 
@@ -41,4 +46,5 @@ export const {
   useFetchRidesQuery,
   useFetchRideDetailsQuery,
   useFetchRideTypesQuery,
+  useFetchRideCategoriesQuery,
 } = rideApi;

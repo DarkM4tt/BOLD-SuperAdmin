@@ -258,8 +258,8 @@ const VehicleDetails = () => {
               </div>
               <div className="mt-2 flex gap-2 items-center font-semibold">
                 Ride Type:
-                <p className="font-sans text-base text-[#777777] font-normal">
-                  {vehicleDetails?.ride_type?.type || (
+                <p className="font-sans text-base text-[#777777] font-medium">
+                  {vehicleDetails?.ride_type_category?.type || (
                     <p className="text-red-400 text-sm font-bold">
                       Ride type not known
                     </p>

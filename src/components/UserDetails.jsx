@@ -34,8 +34,8 @@ const renderRideRow = (ride) => {
     str ? str.charAt(0).toUpperCase() + str.slice(1).toLowerCase() : str;
   return (
     <>
-      <TableCell>{ride?.driver_info?.full_name || "No name"}</TableCell>
-      <TableCell>{ride?.vehicle_info?.vin || "Not known!"}</TableCell>
+      <TableCell>{ride?.driver_info?.full_name || "Not assigned!"}</TableCell>
+      <TableCell>{ride?.vehicle_info?.vin || "Not assigned!"}</TableCell>
       <TableCell>
         {ride?.ride_service ? (
           capitalize(ride.ride_service)

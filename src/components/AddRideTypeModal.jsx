@@ -8,57 +8,24 @@ import {
   Button,
   TextField,
 } from "@mui/material";
-import { useSnackbar } from "../context/SnackbarProvider";
 import CloseIcon from "@mui/icons-material/Close";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import LoadingAnimation from "./common/LoadingAnimation";
 
 const AddRideTypeModal = ({
   rideTypes,
-  buttonLoading,
   open,
   handleClose,
-  vehicleId,
+  handleAssignRideType,
+  isLoading,
 }) => {
   const [selectedRideTypeId, setSelectedRideTypeId] = useState("");
   const [selectedRideTypeName, setSelectedRideTypeName] = useState("");
-  const showSnackbar = useSnackbar();
 
   const handleChange = (event) => {
     setSelectedRideTypeId(event.target.value);
-    const rideType = rideTypes?.find(
-      (type) => type?._id === event.target.value
-    );
+    const rideType = rideTypes?.find((type) => type?.id === event.target.value);
     setSelectedRideTypeName(rideType?.type);
-  };
-
-  const handleAssignRideType = async () => {
-    try {
-      const res = await fetch(
-        `${
-          import.meta.env.VITE_API_URL
-        }/organizations/super-admin/assign-vehicle-category/${vehicleId}`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            type_id: selectedRideTypeId,
-            type: selectedRideTypeName,
-          }),
-          credentials: "include",
-        }
-      );
-      const result = await res?.json();
-      if (result?.success) {
-        showSnackbar(result?.message, "success");
-      } else {
-        throw new Error(result?.message);
-      }
-    } catch (error) {
-      showSnackbar(error.message, "error");
-    }
   };
 
   return (
@@ -126,7 +93,7 @@ const AddRideTypeModal = ({
               {rideTypes?.length > 0 ? "Select category" : "No ride types yet!"}
             </MenuItem>
             {rideTypes?.map((type) => (
-              <MenuItem key={type?._id} value={type?._id}>
+              <MenuItem key={type?.id} value={type?.id}>
                 {type?.name}
               </MenuItem>
             ))}
@@ -145,10 +112,12 @@ const AddRideTypeModal = ({
               backgroundColor: "#333",
             },
           }}
-          onClick={handleAssignRideType}
+          onClick={() =>
+            handleAssignRideType(selectedRideTypeId, selectedRideTypeName)
+          }
         >
-          {buttonLoading ? (
-            <LoadingAnimation width={50} height={50} />
+          {isLoading ? (
+            <LoadingAnimation width={30} height={30} />
           ) : (
             "Assign and approve vehicle"
           )}
