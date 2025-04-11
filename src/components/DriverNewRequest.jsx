@@ -79,14 +79,14 @@ const DriverNewRequest = () => {
         remarks,
       }).unwrap();
       showSnackbar(
-        response?.message || "Driver status updated successfully!",
+        response?.message || "Driver rejected successfully!",
         "success"
       );
+      if (response?.success) {
+        navigate(-1);
+      }
     } catch (error) {
-      showSnackbar(
-        error?.data?.message || "Failed to update driver status",
-        "error"
-      );
+      showSnackbar(error?.data?.message || "Failed to reject driver!", "error");
     } finally {
       setRemarks("");
       setOpenRejectionModal(false);
