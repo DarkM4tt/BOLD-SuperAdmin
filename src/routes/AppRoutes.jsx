@@ -25,6 +25,8 @@ import RideDetails from "../components/RideDetails";
 import Users from "../components/Users";
 import UserDetails from "../components/UserDetails";
 import Conversation from "../components/Conversation";
+import AddCity from "../components/AddCity";
+import AddCityPrices from "../components/AddCityPrices";
 
 const LoginRedirect = () => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -265,6 +267,30 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <Location />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="location/city/:cityId"
+          element={
+            <ProtectedRoute>
+              <Location />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="location/city/add"
+          element={
+            <ProtectedRoute>
+              <AddCity />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="location/city/add/:cityId/prices"
+          element={
+            <ProtectedRoute>
+              <AddCityPrices />
             </ProtectedRoute>
           }
         />

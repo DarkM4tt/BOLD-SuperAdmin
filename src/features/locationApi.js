@@ -36,11 +36,11 @@ export const locationApi = createApi({
     }),
 
     addCity: builder.mutation({
-      query: ({ country }) => ({
+      query: (body) => ({
         url: "/super-admin/city/add-city",
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: { country_code: country },
+        body,
       }),
       invalidatesTags: () => ["Cities"],
     }),
@@ -62,10 +62,10 @@ export const locationApi = createApi({
     }),
 
     fetchCountries: builder.query({
-      query: ({ page }) => {
+      query: ({ page, limit }) => {
         const params = new URLSearchParams();
         params.append("page", page);
-        params.append("limit", "10");
+        params.append("limit", limit || "10");
 
         return `/super-admin/country/get-countries?${params.toString()}`;
       },
