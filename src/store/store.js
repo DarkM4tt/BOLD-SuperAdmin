@@ -6,6 +6,7 @@ import { driverApi } from "../features/driverApi";
 import { rideApi } from "../features/rideApi";
 import { userApi } from "../features/userApi";
 import { chatApi } from "../features/chatApi";
+import { locationApi } from "../features/locationApi";
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     [rideApi.reducerPath]: rideApi.reducer,
     [userApi.reducerPath]: userApi.reducer,
     [chatApi.reducerPath]: chatApi.reducer,
+    [locationApi.reducerPath]: locationApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -25,6 +27,7 @@ export const store = configureStore({
       driverApi.middleware,
       rideApi.middleware,
       userApi.middleware,
-      chatApi.middleware
+      chatApi.middleware,
+      locationApi.middleware
     ),
 });
