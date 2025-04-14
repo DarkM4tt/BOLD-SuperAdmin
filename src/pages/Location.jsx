@@ -196,6 +196,9 @@ const AddLocation = () => {
   };
 
   const renderCityRow = (city) => {
+    const isActive = statusOverrides[city.id]
+      ? statusOverrides[city.id].status
+      : city?.is_active;
     return (
       <>
         <TableCell>
@@ -224,10 +227,14 @@ const AddLocation = () => {
               },
             }}
           />
-          {city?.is_active ? "On" : "Off"}
+          {isActive ? "On" : "Off"}
         </TableCell>
         <TableCell>
-          <p>{city?.city_area || "100 sqkm"}</p>
+          <p>
+            {city?.total_area
+              ? (city?.total_area / 1_000_000).toFixed(2) + " sqkm"
+              : "0 sqkm"}
+          </p>
         </TableCell>
         <TableCell>
           {city?.updatedAt
@@ -293,6 +300,9 @@ const AddLocation = () => {
   };
 
   const renderCountryRow = (country) => {
+    const isActive = statusOverrides[country.id]
+      ? statusOverrides[country.id].status
+      : country?.is_active;
     return (
       <>
         <TableCell>
@@ -320,6 +330,7 @@ const AddLocation = () => {
               },
             }}
           />
+          {isActive ? "On" : "Off"}
         </TableCell>
         <TableCell>
           {isDeletingCountry ? (

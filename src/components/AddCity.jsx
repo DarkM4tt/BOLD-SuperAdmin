@@ -4,7 +4,6 @@ import {
   DrawingManager,
   GoogleMap,
   InfoWindow,
-  StandaloneSearchBox,
   Marker,
   Polygon,
 } from "@react-google-maps/api";
@@ -14,18 +13,20 @@ import {
   useAddCityMutation,
   useFetchCountriesQuery,
 } from "../features/locationApi";
+import { useSnackbar } from "../context/SnackbarProvider";
 import { Button, MenuItem, Stack, TextField } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import useGoogleMapsLoader from "../useGoogleMapsLoader";
 import LoadingAnimation from "./common/LoadingAnimation";
 import BackArrow from "../assets/backArrow.svg";
-import { useSnackbar } from "../context/SnackbarProvider";
 
 const DEFAULT_CENTER = { lat: 38.7169, lng: -9.1399 };
 
 const AddCity = () => {
   const navigate = useNavigate();
   const [drawingControlEnabled, setDrawingControlEnabled] = useState(true);
+  const [markerPosition, setMarkerPosition] = useState(null);
+  const [showInfoWindow, setShowInfoWindow] = useState(false);
   const [mapCenter, setMapCenter] = useState(DEFAULT_CENTER);
   const [polygon, setPolygon] = useState([]);
   const [city, setCity] = useState("");
@@ -45,8 +46,6 @@ const AddCity = () => {
   const polygonRef = useRef(null);
   const mapRef = useRef(null);
   const { isLoaded, loadError } = useGoogleMapsLoader();
-  const [markerPosition, setMarkerPosition] = useState(null);
-  const [showInfoWindow, setShowInfoWindow] = useState(false);
 
   const fetchCities = useCallback(() => {
     if (!country) return;
@@ -198,19 +197,18 @@ const AddCity = () => {
       showSnackbar(result?.message || "City added successfully!", "success");
       if (result?.success) {
         const { country_id, id } = result?.data?.city || {};
-        console.log(country_id, id);
-        // navigate(`${id}/prices`);
-        navigate(-1);
-        // setAddLocationData({
-        //   countryId: country_id,
-        //   cityId: id,
-        //   zoneId: "",
-        //   rideTypePrice: "CITY_BASE",
-        // });
-        // setActiveComponent("AddPrices");
+        const data = {
+          countryId: country_id,
+          cityId: id,
+          zoneId: "",
+          rideTypePrice: "CITY_BASE",
+        };
+        navigate(`${id}/prices`, {
+          state: { data },
+        });
       }
     } catch (error) {
-      showSnackbar(error?.data?.message || "Failed to add country!", "error");
+      showSnackbar(error?.data?.message || "Failed to add city!", "error");
     }
   };
 

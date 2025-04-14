@@ -45,6 +45,15 @@ export const locationApi = createApi({
       invalidatesTags: () => ["Cities"],
     }),
 
+    addCityPrices: builder.mutation({
+      query: (body) => ({
+        url: "/super-admin/ride-type-prices/create",
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body,
+      }),
+    }),
+
     toggleCity: builder.mutation({
       query: ({ cityId }) => ({
         url: `/super-admin/city/toggle-city-status/${cityId}`,
@@ -111,6 +120,7 @@ export const {
   useFetchCitiesQuery,
   useFetchCityDetailsQuery,
   useAddCityMutation,
+  useAddCityPricesMutation,
   useToggleCityMutation,
   useDeleteCityMutation,
   useFetchCountriesQuery,
