@@ -14,7 +14,7 @@ import {
 } from "../features/organizationApi";
 import { useSnackbar } from "../context/SnackbarProvider";
 import { allDocumentStatus } from "../utils/enums";
-import { Box, Button, Divider } from "@mui/material";
+import { Box, Button, Divider, Tooltip } from "@mui/material";
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import DocumentModal from "./common/DocumentModal";
@@ -85,11 +85,6 @@ const EntityNewRequest = () => {
   };
 
   const handleEntityStatusChange = async (status) => {
-    if (vehicleId && status === "APPROVED") {
-      setOpenRideTypeModal(true);
-      return;
-    }
-
     if (status === "REJECTED") {
       setRemarks("");
       setOpenRejectionModal(true);
@@ -149,27 +144,6 @@ const EntityNewRequest = () => {
     } finally {
       setRemarks("");
       setOpenRejectionModal(false);
-    }
-  };
-
-  const handleApproveVehicle = async () => {
-    try {
-      const response = await updateVehicleStatus({
-        vehicleId,
-        status: "APPROVED",
-      }).unwrap();
-      showSnackbar(
-        response?.message || "Vehicle approved successfully!",
-        "success"
-      );
-      if (response?.success) {
-        navigate(-1);
-      }
-    } catch (error) {
-      showSnackbar(
-        error?.data?.message || "Failed to approve vehicle",
-        "error"
-      );
     }
   };
 
@@ -246,7 +220,6 @@ const EntityNewRequest = () => {
       );
       if (response?.success) {
         setOpenRideTypeModal(false);
-        handleApproveVehicle();
       }
     } catch (error) {
       showSnackbar(
@@ -306,29 +279,41 @@ const EntityNewRequest = () => {
       <div className="flex items-center gap-14 mt-6 pl-6">
         <p className="font-redhat font-normal text-xl text-gray">Status</p>
         <div className="flex gap-4">
-          <Button
-            variant="outlined"
-            sx={{
-              color: "#18C4B8",
-              borderColor: "#18C4B8",
-              textTransform: "none",
-              borderRadius: "8px",
-              fontSize: "16px",
-              fontWeight: "600",
-              padding: "6px 35px",
-              "&:hover": {
-                borderColor: "#1AC6CD",
-                backgroundColor: "rgba(26, 198, 205, 0.1)",
-              },
-            }}
-            onClick={() => handleEntityStatusChange("APPROVED")}
+          <Tooltip
+            title="Add category before approving"
+            arrow
+            placement="top"
+            disableHoverListener={
+              !(vehicleId && !entityDetails?.ride_type_category)
+            }
           >
-            {isUpdatingOrgStatus || isUpdatingVehicleStatus ? (
-              <LoadingAnimation width={30} height={30} />
-            ) : (
-              "Approve and add"
-            )}
-          </Button>
+            <span>
+              <Button
+                variant="outlined"
+                sx={{
+                  color: "#18C4B8",
+                  borderColor: "#18C4B8",
+                  textTransform: "none",
+                  borderRadius: "8px",
+                  fontSize: "16px",
+                  fontWeight: "600",
+                  padding: "6px 35px",
+                  "&:hover": {
+                    borderColor: "#1AC6CD",
+                    backgroundColor: "rgba(26, 198, 205, 0.1)",
+                  },
+                }}
+                disabled={vehicleId && !entityDetails?.ride_type_category}
+                onClick={() => handleEntityStatusChange("APPROVED")}
+              >
+                {isUpdatingOrgStatus || isUpdatingVehicleStatus ? (
+                  <LoadingAnimation width={30} height={30} />
+                ) : (
+                  "Approve request"
+                )}
+              </Button>
+            </span>
+          </Tooltip>
           <Button
             variant="outlined"
             sx={{
@@ -352,6 +337,28 @@ const EntityNewRequest = () => {
               "Reject request"
             )}
           </Button>
+          {vehicleId && (
+            <Button
+              variant="contained"
+              sx={{
+                backgroundColor: "black",
+                color: "white",
+                borderRadius: "12px",
+                padding: "8px 20px",
+                textTransform: "none",
+                fontSize: "16px",
+                fontWeight: 500,
+                "&:hover": {
+                  backgroundColor: "#333",
+                },
+              }}
+              onClick={() => setOpenRideTypeModal(true)}
+            >
+              {entityDetails?.ride_type_category
+                ? entityDetails?.ride_type_category?.type
+                : "+ Add Category"}
+            </Button>
+          )}
         </div>
       </div>
     </div>

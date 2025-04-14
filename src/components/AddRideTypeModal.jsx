@@ -119,7 +119,7 @@ const AddRideTypeModal = ({
           {isLoading ? (
             <LoadingAnimation width={30} height={30} />
           ) : (
-            "Assign and approve vehicle"
+            "Assign category"
           )}
         </Button>
       </Box>

@@ -1,21 +1,18 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import {
-  Button,
-  Checkbox,
-  FormControlLabel,
-  InputAdornment,
-  TextField,
-} from "@mui/material";
+import { Button, Checkbox, FormControlLabel } from "@mui/material";
 import { allDocumentStatus, allVehicleStatus } from "../utils/enums";
 import { useSnackbar } from "../context/SnackbarProvider";
+import { getCarType } from "../utils/constants";
+import { useFetchRideCategoriesQuery } from "../features/rideApi";
 import {
+  useAssignRideCategoryMutation,
   useFetchVehicleDetailsQuery,
   useUpdateVehicleDocStatusMutation,
   useUpdateVehicleStatusMutation,
 } from "../features/vehicleApi";
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import AddRideTypeModal from "./AddRideTypeModal";
 import InputSearchBar from "./common/InputSearchBar";
 import GenerateReportButton from "./common/GenerateReportButton";
 import LoadingAnimation from "./common/LoadingAnimation";
@@ -27,6 +24,7 @@ import QuickConnect from "./common/QuickConnect";
 import RejectionReasonModal from "./common/RejectionReasonModal";
 import BackArrow from "../assets/backArrow.svg";
 import TickIcon from "../assets/tick.svg";
+import SmallTickIcon from "../assets/smallTick.svg";
 
 const VehicleDetails = () => {
   const [services, setServices] = useState({
@@ -46,15 +44,20 @@ const VehicleDetails = () => {
     error,
     isLoading,
   } = useFetchVehicleDetailsQuery(vehicleId);
+  const { data: rideTypesData } = useFetchRideCategoriesQuery();
+  const rideTypes = rideTypesData?.data?.rideTypeCategories?.results;
   const [selectedDocument, setSelectedDocument] = useState({});
   const [openRemarksModal, setOpenRemarksModal] = useState(false);
   const [openRejectionModal, setOpenRejectionModal] = useState(false);
   const [remarks, setRemarks] = useState("");
+  const [openRideTypeModal, setOpenRideTypeModal] = useState(false);
   const vehicleDetails = vehicleData?.data;
   const [updateVehicleDocStatus, { isLoading: isUpdatingDocStatus }] =
     useUpdateVehicleDocStatusMutation();
   const [updateVehicleStatus, { isLoading: isRejectingVehicle }] =
     useUpdateVehicleStatusMutation();
+  const [assignRideCategory, { isLoading: isAssigning }] =
+    useAssignRideCategoryMutation();
   const showSnackbar = useSnackbar();
   const navigate = useNavigate();
 
@@ -176,13 +179,31 @@ const VehicleDetails = () => {
     });
   };
 
-  const handleSave = () => {
-    console.log("Selected services:", services);
-  };
-
   const handleRemarksClick = (document) => {
     setSelectedDocument(document);
     setOpenRemarksModal(true);
+  };
+
+  const handleAssignRideType = async (type_id, type) => {
+    try {
+      const response = await assignRideCategory({
+        vehicleId,
+        type_id,
+        type,
+      }).unwrap();
+      showSnackbar(
+        response?.message || "Ride type assigned successfully!",
+        "success"
+      );
+      if (response?.success) {
+        setOpenRideTypeModal(false);
+      }
+    } catch (error) {
+      showSnackbar(
+        error?.data?.message || "Failed to assign ride type",
+        "error"
+      );
+    }
   };
 
   if (isLoading) return <LoadingAnimation width={500} height={500} />;
@@ -244,7 +265,7 @@ const VehicleDetails = () => {
               </p>
               <div className="mt-2 flex gap-2 items-center">
                 <span>
-                  <DirectionsCarIcon fontSize="small" />
+                  <DirectionsCarIcon fontSize="small" sx={{ color: "gray" }} />
                 </span>
 
                 <p className="font-sans text-base text-[#777777]">
@@ -255,13 +276,23 @@ const VehicleDetails = () => {
                   )}
                 </p>
               </div>
-              <div className="mt-2 flex gap-2 items-center font-semibold">
-                Ride Type:
-                <p className="font-sans text-base text-[#777777] font-medium">
+              <div className="mt-2 flex gap-8 items-center font-semibold">
+                <p className="font-sans text-base font-semibold">
+                  Ride Category:{" "}
                   {vehicleDetails?.ride_type_category?.type || (
-                    <p className="text-red-400 text-sm font-bold">
+                    <span className="text-red-400 text-sm font-bold">
                       Ride type not known
-                    </p>
+                    </span>
+                  )}
+                </p>
+                <p className="font-sans text-base font-semibold">
+                  Car type:{" "}
+                  {vehicleDetails?.ride_type_category?.type ? (
+                    getCarType(vehicleDetails?.ride_type_category?.type)
+                  ) : (
+                    <span className="text-red-400 text-sm font-bold">
+                      Car type not known
+                    </span>
                   )}
                 </p>
               </div>
@@ -300,28 +331,10 @@ const VehicleDetails = () => {
         <div className="w-4/6 flex flex-col gap-4">
           <div className="px-4 py-6 bg-white rounded-lg">
             {/* Title and Save Button */}
-            <div className="flex justify-between">
-              <p className="font-semibold font-redhat text-2xl">
-                Covering services
-              </p>
-              <Button
-                variant="contained"
-                sx={{
-                  backgroundColor: "black",
-                  color: "white",
-                  textTransform: "none",
-                  fontSize: "14px",
-                  borderRadius: "8px",
-                }}
-                onClick={handleSave}
-                disabled={true}
-              >
-                Save changes
-              </Button>
-            </div>
+            <p className="font-semibold font-redhat text-2xl">Ride Type</p>
 
             {/* Checkboxes */}
-            <div className="flex justify-between pt-10">
+            <div className="flex justify-between mt-10">
               <FormControlLabel
                 control={
                   <Checkbox
@@ -392,79 +405,24 @@ const VehicleDetails = () => {
               />
             </div>
 
-            <p className="font-semibold font-redhat text-2xl mt-8">
-              Covering sectors
-            </p>
-            <div className="flex justify-between mt-8">
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={services?.is_assist}
-                    onChange={handleChange}
-                    name="is_assist"
-                    sx={{
-                      color: "#777777",
-                      "&.Mui-checked": {
-                        color: "#18C4B8",
-                      },
-                    }}
-                  />
-                }
-                label="Assist"
-                className="text-gray-800 text-sm"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={services?.is_rentals}
-                    onChange={handleChange}
-                    name="is_rentals"
-                    sx={{
-                      color: "#777777",
-                      "&.Mui-checked": {
-                        color: "#18C4B8",
-                      },
-                    }}
-                  />
-                }
-                label="Rentals"
-                className="text-gray-800 text-sm"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={services?.is_sos}
-                    onChange={handleChange}
-                    name="is_sos"
-                    sx={{
-                      color: "#777777",
-                      "&.Mui-checked": {
-                        color: "#18C4B8",
-                      },
-                    }}
-                  />
-                }
-                label="SoS"
-                className="text-gray-800 text-sm"
-              />
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={services?.is_xl}
-                    onChange={handleChange}
-                    name="is_xl"
-                    sx={{
-                      color: "#777777",
-                      "&.Mui-checked": {
-                        color: "#18C4B8",
-                      },
-                    }}
-                  />
-                }
-                label="XL"
-                className="text-gray-800 text-sm"
-              />
+            <div className="flex justify-between items-center mt-12">
+              <p className="font-semibold font-redhat text-2xl">
+                Selected ride category
+              </p>
+              <p
+                className="font-redhat font-semibold text-lg underline cursor-pointer"
+                onClick={() => setOpenRideTypeModal(true)}
+              >
+                Change
+              </p>
             </div>
+
+            <p className="flex gap-4 font-redhat font-semibold text-base mt-8">
+              {vehicleDetails?.ride_type_category?.type && (
+                <img src={SmallTickIcon} alt="SmallTickIcon" />
+              )}
+              {vehicleDetails?.ride_type_category?.type || "Not assigned yet!"}
+            </p>
           </div>
 
           <div className="bg-white w-full h-fit p-4 rounded-[8px] flex flex-col gap-2">
@@ -479,6 +437,7 @@ const VehicleDetails = () => {
                     sx={{
                       backgroundColor: "white",
                       color: "black",
+                      fontWeight: "bold",
                       textTransform: "none",
                       fontSize: "14px",
                       borderRadius: "8px",
@@ -490,7 +449,7 @@ const VehicleDetails = () => {
                       )
                     }
                   >
-                    View Profile
+                    View Profile {">>"}
                   </Button>
                 </div>
                 <CustomerCard
@@ -499,22 +458,6 @@ const VehicleDetails = () => {
                   email={vehicleDetails?.assignment?.driver?.email}
                   contact={vehicleDetails?.assignment?.driver?.phone}
                   rating={4}
-                />
-                <TextField
-                  id="fuel-card-name"
-                  placeholder="Assign another driver"
-                  variant="outlined"
-                  size="small"
-                  // value={formData.cardName}
-                  // onChange={(e) => handleChange("cardName", e.target.value)}
-                  fullWidth
-                  InputProps={{
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <ExpandMoreIcon sx={{ color: "black" }} />
-                      </InputAdornment>
-                    ),
-                  }}
                 />
               </>
             ) : (
@@ -561,6 +504,14 @@ const VehicleDetails = () => {
           setOpenRejectionModal(false);
         }}
         handleReject={handleRejectVehicle}
+      />
+
+      <AddRideTypeModal
+        rideTypes={rideTypes}
+        open={openRideTypeModal}
+        handleClose={() => setOpenRideTypeModal(false)}
+        handleAssignRideType={handleAssignRideType}
+        isLoading={isAssigning}
       />
     </>
   );
