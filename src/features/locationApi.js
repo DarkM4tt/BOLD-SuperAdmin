@@ -63,7 +63,7 @@ export const locationApi = createApi({
     }),
 
     updateCity: builder.mutation({
-      query: (cityId, body) => ({
+      query: ({ cityId, body }) => ({
         url: `/super-admin/city/update-city/${cityId}`,
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -146,7 +146,7 @@ export const locationApi = createApi({
     }),
 
     updateZone: builder.mutation({
-      query: (zoneId, body) => ({
+      query: ({ zoneId, body }) => ({
         url: `/super-admin/zones/update/${zoneId}`,
         method: "PUT",
         headers: { "Content-Type": "application/json" },

@@ -214,7 +214,7 @@ const UpdatePolygon = () => {
   const handleUpdate = async () => {
     const formattedCoords = polygonCoords.map(({ lat, lng }) => [lng, lat]);
 
-    const data = zoneId
+    const body = zoneId
       ? {
           name: zoneName,
           zone_type: zoneType,
@@ -248,8 +248,8 @@ const UpdatePolygon = () => {
 
     try {
       const response = await (zoneId
-        ? updateZone(zoneId, data).unwrap()
-        : updateCity(cityId, data).unwrap());
+        ? updateZone({ zoneId, body }).unwrap()
+        : updateCity({ cityId, body }).unwrap());
       showSnackbar(response?.message || "Updated successfully!", "success");
       if (response?.success) {
         navigate(-1);
@@ -417,18 +417,19 @@ const UpdatePolygon = () => {
       >
         {polygonCoords?.length > 0 && (
           <Polygon
-            paths={polygonCoords}
-            editable
-            ref={polygonRef}
+            path={polygonCoords}
             onLoad={onPolygonLoad}
             onMouseUp={updatePolygonCoords}
+            editable
+            draggable={false}
             options={{
-              strokeColor: `${getStrokeColor()}`,
+              strokeColor: getStrokeColor(),
+              fillColor: getOpacityColor(),
               strokeWeight: 4,
-              fillColor: `${getOpacityColor()}`,
               fillOpacity: 0.8,
               strokeOpacity: 1,
-              editable: true,
+              clickable: false,
+              zIndex: 1,
             }}
           />
         )}
