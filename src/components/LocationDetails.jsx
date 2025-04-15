@@ -212,7 +212,14 @@ const UpdatePolygon = () => {
   };
 
   const handleUpdate = async () => {
-    const formattedCoords = polygonCoords.map(({ lat, lng }) => [lng, lat]);
+    let formattedCoords = polygonCoords.map(({ lat, lng }) => [lng, lat]);
+
+    const first = formattedCoords[0];
+    const last = formattedCoords[formattedCoords.length - 1];
+
+    if (first[0] !== last[0] || first[1] !== last[1]) {
+      formattedCoords.push(first);
+    }
 
     const body = zoneId
       ? {
@@ -236,14 +243,9 @@ const UpdatePolygon = () => {
             type: "Polygon",
             coordinates: [formattedCoords],
           },
-          city_lat_lng: {
-            type: "Point",
+          center_location: {
             coordinates: [mapCenter?.lng, mapCenter?.lat],
           },
-          airport_business: true,
-          city_business: true,
-          zone_business: true,
-          is_business: true,
         };
 
     try {
