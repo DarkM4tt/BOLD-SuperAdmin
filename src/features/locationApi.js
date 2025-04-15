@@ -10,10 +10,10 @@ export const locationApi = createApi({
   baseQuery,
   tagTypes: [
     "Countries",
-    "Cities",
-    "Zones",
     "CountryDetails",
+    "Cities",
     "CityDetails",
+    "Zones",
     "ZoneDetails",
   ],
   endpoints: (builder) => ({
@@ -29,9 +29,9 @@ export const locationApi = createApi({
     }),
 
     fetchCityDetails: builder.query({
-      query: (driverId) => `/super-admin/driver-details/${driverId}`,
-      providesTags: (result, error, driverId) => [
-        { type: "DriverDetails", id: driverId },
+      query: (cityId) => `/super-admin/city/get-city/${cityId}`,
+      providesTags: (result, error, cityId) => [
+        { type: "CityDetails", id: cityId },
       ],
     }),
 
@@ -60,6 +60,18 @@ export const locationApi = createApi({
         method: "PUT",
       }),
       invalidatesTags: () => ["Cities"],
+    }),
+
+    updateCity: builder.mutation({
+      query: (cityId, body) => ({
+        url: `/super-admin/city/update-city/${cityId}`,
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body,
+      }),
+      invalidatesTags: (result, error, { cityId }) => [
+        { type: "CityDetails", id: cityId },
+      ],
     }),
 
     deleteCity: builder.mutation({
@@ -113,6 +125,37 @@ export const locationApi = createApi({
       }),
       invalidatesTags: () => ["Countries"],
     }),
+
+    fetchZones: builder.query({
+      query: ({ page, cityId }) => {
+        const params = new URLSearchParams();
+        params.append("page", page);
+        params.append("limit", cityId ? "100" : "10");
+        cityId && params.append("city_id", cityId);
+
+        return `/super-admin/zones?${params.toString()}`;
+      },
+      providesTags: ["Zones"],
+    }),
+
+    fetchZoneDetails: builder.query({
+      query: (zoneId) => `/super-admin/zones/${zoneId}`,
+      providesTags: (result, error, zoneId) => [
+        { type: "ZoneDetails", id: zoneId },
+      ],
+    }),
+
+    updateZone: builder.mutation({
+      query: (zoneId, body) => ({
+        url: `/super-admin/zones/update/${zoneId}`,
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body,
+      }),
+      invalidatesTags: (result, error, { zoneId }) => [
+        { type: "ZoneDetails", id: zoneId },
+      ],
+    }),
   }),
 });
 
@@ -122,10 +165,14 @@ export const {
   useAddCityMutation,
   useAddCityPricesMutation,
   useToggleCityMutation,
+  useUpdateCityMutation,
   useDeleteCityMutation,
   useFetchCountriesQuery,
   useFetchCountryDetailsQuery,
   useAddCountryMutation,
   useToggleCountryMutation,
   useDeleteCountryMutation,
+  useFetchZonesQuery,
+  useFetchZoneDetailsQuery,
+  useUpdateZoneMutation,
 } = locationApi;
