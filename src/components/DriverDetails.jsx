@@ -246,9 +246,16 @@ const DriverDetails = () => {
               <div className="">
                 <p className="font-sans text-2xl font-semibold flex items-center">
                   {driverDetails?.full_name}{" "}
-                  <span className=" pl-4 text-base text-[#777777] underline font-sans">
-                    ABC Company Ltd &gt;&gt;
-                  </span>
+                  {driverDetails?.organization_id && (
+                    <span
+                      className=" pl-4 text-base text-[#777777] underline font-sans cursor-pointer"
+                      onClick={() =>
+                        navigate(`/partners/${driverDetails?.organization_id}`)
+                      }
+                    >
+                      ABC Company Ltd &gt;&gt;
+                    </span>
+                  )}
                 </p>
                 <div className="pt-2 flex gap-4">
                   <p className="font-sans text-base text-[#777777] flex gap-2 items-center">

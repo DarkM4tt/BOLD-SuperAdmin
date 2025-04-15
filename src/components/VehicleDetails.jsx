@@ -259,9 +259,16 @@ const VehicleDetails = () => {
             <div className="">
               <p className="font-sans text-2xl font-semibold flex items-center">
                 {vehicleDetails?.brand_name} {vehicleDetails?.vehicle_model}
-                <span className=" pl-4 text-base text-[#777777] underline font-sans">
-                  ABC Company Ltd &gt;&gt;
-                </span>
+                {vehicleDetails?.organization_id && (
+                  <span
+                    className=" pl-4 text-base text-[#777777] underline font-sans cursor-pointer"
+                    onClick={() =>
+                      navigate(`/partners/${vehicleDetails?.organization_id}`)
+                    }
+                  >
+                    ABC Company Ltd &gt;&gt;
+                  </span>
+                )}
               </p>
               <div className="mt-2 flex gap-2 items-center">
                 <span>
@@ -281,20 +288,17 @@ const VehicleDetails = () => {
                   Ride Category:{" "}
                   {vehicleDetails?.ride_type_category?.type || (
                     <span className="text-red-400 text-sm font-bold">
-                      Ride type not known
+                      Not assigned yet!
                     </span>
                   )}
                 </p>
-                <p className="font-sans text-base font-semibold">
-                  Car type:{" "}
-                  {vehicleDetails?.ride_type_category?.type ? (
-                    getCarType(vehicleDetails?.ride_type_category?.type)
-                  ) : (
-                    <span className="text-red-400 text-sm font-bold">
-                      Car type not known
-                    </span>
-                  )}
-                </p>
+                {vehicleDetails?.ride_type_category?.type && (
+                  <p className="font-sans text-base font-semibold">
+                    Car type:{" "}
+                    {vehicleDetails?.ride_type_category?.type &&
+                      getCarType(vehicleDetails?.ride_type_category?.type)}
+                  </p>
+                )}
               </div>
             </div>
           </div>
@@ -413,7 +417,7 @@ const VehicleDetails = () => {
                 className="font-redhat font-semibold text-lg underline cursor-pointer"
                 onClick={() => setOpenRideTypeModal(true)}
               >
-                Change
+                {vehicleDetails?.ride_type_category?.type ? "Change" : "+ Add"}
               </p>
             </div>
 

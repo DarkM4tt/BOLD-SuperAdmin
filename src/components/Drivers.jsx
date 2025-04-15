@@ -22,8 +22,7 @@ const NewDriverRequestCard = ({ driverDetails }) => {
             <img
               src={driverDetails?.profile_pic}
               alt="driver-icon"
-              width={70}
-              className="rounded-full"
+              className="w-[70px] h-[70px] object-cover rounded-full"
             />
           ) : (
             <Avatar sx={{ width: "5rem", height: "5rem", borderRadius: "50%" }}>

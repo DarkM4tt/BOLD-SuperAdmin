@@ -16,6 +16,7 @@ import RemarksModal from "./common/RemarkModal";
 import DocumentModal from "./common/DocumentModal";
 import InputSearchBar from "./common/InputSearchBar";
 import RejectionReasonModal from "./common/RejectionReasonModal";
+import ProfileModal from "./common/ProfileModal";
 import pdfIcon from "../assets/pdf.png";
 import BackArrow from "../assets/backArrow.svg";
 
@@ -37,6 +38,7 @@ const DriverNewRequest = () => {
   const [openRejectionModal, setOpenRejectionModal] = useState(false);
   const [open, setOpen] = useState(false);
   const [remarks, setRemarks] = useState("");
+  const [openProfileModal, setOpenProfileModal] = useState(false);
   const showSnackbar = useSnackbar();
   const entityDetails = driverData?.data;
 
@@ -148,7 +150,12 @@ const DriverNewRequest = () => {
     <div className="px-4 py-8 bg-white rounded-lg mb-4">
       <div className="flex items-center gap-8 border-b-[1px] border-[#e0e0e0] pb-6">
         {entityDetails?.profile_pic ? (
-          <img src={entityDetails?.profile_pic} alt="OrgBig" width={70} />
+          <img
+            src={entityDetails?.profile_pic}
+            alt="DriverImage"
+            className="w-[100px] h-[100px] rounded-full cursor-pointer"
+            onClick={() => setOpenProfileModal(true)}
+          />
         ) : (
           <Avatar sx={{ width: "5rem", height: "5rem", borderRadius: "50%" }}>
             {entityDetails?.full_name?.charAt(0)}
@@ -355,6 +362,12 @@ const DriverNewRequest = () => {
           setOpenRejectionModal(false);
         }}
         handleReject={handleRejectDriver}
+      />
+
+      <ProfileModal
+        openProfileModal={openProfileModal}
+        setOpenProfileModal={setOpenProfileModal}
+        imageUrl={entityDetails?.profile_pic}
       />
     </>
   );
