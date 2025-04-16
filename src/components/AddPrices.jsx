@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useFetchRideTypesQuery } from "../features/rideApi";
-import { useAddCityPricesMutation } from "../features/locationApi";
+import { useAddPricesMutation } from "../features/locationApi";
 import { useSnackbar } from "../context/SnackbarProvider";
 import { Button, MenuItem, Select, TextField } from "@mui/material";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import DeleteIcon from "@mui/icons-material/Delete";
 import LoadingAnimation from "./common/LoadingAnimation";
 import InputSearchBar from "./common/InputSearchBar";
@@ -25,7 +26,7 @@ const AddPrices = () => {
   } = useFetchRideTypesQuery();
   const rideTypes = rideTypesData?.data?.rideTypes?.results;
   const [addCityPrices, { isLoading: isAddingCityPrices }] =
-    useAddCityPricesMutation();
+    useAddPricesMutation();
   const showSnackbar = useSnackbar();
 
   const [rows, setRows] = useState([
@@ -232,9 +233,18 @@ const AddPrices = () => {
         ))}
 
         {rows.length < rideTypes.length && (
-          <button onClick={addRow} className="text-blue-600">
-            + Click to add more field
-          </button>
+          <Button
+            startIcon={<AddCircleOutlineIcon />}
+            sx={{
+              color: "black",
+              textTransform: "none",
+              fontWeight: 400,
+              fontSize: "14px",
+            }}
+            onClick={addRow}
+          >
+            Click to add row
+          </Button>
         )}
 
         <div className="mt-6">

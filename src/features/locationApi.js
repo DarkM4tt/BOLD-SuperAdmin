@@ -15,8 +15,48 @@ export const locationApi = createApi({
     "CityDetails",
     "Zones",
     "ZoneDetails",
+    "RideTypePrices",
   ],
   endpoints: (builder) => ({
+    fetchRideTypePrices: builder.query({
+      query: ({ cityId, zoneId }) => {
+        const params = new URLSearchParams();
+        cityId && params.append("city_id", cityId);
+        zoneId && params.append("zone_id", zoneId);
+
+        return `/super-admin/ride-type-prices?${params.toString()}`;
+      },
+      providesTags: ["RideTypePrices"],
+    }),
+
+    addPrices: builder.mutation({
+      query: (body) => ({
+        url: "/super-admin/ride-type-prices/create",
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body,
+      }),
+      invalidatesTags: ["RideTypePrices"],
+    }),
+
+    deleteRideTypePrice: builder.mutation({
+      query: (id) => ({
+        url: `/super-admin/ride-type-prices/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["RideTypePrices"],
+    }),
+
+    updateRideTypePrice: builder.mutation({
+      query: ({ data, id }) => ({
+        url: `/super-admin/ride-type-prices/${id}`,
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: data,
+      }),
+      invalidatesTags: ["RideTypePrices"],
+    }),
+
     fetchCities: builder.query({
       query: ({ page }) => {
         const params = new URLSearchParams();
@@ -43,15 +83,6 @@ export const locationApi = createApi({
         body,
       }),
       invalidatesTags: () => ["Cities"],
-    }),
-
-    addCityPrices: builder.mutation({
-      query: (body) => ({
-        url: "/super-admin/ride-type-prices/create",
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body,
-      }),
     }),
 
     toggleCity: builder.mutation({
@@ -160,10 +191,13 @@ export const locationApi = createApi({
 });
 
 export const {
+  useFetchRideTypePricesQuery,
+  useAddPricesMutation,
+  useDeleteRideTypePriceMutation,
+  useUpdateRideTypePriceMutation,
   useFetchCitiesQuery,
   useFetchCityDetailsQuery,
   useAddCityMutation,
-  useAddCityPricesMutation,
   useToggleCityMutation,
   useUpdateCityMutation,
   useDeleteCityMutation,

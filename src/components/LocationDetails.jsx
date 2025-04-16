@@ -21,7 +21,7 @@ const zoneColors = {
   RED_ZONE: "red",
 };
 
-const UpdatePolygon = () => {
+const LocationDetails = () => {
   const { cityId, zoneId } = useParams();
   const navigate = useNavigate();
 
@@ -526,4 +526,4 @@ const UpdatePolygon = () => {
   );
 };
 
-export default UpdatePolygon;
+export default LocationDetails;

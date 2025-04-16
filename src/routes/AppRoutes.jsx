@@ -28,6 +28,7 @@ import Conversation from "../components/Conversation";
 import AddCity from "../components/AddCity";
 import AddPrices from "../components/AddPrices";
 import LocationDetails from "../components/LocationDetails";
+import UpdatePrices from "../components/UpdatePrices";
 
 const LoginRedirect = () => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -276,6 +277,14 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <LocationDetails />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="location/city/:cityId/update-prices"
+          element={
+            <ProtectedRoute>
+              <UpdatePrices />
             </ProtectedRoute>
           }
         />

@@ -278,7 +278,9 @@ const AddLocation = () => {
                 <MenuItem
                   onClick={(event) => {
                     event.stopPropagation();
-                    navigate(`/location/city/${selectedCity?.id}/add-prices`);
+                    navigate(
+                      `/location/city/${selectedCity?.id}/update-prices`
+                    );
                   }}
                 >
                   Update Prices
