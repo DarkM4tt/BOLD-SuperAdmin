@@ -4,6 +4,7 @@ import { GoogleMap, Marker, Polygon } from "@react-google-maps/api";
 import {
   useFetchCityDetailsQuery,
   useFetchZoneDetailsQuery,
+  useFetchZonesQuery,
   useUpdateCityMutation,
   useUpdateZoneMutation,
 } from "../features/locationApi";
@@ -49,6 +50,12 @@ const LocationDetails = () => {
   } = useFetchZoneDetailsQuery(zoneId, {
     skip: !zoneId,
   });
+  const { data: prevZoneData } = useFetchZonesQuery(
+    { page: 1, cityId: zoneDetails?.data?.zone?.city_id?.id },
+    {
+      skip: !zoneId,
+    }
+  );
   const [updateCity, { isLoading: isUpdatingCity }] = useUpdateCityMutation();
   const [updateZone, { isLoading: isUpdatingZone }] = useUpdateZoneMutation();
 
@@ -92,6 +99,12 @@ const LocationDetails = () => {
     }
   }, [cityDetails?.data?.city, zoneDetails?.data?.zone, zoneId]);
 
+  useEffect(() => {
+    if (prevZoneData?.data?.zones?.results) {
+      setPrevZones(prevZoneData?.data?.zones?.results);
+    }
+  }, [prevZoneData?.data?.zones?.results]);
+
   const calculatePolygonCentroid = (coords) => {
     let area = 0;
     let centroidX = 0;
@@ -134,30 +147,6 @@ const LocationDetails = () => {
     setMapCenter(newCenter);
   }, []);
 
-  const fetchPrevZones = useCallback(async () => {
-    try {
-      const res = await fetch(
-        `${
-          import.meta.env.VITE_API_RIDE_URL
-        }/super-admin/zones?page=1&limit=100&city_id=${
-          entityData?.city_id?.id
-        }`,
-        {
-          method: "GET",
-          credentials: "include",
-        }
-      );
-      const result = await res?.json();
-      if (result?.success) {
-        setPrevZones(result?.data?.zones?.results);
-      } else {
-        throw new Error(result?.message);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }, [entityData?.city_id?.id]);
-
   useEffect(() => {
     if (polygonRef.current) {
       const path = polygonRef.current.getPath();
@@ -166,10 +155,6 @@ const LocationDetails = () => {
       path.addListener("remove_at", updatePolygonCoords);
     }
   }, [polygonCoords, updatePolygonCoords]);
-
-  useEffect(() => {
-    zoneId && entityData?.city_id?.id && fetchPrevZones();
-  }, [fetchPrevZones, entityData?.city_id?.id, zoneId]);
 
   const handleReset = () => {
     setPolygonCoords(initialCoords);
