@@ -176,6 +176,14 @@ export const locationApi = createApi({
       ],
     }),
 
+    toggleZone: builder.mutation({
+      query: (zoneId) => ({
+        url: `/super-admin/zones/toggle-status/${zoneId}`,
+        method: "PUT",
+      }),
+      invalidatesTags: () => ["Zones"],
+    }),
+
     updateZone: builder.mutation({
       query: ({ zoneId, body }) => ({
         url: `/super-admin/zones/update/${zoneId}`,
@@ -186,6 +194,14 @@ export const locationApi = createApi({
       invalidatesTags: (result, error, { zoneId }) => [
         { type: "ZoneDetails", id: zoneId },
       ],
+    }),
+
+    deleteZone: builder.mutation({
+      query: (zoneId) => ({
+        url: `/super-admin/zones/${zoneId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: () => ["Zones"],
     }),
   }),
 });
@@ -208,5 +224,7 @@ export const {
   useDeleteCountryMutation,
   useFetchZonesQuery,
   useFetchZoneDetailsQuery,
+  useToggleZoneMutation,
   useUpdateZoneMutation,
+  useDeleteZoneMutation,
 } = locationApi;

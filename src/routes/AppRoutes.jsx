@@ -29,6 +29,7 @@ import AddCity from "../components/AddCity";
 import AddPrices from "../components/AddPrices";
 import LocationDetails from "../components/LocationDetails";
 import UpdatePrices from "../components/UpdatePrices";
+import NewZone from "../components/NewZone";
 
 const LoginRedirect = () => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -309,6 +310,38 @@ const AppRoutes = () => {
           element={
             <ProtectedRoute>
               <Zones />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="zones/:zoneId"
+          element={
+            <ProtectedRoute>
+              <LocationDetails />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="zones/:zoneId/update-prices"
+          element={
+            <ProtectedRoute>
+              <UpdatePrices />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="zones/add"
+          element={
+            <ProtectedRoute>
+              <NewZone />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="zones/add/:zoneId/prices"
+          element={
+            <ProtectedRoute>
+              <AddPrices />
             </ProtectedRoute>
           }
         />

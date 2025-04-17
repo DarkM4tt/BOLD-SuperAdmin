@@ -440,11 +440,6 @@ const EntityNewRequest = () => {
     return <LoadingAnimation width={500} height={500} />;
 
   if (vehicleError || orgError) {
-    showSnackbar(
-      (vehicleError ? vehicleError : orgError)?.data?.message ||
-        "Error in fetching details!",
-      "error"
-    );
     return (
       <p className="text-lg font-bold font-redhat text-red-400">
         {(vehicleError ? vehicleError : orgError)?.data?.message ||
