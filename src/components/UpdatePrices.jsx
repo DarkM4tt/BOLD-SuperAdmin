@@ -366,12 +366,20 @@ const UpdateRideTypePrices = () => {
         {/* )} */}
         {newRows.length > 0 && (
           <div className="flex gap-4 ml-auto">
-            <Button variant="outlined" onClick={handleClearNewRows}>
+            <Button
+              variant="outlined"
+              sx={{
+                color: "black",
+                borderColor: "black",
+                textTransform: "none",
+              }}
+              onClick={handleClearNewRows}
+            >
               Clear
             </Button>
             <Button
               variant="contained"
-              color="success"
+              sx={{ backgroundColor: "black", textTransform: "none" }}
               disabled={!newRows.every(validateButton)}
               onClick={handleCreate}
             >
