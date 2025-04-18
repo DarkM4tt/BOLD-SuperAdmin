@@ -288,7 +288,7 @@ const AllZones = () => {
         </p>
         <div
           className="py-2 px-4 text-base font-redhat bg-[#000000] text-white rounded-[56px] flex cursor-pointer"
-          onClick={() => navigate("NewZone")}
+          onClick={() => navigate("/zones/add")}
         >
           + Create new zone
         </div>

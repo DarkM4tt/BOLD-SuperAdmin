@@ -29,7 +29,6 @@ const LocationDetails = () => {
   const [zoneName, setZoneName] = useState("");
   const [zoneType, setZoneType] = useState("");
   const [isEdited, setIsEdited] = useState(false);
-  const [prevZones, setPrevZones] = useState([]);
   const [mapCenter, setMapCenter] = useState(DEFAULT_CENTER);
   const [polygonCoords, setPolygonCoords] = useState([]);
   const [cityCoords, setCityCoords] = useState([]);
@@ -62,6 +61,7 @@ const LocationDetails = () => {
   const { isLoaded, loadError } = useGoogleMapsLoader();
   const polygonRef = useRef(null);
   const showSnackbar = useSnackbar();
+  const prevZones = prevZoneData?.data?.zones?.results || [];
 
   useEffect(() => {
     if (zoneId) {
@@ -98,12 +98,6 @@ const LocationDetails = () => {
       });
     }
   }, [cityDetails?.data?.city, zoneDetails?.data?.zone, zoneId]);
-
-  useEffect(() => {
-    if (prevZoneData?.data?.zones?.results) {
-      setPrevZones(prevZoneData?.data?.zones?.results);
-    }
-  }, [prevZoneData?.data?.zones?.results]);
 
   const calculatePolygonCentroid = (coords) => {
     let area = 0;

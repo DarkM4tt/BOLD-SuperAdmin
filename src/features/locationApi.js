@@ -58,10 +58,11 @@ export const locationApi = createApi({
     }),
 
     fetchCities: builder.query({
-      query: ({ page }) => {
+      query: ({ page, limit, countryId }) => {
         const params = new URLSearchParams();
         params.append("page", page);
-        params.append("limit", "10");
+        params.append("limit", limit || "10");
+        countryId && params.append("country_id", countryId);
 
         return `/super-admin/city/get-cities?${params.toString()}`;
       },
@@ -124,13 +125,6 @@ export const locationApi = createApi({
       providesTags: ["Countries"],
     }),
 
-    fetchCountryDetails: builder.query({
-      query: (driverId) => `/super-admin/driver-details/${driverId}`,
-      providesTags: (result, error, driverId) => [
-        { type: "DriverDetails", id: driverId },
-      ],
-    }),
-
     addCountry: builder.mutation({
       query: ({ country }) => ({
         url: "/super-admin/country/add-country",
@@ -176,6 +170,16 @@ export const locationApi = createApi({
       ],
     }),
 
+    addZone: builder.mutation({
+      query: (body) => ({
+        url: "/super-admin/zones/create",
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body,
+      }),
+      invalidatesTags: () => ["Zones"],
+    }),
+
     toggleZone: builder.mutation({
       query: (zoneId) => ({
         url: `/super-admin/zones/toggle-status/${zoneId}`,
@@ -218,12 +222,12 @@ export const {
   useUpdateCityMutation,
   useDeleteCityMutation,
   useFetchCountriesQuery,
-  useFetchCountryDetailsQuery,
   useAddCountryMutation,
   useToggleCountryMutation,
   useDeleteCountryMutation,
   useFetchZonesQuery,
   useFetchZoneDetailsQuery,
+  useAddZoneMutation,
   useToggleZoneMutation,
   useUpdateZoneMutation,
   useDeleteZoneMutation,

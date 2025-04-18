@@ -29,7 +29,7 @@ import AddCity from "../components/AddCity";
 import AddPrices from "../components/AddPrices";
 import LocationDetails from "../components/LocationDetails";
 import UpdatePrices from "../components/UpdatePrices";
-import NewZone from "../components/NewZone";
+import CreateZone from "../components/CreateZone";
 
 const LoginRedirect = () => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -333,7 +333,7 @@ const AppRoutes = () => {
           path="zones/add"
           element={
             <ProtectedRoute>
-              <NewZone />
+              <CreateZone />
             </ProtectedRoute>
           }
         />
