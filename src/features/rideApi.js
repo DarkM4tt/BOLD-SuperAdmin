@@ -39,6 +39,12 @@ export const rideApi = createApi({
       query: () => `/super-admin/ride-type-categories`,
       providesTags: ["RideCategories"],
     }),
+
+    fetchRideTypeAssignments: builder.query({
+      query: (categoryId) =>
+        `/super-admin/ride-type-assignments?ride_type_category=${categoryId}`,
+      providesTags: ["RideTypeAssignments"],
+    }),
   }),
 });
 
@@ -47,4 +53,5 @@ export const {
   useFetchRideDetailsQuery,
   useFetchRideTypesQuery,
   useFetchRideCategoriesQuery,
+  useFetchRideTypeAssignmentsQuery,
 } = rideApi;

@@ -4,7 +4,10 @@ import { Button, Checkbox, FormControlLabel } from "@mui/material";
 import { allDocumentStatus, allVehicleStatus } from "../utils/enums";
 import { useSnackbar } from "../context/SnackbarProvider";
 import { getCarType } from "../utils/constants";
-import { useFetchRideCategoriesQuery } from "../features/rideApi";
+import {
+  useFetchRideCategoriesQuery,
+  useFetchRideTypeAssignmentsQuery,
+} from "../features/rideApi";
 import {
   useAssignRideCategoryMutation,
   useFetchVehicleDetailsQuery,
@@ -38,28 +41,40 @@ const VehicleDetails = () => {
     is_xl: false,
   });
   const params = useParams();
+  const navigate = useNavigate();
+  const showSnackbar = useSnackbar();
+
+  const [selectedDocument, setSelectedDocument] = useState({});
+  const [openRemarksModal, setOpenRemarksModal] = useState(false);
+  const [openRejectionModal, setOpenRejectionModal] = useState(false);
+  const [remarks, setRemarks] = useState("");
+  const [openRideTypeModal, setOpenRideTypeModal] = useState(false);
+
   const { vehicleId } = params;
   const {
     data: vehicleData,
     error,
     isLoading,
   } = useFetchVehicleDetailsQuery(vehicleId);
+  const vehicleDetails = vehicleData?.data;
+  const categoryId = vehicleDetails?.ride_type_category?.type_id;
   const { data: rideTypesData } = useFetchRideCategoriesQuery();
   const rideTypes = rideTypesData?.data?.rideTypeCategories?.results;
-  const [selectedDocument, setSelectedDocument] = useState({});
-  const [openRemarksModal, setOpenRemarksModal] = useState(false);
-  const [openRejectionModal, setOpenRejectionModal] = useState(false);
-  const [remarks, setRemarks] = useState("");
-  const [openRideTypeModal, setOpenRideTypeModal] = useState(false);
-  const vehicleDetails = vehicleData?.data;
+  const { data: rideTypesAssignmentsData } = useFetchRideTypeAssignmentsQuery(
+    categoryId,
+    {
+      skip: !categoryId,
+    }
+  );
+  const rideTypesAssignments =
+    rideTypesAssignmentsData?.data?.rideTypeAssignments?.results[0]?.ride_types;
+
   const [updateVehicleDocStatus, { isLoading: isUpdatingDocStatus }] =
     useUpdateVehicleDocStatusMutation();
   const [updateVehicleStatus, { isLoading: isRejectingVehicle }] =
     useUpdateVehicleStatusMutation();
   const [assignRideCategory, { isLoading: isAssigning }] =
     useAssignRideCategoryMutation();
-  const showSnackbar = useSnackbar();
-  const navigate = useNavigate();
 
   const handleVehicleStatusChange = async (status) => {
     if (status === "REJECTED") {
@@ -216,6 +231,8 @@ const VehicleDetails = () => {
     );
   }
 
+  console.log(rideTypesAssignments);
+
   return (
     <>
       <div className="flex justify-between items-center font-redhat text-base font-semibold ">
@@ -335,7 +352,7 @@ const VehicleDetails = () => {
         <div className="w-4/6 flex flex-col gap-4">
           <div className="px-4 py-6 bg-white rounded-lg">
             {/* Title and Save Button */}
-            <p className="font-semibold font-redhat text-2xl">Ride Type</p>
+            <p className="font-semibold font-redhat text-2xl">Services</p>
 
             {/* Checkboxes */}
             <div className="flex justify-between mt-10">
@@ -427,6 +444,26 @@ const VehicleDetails = () => {
               )}
               {vehicleDetails?.ride_type_category?.type || "Not assigned yet!"}
             </p>
+
+            <div className="flex gap-4 mt-12 items-center flex-wrap">
+              {rideTypesAssignments?.length > 0 ? (
+                rideTypesAssignments.map((rideType) => (
+                  <div
+                    key={rideType._id}
+                    className="bg-[#F2F2F2] px-4 py-2 rounded-lg flex gap-4 items-center"
+                  >
+                    <img src={TickIcon} alt="TickIcon" />
+                    <p className="font-redhat font-semibold text-base">
+                      {rideType.name}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <p className="text-lg font-bold text-red-400">
+                  No ride types available!
+                </p>
+              )}
+            </div>
           </div>
 
           <div className="bg-white w-full h-fit p-4 rounded-[8px] flex flex-col gap-2">
