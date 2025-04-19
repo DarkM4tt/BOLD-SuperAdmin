@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useFetchRideTypesQuery } from "../features/rideApi";
-import { useAddPricesMutation } from "../features/locationApi";
+import { useFetchRideTypesQuery } from "../services/rideApi";
+import { useAddPricesMutation } from "../services/locationApi";
 import { useSnackbar } from "../context/SnackbarProvider";
 import { Button, MenuItem, Select, TextField } from "@mui/material";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";

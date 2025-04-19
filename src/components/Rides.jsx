@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, TableCell } from "@mui/material";
-import { useFetchRidesQuery } from "../features/rideApi";
+import { useFetchRidesQuery } from "../services/rideApi";
 import EntityPaginatedTable from "./common/EntityPaginatedTable";
 import LoadingAnimation from "./common/LoadingAnimation";
 import InputSearchBar from "./common/InputSearchBar";

@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Box, CircularProgress, Paper, Typography } from "@mui/material";
-import { useFetchRideDetailsQuery } from "../features/rideApi";
-import { useFetchChatsQuery } from "../features/chatApi";
+import { useFetchRideDetailsQuery } from "../services/rideApi";
+import { useFetchChatsQuery } from "../services/chatApi";
 import { format } from "date-fns";
 import LoadingAnimation from "./common/LoadingAnimation";
 import BackArrow from "../assets/backArrow.svg";

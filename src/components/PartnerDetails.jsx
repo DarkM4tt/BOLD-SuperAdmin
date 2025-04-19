@@ -28,8 +28,8 @@ import {
   useFetchOrganizationDetailsQuery,
   useUpdateOrgDocStatusMutation,
   useUpdateOrgStatusMutation,
-} from "../features/organizationApi";
-import { useFetchVehiclesQuery } from "../features/vehicleApi";
+} from "../services/organizationApi";
+import { useFetchVehiclesQuery } from "../services/vehicleApi";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";

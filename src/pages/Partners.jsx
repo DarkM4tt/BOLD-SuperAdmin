@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Tabs, Tab, Box, Button, Avatar } from "@mui/material";
-import { useFetchOrganizationsQuery } from "../features/organizationApi";
+import { useFetchOrganizationsQuery } from "../services/organizationApi";
 import { formatCreatedAt } from "../utils/dates";
 import { useNavigate } from "react-router-dom";
 import PaginatedTable from "../components/common/PaginatedTable";

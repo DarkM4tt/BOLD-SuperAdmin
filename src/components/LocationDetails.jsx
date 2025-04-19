@@ -7,7 +7,7 @@ import {
   useFetchZonesQuery,
   useUpdateCityMutation,
   useUpdateZoneMutation,
-} from "../features/locationApi";
+} from "../services/locationApi";
 import { useSnackbar } from "../context/SnackbarProvider";
 import { Button, MenuItem, Stack, TextField } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";

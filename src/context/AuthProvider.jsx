@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { useCheckSessionQuery } from "../features/authApi";
+import { useCheckSessionQuery } from "../services/authApi";
 import { useSnackbar } from "./SnackbarProvider";
 
 const AuthContext = createContext(null);

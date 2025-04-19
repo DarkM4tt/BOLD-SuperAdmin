@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useFetchRideTypesQuery } from "../features/rideApi";
+import { useFetchRideTypesQuery } from "../services/rideApi";
 import {
   useAddPricesMutation,
   useDeleteRideTypePriceMutation,
@@ -8,7 +8,7 @@ import {
   useFetchRideTypePricesQuery,
   useFetchZoneDetailsQuery,
   useUpdateRideTypePriceMutation,
-} from "../features/locationApi";
+} from "../services/locationApi";
 import { useSnackbar } from "../context/SnackbarProvider";
 import { Button, IconButton, MenuItem, TextField } from "@mui/material";
 import { Delete, Save } from "@mui/icons-material";

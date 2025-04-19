@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { GoogleMap, Marker, Polyline } from "@react-google-maps/api";
 import { formatCreatedAt, formatToTime } from "../utils/dates";
-import { useFetchRideDetailsQuery } from "../features/rideApi";
+import { useFetchRideDetailsQuery } from "../services/rideApi";
 import { Avatar, Button } from "@mui/material";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";

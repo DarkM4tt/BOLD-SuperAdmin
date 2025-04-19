@@ -7,7 +7,7 @@ import {
   useFetchDriverDetailsQuery,
   useUpdateDriverDocStatusMutation,
   useUpdateDriverStatusMutation,
-} from "../features/driverApi";
+} from "../services/driverApi";
 import CallIcon from "@mui/icons-material/Call";
 import EmailIcon from "@mui/icons-material/Email";
 import LoadingAnimation from "./common/LoadingAnimation";

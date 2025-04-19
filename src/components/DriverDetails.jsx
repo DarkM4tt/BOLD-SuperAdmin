@@ -7,8 +7,8 @@ import {
   useFetchDriverDetailsQuery,
   useUpdateDriverDocStatusMutation,
   useUpdateDriverStatusMutation,
-} from "../features/driverApi";
-import { useFetchRidesQuery } from "../features/rideApi";
+} from "../services/driverApi";
+import { useFetchRidesQuery } from "../services/rideApi";
 import CallIcon from "@mui/icons-material/Call";
 import EmailIcon from "@mui/icons-material/Email";
 import StarIcon from "@mui/icons-material/Star";

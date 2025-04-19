@@ -12,7 +12,7 @@ import {
   useFetchCitiesQuery,
   useFetchCountriesQuery,
   useFetchZonesQuery,
-} from "../features/locationApi";
+} from "../services/locationApi";
 import { useSnackbar } from "../context/SnackbarProvider";
 import { getCountryCenter } from "../utils/dates";
 import { Button, MenuItem, TextField } from "@mui/material";

@@ -8,7 +8,7 @@ import {
   useFetchCountriesQuery,
   useToggleCityMutation,
   useToggleCountryMutation,
-} from "../features/locationApi";
+} from "../services/locationApi";
 import { useSnackbar } from "../context/SnackbarProvider";
 import { formatCreatedAt } from "../utils/dates";
 import {

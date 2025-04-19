@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useFetchUserDetailsQuery } from "../features/userApi";
-import { useFetchRidesQuery } from "../features/rideApi";
+import { useFetchUserDetailsQuery } from "../services/userApi";
+import { useFetchRidesQuery } from "../services/rideApi";
 import { formatCreatedAt } from "../utils/dates";
 import { TableCell } from "@mui/material";
 import CallIcon from "@mui/icons-material/Call";

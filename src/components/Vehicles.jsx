@@ -5,8 +5,8 @@ import { formatCreatedAt } from "../utils/dates";
 import {
   useFetchAssignedVehiclesQuery,
   useFetchVehiclesQuery,
-} from "../features/vehicleApi";
-import { useFetchOrganizationDetailsQuery } from "../features/organizationApi";
+} from "../services/vehicleApi";
+import { useFetchOrganizationDetailsQuery } from "../services/organizationApi";
 import InputSearchBar from "./common/InputSearchBar";
 import LoadingAnimation from "./common/LoadingAnimation";
 import EntityPaginatedTable from "./common/EntityPaginatedTable";

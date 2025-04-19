@@ -5,13 +5,13 @@ import {
   useFetchVehicleDetailsQuery,
   useUpdateVehicleDocStatusMutation,
   useUpdateVehicleStatusMutation,
-} from "../features/vehicleApi";
-import { useFetchRideCategoriesQuery } from "../features/rideApi";
+} from "../services/vehicleApi";
+import { useFetchRideCategoriesQuery } from "../services/rideApi";
 import {
   useFetchOrganizationDetailsQuery,
   useUpdateOrgDocStatusMutation,
   useUpdateOrgStatusMutation,
-} from "../features/organizationApi";
+} from "../services/organizationApi";
 import { useSnackbar } from "../context/SnackbarProvider";
 import { allDocumentStatus } from "../utils/enums";
 import { Box, Button, Divider, Tooltip } from "@mui/material";

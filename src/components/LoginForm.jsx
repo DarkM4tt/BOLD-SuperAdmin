@@ -2,7 +2,7 @@ import { useState } from "react";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
-import { useLoginMutation } from "../features/authApi";
+import { useLoginMutation } from "../services/authApi";
 import { useAuth } from "../context/AuthProvider";
 import LoadingAnimation from "./common/LoadingAnimation";
 import { useSnackbar } from "../context/SnackbarProvider";

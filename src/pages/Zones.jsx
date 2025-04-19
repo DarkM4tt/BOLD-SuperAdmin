@@ -6,7 +6,7 @@ import {
   useDeleteZoneMutation,
   useFetchZonesQuery,
   useToggleZoneMutation,
-} from "../features/locationApi";
+} from "../services/locationApi";
 import {
   Box,
   CircularProgress,

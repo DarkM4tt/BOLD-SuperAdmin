@@ -1,12 +1,12 @@
 import { configureStore } from "@reduxjs/toolkit";
-import { authApi } from "../features/authApi";
-import { organizationApi } from "../features/organizationApi";
-import { vehicleApi } from "../features/vehicleApi";
-import { driverApi } from "../features/driverApi";
-import { rideApi } from "../features/rideApi";
-import { userApi } from "../features/userApi";
-import { chatApi } from "../features/chatApi";
-import { locationApi } from "../features/locationApi";
+import { authApi } from "../services/authApi";
+import { organizationApi } from "../services/organizationApi";
+import { vehicleApi } from "../services/vehicleApi";
+import { driverApi } from "../services/driverApi";
+import { rideApi } from "../services/rideApi";
+import { userApi } from "../services/userApi";
+import { chatApi } from "../services/chatApi";
+import { locationApi } from "../services/locationApi";
 
 export const store = configureStore({
   reducer: {

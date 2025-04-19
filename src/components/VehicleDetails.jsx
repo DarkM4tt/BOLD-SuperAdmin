@@ -7,13 +7,13 @@ import { getCarType } from "../utils/constants";
 import {
   useFetchRideCategoriesQuery,
   useFetchRideTypeAssignmentsQuery,
-} from "../features/rideApi";
+} from "../services/rideApi";
 import {
   useAssignRideCategoryMutation,
   useFetchVehicleDetailsQuery,
   useUpdateVehicleDocStatusMutation,
   useUpdateVehicleStatusMutation,
-} from "../features/vehicleApi";
+} from "../services/vehicleApi";
 import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import AddRideTypeModal from "./AddRideTypeModal";
 import InputSearchBar from "./common/InputSearchBar";
