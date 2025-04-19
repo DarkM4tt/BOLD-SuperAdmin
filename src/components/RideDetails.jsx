@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { GoogleMap, Marker, Polyline } from "@react-google-maps/api";
 import { formatCreatedAt, formatToTime } from "../utils/dates";
@@ -12,11 +13,13 @@ import BackArrow from "../assets/backArrow.svg";
 import MapVehicle from "../assets/mapVehicle.svg";
 import PickupIcon from "../assets/pickup.svg";
 import DropoffIcon from "../assets/dropoff.svg";
+import FeedbackModal from "./ui/modals/FeedbackModal";
 
 const RideDetails = () => {
   const params = useParams();
   const { rideId } = params;
   const navigate = useNavigate();
+  const [openFeedbackModal, setOpenFeedbackModal] = useState(false);
   const { isLoaded, loadError } = useGoogleMapsLoader();
   const { data, error, isLoading } = useFetchRideDetailsQuery(rideId);
   const rideData = data?.data;
@@ -107,7 +110,7 @@ const RideDetails = () => {
       {/* </div> */}
 
       <div className="flex justify-between items-center">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 flex-wrap">
           {rideData?.driver_info && (
             <div
               className="py-3 px-4 text-sm font-redhat bg-white rounded-[40px] cursor-pointer"
@@ -151,32 +154,59 @@ const RideDetails = () => {
             </div>
           )}
         </div>
-        {rideData?.conversation_id && (
-          <Button
-            variant="outlined"
-            startIcon={<ChatBubbleOutlineIcon />}
-            sx={{
-              textTransform: "none",
-              borderRadius: "999px",
-              borderColor: "#D0D5DD",
-              color: "#344054",
-              fontWeight: 500,
-              fontSize: "14px",
-              lineHeight: "20px",
-              padding: "6px 20px",
-              backgroundColor: "#FFFFFF",
-              "&:hover": {
-                backgroundColor: "#F9FAFB",
+        <div className="flex items-center gap-4">
+          {(rideData?.ratings?.customer_rating ||
+            rideData?.ratings?.driver_rating) && (
+            <Button
+              variant="outlined"
+              startIcon={<ChatBubbleOutlineIcon />}
+              sx={{
+                textTransform: "none",
+                borderRadius: "999px",
                 borderColor: "#D0D5DD",
-              },
-            }}
-            onClick={() => {
-              navigate(`chat/${rideData?.conversation_id}`);
-            }}
-          >
-            View chat history
-          </Button>
-        )}
+                color: "#344054",
+                fontWeight: 500,
+                fontSize: "14px",
+                lineHeight: "20px",
+                padding: "6px 20px",
+                backgroundColor: "#FFFFFF",
+                "&:hover": {
+                  backgroundColor: "#F9FAFB",
+                  borderColor: "#D0D5DD",
+                },
+              }}
+              onClick={() => setOpenFeedbackModal(true)}
+            >
+              Review & Ratings
+            </Button>
+          )}
+          {rideData?.conversation_id && (
+            <Button
+              variant="outlined"
+              startIcon={<ChatBubbleOutlineIcon />}
+              sx={{
+                textTransform: "none",
+                borderRadius: "999px",
+                borderColor: "#D0D5DD",
+                color: "#344054",
+                fontWeight: 500,
+                fontSize: "14px",
+                lineHeight: "20px",
+                padding: "6px 20px",
+                backgroundColor: "#FFFFFF",
+                "&:hover": {
+                  backgroundColor: "#F9FAFB",
+                  borderColor: "#D0D5DD",
+                },
+              }}
+              onClick={() => {
+                navigate(`chat/${rideData?.conversation_id}`);
+              }}
+            >
+              View chat history
+            </Button>
+          )}
+        </div>
       </div>
 
       <div className="bg-white rounded-lg p-6 w-full mx-auto mt-4 font-redhat text-base">
@@ -336,6 +366,15 @@ const RideDetails = () => {
           </GoogleMap>
         </div>
       </div>
+
+      <FeedbackModal
+        open={openFeedbackModal}
+        onClose={() => setOpenFeedbackModal(false)}
+        customerRating={rideData?.ratings?.customer_rating}
+        driverRating={rideData?.ratings?.driver_rating}
+        customer={rideData?.customer_info}
+        driver={rideData?.driver_info}
+      />
     </div>
   );
 };
