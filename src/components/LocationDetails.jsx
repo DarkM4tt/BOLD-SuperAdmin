@@ -11,7 +11,7 @@ import {
 import { useSnackbar } from "../context/SnackbarProvider";
 import { Button, MenuItem, Stack, TextField } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import useGoogleMapsLoader from "../useGoogleMapsLoader";
+import useGoogleMapsLoader from "../hooks/useGoogleMapsLoader";
 import LoadingAnimation from "./common/LoadingAnimation";
 import BackArrow from "../assets/backArrow.svg";
 

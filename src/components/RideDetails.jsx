@@ -5,7 +5,7 @@ import { useFetchRideDetailsQuery } from "../features/rideApi";
 import { Avatar, Button } from "@mui/material";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import ChatBubbleOutlineIcon from "@mui/icons-material/ChatBubbleOutline";
-import useGoogleMapsLoader from "../useGoogleMapsLoader";
+import useGoogleMapsLoader from "../hooks/useGoogleMapsLoader";
 import LoadingAnimation from "./common/LoadingAnimation";
 import InputSearchBar from "./common/InputSearchBar";
 import BackArrow from "../assets/backArrow.svg";

@@ -4,7 +4,7 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import CallIcon from "@mui/icons-material/Call";
 import EmailIcon from "@mui/icons-material/Email";
 import BusinessIcon from "@mui/icons-material/Business";
-import useGoogleMapsLoader from "../../useGoogleMapsLoader";
+import useGoogleMapsLoader from "../../hooks/useGoogleMapsLoader";
 
 const Locationmapcard = ({
   email = "unanimeplanet.com",

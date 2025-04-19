@@ -18,7 +18,7 @@ import { getCountryCenter } from "../utils/dates";
 import { Button, MenuItem, TextField } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import LoadingAnimation from "./common/LoadingAnimation";
-import useGoogleMapsLoader from "../useGoogleMapsLoader";
+import useGoogleMapsLoader from "../hooks/useGoogleMapsLoader";
 import BackArrow from "../assets/backArrow.svg";
 
 const DEFAULT_CENTER = { lat: 38.7169, lng: -9.1399 };
