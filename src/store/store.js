@@ -7,6 +7,7 @@ import { rideApi } from "../services/rideApi";
 import { userApi } from "../services/userApi";
 import { chatApi } from "../services/chatApi";
 import { locationApi } from "../services/locationApi";
+import { couponApi } from "../services/couponApi";
 
 export const store = configureStore({
   reducer: {
@@ -18,6 +19,7 @@ export const store = configureStore({
     [userApi.reducerPath]: userApi.reducer,
     [chatApi.reducerPath]: chatApi.reducer,
     [locationApi.reducerPath]: locationApi.reducer,
+    [couponApi.reducerPath]: couponApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -28,6 +30,7 @@ export const store = configureStore({
       rideApi.middleware,
       userApi.middleware,
       chatApi.middleware,
-      locationApi.middleware
+      locationApi.middleware,
+      couponApi.middleware
     ),
 });

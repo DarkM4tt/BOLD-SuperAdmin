@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSnackbar } from "../context/SnackbarProvider";
 import {
   Box,
@@ -21,12 +21,18 @@ import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import InputSearchBar from "../components/common/InputSearchBar";
 import UpdateCouponModal from "../components/ui/modals/UpdateCouponModal";
 import CreateCouponModal from "../components/ui/modals/CreateCouponModal";
+import {
+  useCreateCouponMutation,
+  useDeleteCouponMutation,
+  useGetAllCouponsQuery,
+  useToggleStatusMutation,
+  useUpdateCouponMutation,
+} from "../services/couponApi";
 
 const Rewards = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [activeTab, setActiveTab] = useState(0);
-  const [allCoupons, setAllCoupons] = useState([]);
   const [formData, setFormData] = useState({
     country_id: "",
     coupon_name: "",
@@ -57,8 +63,18 @@ const Rewards = () => {
   const [menuAnchor, setMenuAnchor] = useState(null);
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
   const [selectedCoupon, setSelectedCoupon] = useState(null);
-  const [buttonLoading, setButtonLoading] = useState(false);
   const showSnackbar = useSnackbar();
+
+  const { data } = useGetAllCouponsQuery();
+  const allCoupons = data?.data?.coupons?.results || [];
+
+  const [createCoupon, { isLoading: isAddingCoupon }] =
+    useCreateCouponMutation();
+  const [toggleStatus] = useToggleStatusMutation();
+  const [updateCoupon, { isLoading: isUpdatingCoupon }] =
+    useUpdateCouponMutation();
+  const [deleteCoupon, { isLoading: isDeletingCoupon }] =
+    useDeleteCouponMutation();
 
   useEffect(() => {
     if (selectedCoupon) {
@@ -76,8 +92,7 @@ const Rewards = () => {
   };
 
   const handleUpdateCoupon = async () => {
-    setButtonLoading(true);
-    const payload = {
+    const body = {
       country_id: editFormData?.country_id,
       city_id: editFormData?.city_id,
       coupon_name: editFormData?.coupon_name?.trim()?.toUpperCase(),
@@ -91,54 +106,31 @@ const Rewards = () => {
       min_amount: +editFormData?.min_amount,
     };
     try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_RIDE_URL}/super-admin/coupons/update/${
-          editFormData?.coupon_id
-        }`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          credentials: "include",
-          body: JSON.stringify(payload),
-        }
-      );
-      const result = await res.json();
+      const result = await updateCoupon({
+        couponId: editFormData?.coupon_id,
+        body,
+      }).unwrap();
       if (result?.success) {
-        showSnackbar(result?.message, "success");
-        fetchAllCoupons();
-      } else {
-        throw new Error(result?.message);
+        showSnackbar(
+          result?.message || "Coupon updated successfully!",
+          "success"
+        );
       }
     } catch (error) {
-      showSnackbar(error.message, "error");
+      showSnackbar(error?.data?.message || "Failed to update coupon!", "error");
     } finally {
       handleEditModalClose();
-      setButtonLoading(false);
     }
   };
 
   const handleDeleteCoupon = async () => {
     if (!selectedCoupon) return;
     handleMenuClose();
-    const url = `${
-      import.meta.env.VITE_API_RIDE_URL
-    }/super-admin/coupons/delete/${selectedCoupon?.id}`;
-
     try {
-      const res = await fetch(url, {
-        method: "DELETE",
-        credentials: "include",
-      });
-      const result = await res?.json();
-      if (result?.success) {
-        showSnackbar(result?.message, "success");
-        fetchAllCoupons();
-        handleMenuClose();
-      } else {
-        throw new Error(result?.message);
-      }
-    } catch (error) {
-      showSnackbar(error.message, "error");
+      const res = await deleteCoupon(selectedCoupon?.id).unwrap();
+      showSnackbar(res?.message || "Coupon deleted successfully!", "success");
+    } catch (err) {
+      showSnackbar(err?.data?.message || "Failed to delete", "error");
     }
   };
 
@@ -155,58 +147,22 @@ const Rewards = () => {
     setSelectedCoupon(null);
   };
 
-  const fetchAllCoupons = useCallback(async () => {
-    try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_RIDE_URL}/super-admin/coupons/all`,
-        {
-          method: "GET",
-          credentials: "include",
-        }
-      );
-      const result = await res?.json();
-      if (result?.success) {
-        setAllCoupons(result?.data?.coupons?.results);
-      } else {
-        throw new Error(result?.message);
-      }
-    } catch (error) {
-      console.log(error.message);
-    }
-  }, []);
-
   const handleToggleStatus = async (couponId) => {
-    setAllCoupons((prevCoupons) =>
-      prevCoupons.map((coupon) =>
-        coupon.id === couponId
-          ? { ...coupon, is_active: !coupon.is_active }
-          : coupon
-      )
-    );
-    const url = `${
-      import.meta.env.VITE_API_RIDE_URL
-    }/super-admin/coupons/toggle-status/${couponId}`;
-
     try {
-      const res = await fetch(url, {
-        method: "PUT",
-        credentials: "include",
-      });
-      const result = await res?.json();
+      const result = await toggleStatus(couponId).unwrap();
       if (result?.success) {
-        showSnackbar(result?.message, "success");
+        showSnackbar(
+          result?.message || "Coupon status updated successfully",
+          "success"
+        );
       } else {
         throw new Error(result?.message);
       }
     } catch (error) {
-      setAllCoupons((prevCoupons) =>
-        prevCoupons.map((coupon) =>
-          coupon.id === couponId
-            ? { ...coupon, is_active: !coupon.is_active }
-            : coupon
-        )
+      showSnackbar(
+        error?.data?.message || "Failed to update coupon status!",
+        "error"
       );
-      showSnackbar(error.message, "error");
     }
   };
 
@@ -216,44 +172,30 @@ const Rewards = () => {
     return date.toISOString();
   };
 
-  useEffect(() => {
-    fetchAllCoupons();
-  }, [fetchAllCoupons]);
-
   const handleSave = async () => {
-    setButtonLoading(true);
-    formData.min_amount = +formData.min_amount;
-    formData.usage_limit = +formData.usage_limit;
-    formData.discount_value = +formData.discount_value;
-    formData.valid_from = convertToISO(formData.valid_from);
-    formData.valid_until = convertToISO(formData.valid_until);
-    formData.coupon_name = formData?.coupon_name?.trim()?.toUpperCase();
-    formData.description = formData?.description?.trim();
+    const body = {
+      ...formData,
+      min_amount: +formData.min_amount,
+      usage_limit: +formData.usage_limit,
+      discount_value: +formData.discount_value,
+      valid_from: convertToISO(formData.valid_from),
+      valid_until: convertToISO(formData.valid_until),
+      coupon_name: formData.coupon_name.trim().toUpperCase(),
+      description: formData.description.trim(),
+    };
     try {
-      const res = await fetch(
-        `${import.meta.env.VITE_API_RIDE_URL}/super-admin/coupons/create`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-          credentials: "include",
-        }
-      );
-      const result = await res?.json();
+      const result = await createCoupon(body).unwrap();
       if (result?.success) {
-        showSnackbar(result?.message, "success");
-        fetchAllCoupons();
-      } else {
-        throw new Error(result?.message);
+        showSnackbar(
+          result?.message || "Coupon created successfully!",
+          "success"
+        );
       }
     } catch (error) {
-      showSnackbar(error, "error");
+      showSnackbar(error?.data?.message || "Failed to create coupon!", "error");
     } finally {
-      setButtonLoading(false);
       setFormData({
-        country_id: "67a4b5d0908650882bf69050",
+        country_id: "",
         coupon_name: "",
         city_id: "",
         min_amount: 0,
@@ -563,7 +505,7 @@ const Rewards = () => {
       <CreateCouponModal
         open={modalOpen}
         onClose={() => setModalOpen(false)}
-        buttonLoading={buttonLoading}
+        buttonLoading={isAddingCoupon}
         formData={formData}
         setFormData={setFormData}
         onSave={handleSave}
@@ -572,11 +514,11 @@ const Rewards = () => {
       <UpdateCouponModal
         open={editModalOpen}
         onClose={handleEditModalClose}
+        buttonLoading={isUpdatingCoupon}
         editFormData={editFormData}
         setEditFormData={setEditFormData}
         onUpdate={handleUpdateCoupon}
         selectedCoupon={selectedCoupon}
-        buttonLoading={buttonLoading}
       />
     </>
   );
