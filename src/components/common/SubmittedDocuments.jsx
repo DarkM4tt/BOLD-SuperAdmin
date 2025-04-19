@@ -77,6 +77,7 @@ const SubmittedDocumentsCard = ({
     <Card
       sx={{
         borderRadius: 2,
+        boxShadow: "none",
       }}
     >
       <CardContent sx={{ paddingInline: "5%" }}>

@@ -361,7 +361,7 @@ const VehicleDetails = () => {
                   <Checkbox
                     checked={services?.is_pet_friendly}
                     onChange={handleChange}
-                    name="is_pet_friendly"
+                    name="pet_friendly"
                     sx={{
                       color: "#777777",
                       "&.Mui-checked": {
@@ -371,7 +371,6 @@ const VehicleDetails = () => {
                   />
                 }
                 label="Pet friendly"
-                className="text-gray-800 text-sm"
               />
               <FormControlLabel
                 control={
@@ -395,7 +394,7 @@ const VehicleDetails = () => {
                   <Checkbox
                     checked={services?.is_listing}
                     onChange={handleChange}
-                    name="is_listing"
+                    name="listing"
                     sx={{
                       color: "#777777",
                       "&.Mui-checked": {
@@ -412,7 +411,7 @@ const VehicleDetails = () => {
                   <Checkbox
                     checked={services?.is_bold_miles}
                     onChange={handleChange}
-                    name="is_bold_miles"
+                    name="bold_miles"
                     sx={{
                       color: "#777777",
                       "&.Mui-checked": {
@@ -445,16 +444,31 @@ const VehicleDetails = () => {
               {vehicleDetails?.ride_type_category?.type || "Not assigned yet!"}
             </p>
 
-            <div className="flex gap-4 mt-12 items-center flex-wrap">
+            <div className="flex gap-10 mt-12 items-center flex-wrap">
               {rideTypesAssignments?.length > 0 ? (
                 rideTypesAssignments.map((rideType) => (
-                  <div
-                    key={rideType._id}
-                    className="bg-[#F2F2F2] px-4 py-2 rounded-lg flex gap-4 items-center"
-                  >
-                    <img src={TickIcon} alt="TickIcon" />
-                    <p className="font-redhat font-semibold text-base">
-                      {rideType.name}
+                  <div className="flex items-center" key={rideType._id}>
+                    <Checkbox
+                      checked={true}
+                      name="check-box"
+                      sx={{
+                        color: "#777777",
+                        "&.Mui-checked": {
+                          color: "#18C4B8",
+                        },
+                      }}
+                    />
+                    <p className="font-redhat font-normal text-base">
+                      {rideType?.name
+                        ? rideType?.name
+                            ?.toLowerCase()
+                            ?.split(" ")
+                            ?.map(
+                              (word) =>
+                                word.charAt(0).toUpperCase() + word.slice(1)
+                            )
+                            ?.join(" ")
+                        : "Null!"}
                     </p>
                   </div>
                 ))
