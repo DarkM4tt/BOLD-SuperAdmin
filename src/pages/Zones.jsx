@@ -36,6 +36,7 @@ const headers = [
   "Total rides",
   "Map type",
   "Created on",
+  "Total area",
   "Zones status",
   "Options",
 ];
@@ -162,6 +163,16 @@ const AllZones = () => {
           }}
         >
           {zone?.createdAt && formatCreatedAt(zone?.createdAt)}
+        </TableCell>
+        <TableCell
+          sx={{
+            fontWeight: "600",
+            fontSize: "16px",
+          }}
+        >
+          {zone?.total_area
+            ? (zone?.total_area / 1_000_000).toFixed(2) + " sqkm"
+            : "0 sqkm"}
         </TableCell>
         <TableCell
           sx={{

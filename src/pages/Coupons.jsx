@@ -28,6 +28,7 @@ import {
   useToggleStatusMutation,
   useUpdateCouponMutation,
 } from "../services/couponApi";
+import LoadingAnimation from "../components/common/LoadingAnimation";
 
 const Rewards = () => {
   const [modalOpen, setModalOpen] = useState(false);
@@ -65,7 +66,7 @@ const Rewards = () => {
   const [selectedCoupon, setSelectedCoupon] = useState(null);
   const showSnackbar = useSnackbar();
 
-  const { data } = useGetAllCouponsQuery();
+  const { data, isLoading } = useGetAllCouponsQuery();
   const allCoupons = data?.data?.coupons?.results || [];
 
   const [createCoupon, { isLoading: isAddingCoupon }] =
@@ -407,6 +408,10 @@ const Rewards = () => {
       </Box>
     );
   };
+
+  if (isLoading) {
+    return <LoadingAnimation width={500} height={500} />;
+  }
 
   return (
     <>
