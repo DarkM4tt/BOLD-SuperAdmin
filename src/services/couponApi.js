@@ -9,7 +9,12 @@ export const couponApi = createApi({
   tagTypes: ["Coupons"],
   endpoints: (builder) => ({
     getAllCoupons: builder.query({
-      query: () => "/all",
+      query: (page) => {
+        const params = new URLSearchParams();
+        params.append("page", page);
+        params.append("limit", "10");
+        return `/all?${params.toString()}`;
+      },
       providesTags: ["Coupons"],
     }),
 

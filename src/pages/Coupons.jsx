@@ -1,39 +1,35 @@
 import { useEffect, useState } from "react";
 import { useSnackbar } from "../context/SnackbarProvider";
 import {
-  Box,
-  Button,
-  IconButton,
-  Menu,
-  MenuItem,
-  Switch,
-  Tab,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Tabs,
-} from "@mui/material";
-import AddIcon from "@mui/icons-material/Add";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import InputSearchBar from "../components/common/InputSearchBar";
-import UpdateCouponModal from "../components/ui/modals/UpdateCouponModal";
-import CreateCouponModal from "../components/ui/modals/CreateCouponModal";
-import {
   useCreateCouponMutation,
   useDeleteCouponMutation,
   useGetAllCouponsQuery,
   useToggleStatusMutation,
   useUpdateCouponMutation,
 } from "../services/couponApi";
+import { CircularProgress, Switch, TableCell } from "@mui/material";
+import AddIcon from "@mui/icons-material/Add";
+import DeleteIcon from "@mui/icons-material/Delete";
+import InputSearchBar from "../components/common/InputSearchBar";
+import UpdateCouponModal from "../components/ui/modals/UpdateCouponModal";
+import CreateCouponModal from "../components/ui/modals/CreateCouponModal";
+import EntityPaginatedTable from "../components/common/EntityPaginatedTable";
 import LoadingAnimation from "../components/common/LoadingAnimation";
 
+const headers = [
+  "Coupon name",
+  "City",
+  "Service type",
+  "Limit",
+  "Used count",
+  "Status",
+  "Options",
+];
+
 const Rewards = () => {
+  const [page, setPage] = useState(1);
   const [modalOpen, setModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState(0);
   const [formData, setFormData] = useState({
     country_id: "",
     coupon_name: "",
@@ -61,13 +57,14 @@ const Rewards = () => {
     valid_until: null,
     description: "",
   });
-  const [menuAnchor, setMenuAnchor] = useState(null);
-  const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
   const [selectedCoupon, setSelectedCoupon] = useState(null);
+  const [statusOverrides, setStatusOverrides] = useState({});
   const showSnackbar = useSnackbar();
 
-  const { data, isLoading } = useGetAllCouponsQuery();
-  const allCoupons = data?.data?.coupons?.results || [];
+  const { data, isLoading } = useGetAllCouponsQuery(page);
+  const { results, isNextPage, isPreviousPage, totalPages } =
+    data?.data?.coupons || {};
+  const allCoupons = results;
 
   const [createCoupon, { isLoading: isAddingCoupon }] =
     useCreateCouponMutation();
@@ -87,8 +84,8 @@ const Rewards = () => {
   }, [selectedCoupon]);
 
   const handleEditModalOpen = () => setEditModalOpen(true);
+
   const handleEditModalClose = () => {
-    handleMenuClose();
     setEditModalOpen(false);
   };
 
@@ -124,31 +121,23 @@ const Rewards = () => {
     }
   };
 
-  const handleDeleteCoupon = async () => {
-    if (!selectedCoupon) return;
-    handleMenuClose();
+  const handleDeleteCoupon = async (couponId) => {
     try {
-      const res = await deleteCoupon(selectedCoupon?.id).unwrap();
+      const res = await deleteCoupon(couponId).unwrap();
       showSnackbar(res?.message || "Coupon deleted successfully!", "success");
     } catch (err) {
-      showSnackbar(err?.data?.message || "Failed to delete", "error");
+      showSnackbar(err?.data?.message || "Failed to delete coupon!", "error");
     }
   };
 
-  const handleMenuOpen = (event, coupon) => {
-    const rect = event.currentTarget.getBoundingClientRect();
-    setMenuPosition({ top: rect.bottom, left: rect.left });
-    setMenuAnchor(event.currentTarget);
-    setSelectedCoupon(coupon);
-  };
-
-  const handleMenuClose = (event) => {
-    event?.stopPropagation();
-    setMenuAnchor(null);
-    setSelectedCoupon(null);
-  };
-
   const handleToggleStatus = async (couponId) => {
+    const originalItem = allCoupons.find((item) => item.id === couponId);
+    const newStatus = !originalItem?.is_active;
+    setStatusOverrides((prev) => ({
+      ...prev,
+      [couponId]: { status: newStatus, locked: true },
+    }));
+
     try {
       const result = await toggleStatus(couponId).unwrap();
       if (result?.success) {
@@ -156,14 +145,21 @@ const Rewards = () => {
           result?.message || "Coupon status updated successfully",
           "success"
         );
-      } else {
-        throw new Error(result?.message);
+        setStatusOverrides((prev) => ({
+          ...prev,
+          [couponId]: { status: newStatus, locked: false },
+        }));
       }
     } catch (error) {
       showSnackbar(
         error?.data?.message || "Failed to update coupon status!",
         "error"
       );
+      setStatusOverrides((prev) => {
+        const updated = { ...prev };
+        delete updated[couponId];
+        return updated;
+      });
     }
   };
 
@@ -212,200 +208,104 @@ const Rewards = () => {
     }
   };
 
-  const handleTabChange = (event, newValue) => {
-    setActiveTab(newValue);
-  };
-
-  const CouponsTable = () => {
+  const renderCouponRow = (coupon) => {
+    const isActive = statusOverrides[coupon.id]
+      ? statusOverrides[coupon.id].status
+      : coupon?.is_active;
     return (
-      <Box
-        sx={{
-          paddingInline: "15px",
-          paddingBlock: "30px",
-          backgroundColor: "#fff",
-          display: "flex",
-          flexDirection: "column",
-          gap: "30px",
-          borderRadius: "8px",
-          marginTop: "20px",
-        }}
-      >
-        <TableContainer>
-          <Table>
-            {/* Table Header */}
-            <TableHead
-              sx={{
-                "& .MuiTableCell-root": {
-                  backgroundColor: "#EEEEEE",
-                  fontWeight: "400",
-                  fontSize: "16px",
-                  borderBottom: "none",
-                  color: "black",
-                },
-                "& .MuiTableCell-root:first-of-type": {
-                  borderTopLeftRadius: "10px",
-                  borderBottomLeftRadius: "10px",
-                },
-                "& .MuiTableCell-root:last-of-type": {
-                  borderTopRightRadius: "10px",
-                  borderBottomRightRadius: "10px",
-                },
+      <>
+        <TableCell
+          sx={{
+            fontWeight: "600",
+            fontSize: "16px",
+            color: "black",
+          }}
+        >
+          {coupon?.coupon_name}
+        </TableCell>
+        <TableCell
+          sx={{
+            fontWeight: "600",
+            fontSize: "16px",
+            color: "black",
+          }}
+        >
+          {coupon?.city_id?.name || "Unknown!"}
+        </TableCell>
+        <TableCell
+          sx={{
+            fontWeight: "600",
+            fontSize: "16px",
+            color: "black",
+          }}
+        >
+          {coupon?.coupon_type === "REGULAR" ? "Regular" : "BOLD Miles"}
+        </TableCell>
+        <TableCell
+          sx={{
+            fontWeight: "600",
+            fontSize: "16px",
+            color: "black",
+          }}
+        >
+          {coupon?.usage_limit}
+        </TableCell>
+        <TableCell
+          sx={{
+            fontWeight: "600",
+            fontSize: "16px",
+            color: "black",
+          }}
+        >
+          {coupon?.used_count}
+        </TableCell>
+        <TableCell
+          sx={{
+            fontWeight: "600",
+            fontSize: "16px",
+            color: "black",
+          }}
+        >
+          <Switch
+            checked={
+              statusOverrides[coupon.id]
+                ? statusOverrides[coupon.id].status
+                : coupon?.is_active
+            }
+            onClick={(event) => event?.stopPropagation()}
+            onChange={() => handleToggleStatus(coupon?.id)}
+            sx={{
+              "& .MuiSwitch-track": {
+                backgroundColor: coupon?.is_active ? "#22cfcf" : "red",
+                opacity: 1,
+              },
+              "& .Mui-checked + .MuiSwitch-track": {
+                backgroundColor: "#22cfcf",
+                opacity: 1,
+              },
+            }}
+          />
+          {isActive ? "On" : "Off"}
+        </TableCell>
+        <TableCell
+          sx={{
+            fontWeight: "600",
+            fontSize: "16px",
+          }}
+        >
+          {isDeletingCoupon ? (
+            <CircularProgress size={20} style={{ color: "grey" }} />
+          ) : (
+            <DeleteIcon
+              className="text-red-600"
+              onClick={(event) => {
+                event.stopPropagation();
+                handleDeleteCoupon(coupon?.id);
               }}
-            >
-              <TableRow
-                sx={{
-                  backgroundColor: "#f5f5f5",
-                  borderRadius: "10px",
-                  fontSize: "16px",
-                  paddingBottom: "24px",
-                }}
-              >
-                {[
-                  "Coupon name",
-                  "Service type",
-                  "Limit",
-                  "Used count",
-                  "Status",
-                  "Options",
-                ].map((header) => (
-                  <TableCell key={header}>{header}</TableCell>
-                ))}
-              </TableRow>
-            </TableHead>
-
-            {/* Table Body */}
-            <TableBody>
-              {allCoupons?.length === 0 && (
-                <p className="text-red-400 text-lg mt-8 font-bold">
-                  No coupons added yet!
-                </p>
-              )}
-              {allCoupons?.length > 0 &&
-                allCoupons?.map((coupon) => (
-                  <TableRow
-                    key={coupon.id}
-                    sx={{
-                      cursor: "pointer",
-                      fontWeight: "600",
-                      fontSize: "16px",
-                    }}
-                  >
-                    <TableCell
-                      sx={{
-                        fontWeight: "600",
-                        fontSize: "16px",
-                        color: "black",
-                      }}
-                    >
-                      {coupon?.coupon_name}
-                    </TableCell>
-                    <TableCell
-                      sx={{
-                        fontWeight: "600",
-                        fontSize: "16px",
-                        color: "black",
-                      }}
-                    >
-                      {coupon?.coupon_type === "REGULAR"
-                        ? "Regular"
-                        : "BOLD Miles"}
-                    </TableCell>
-                    <TableCell
-                      sx={{
-                        fontWeight: "600",
-                        fontSize: "16px",
-                        color: "black",
-                      }}
-                    >
-                      {coupon?.usage_limit}
-                    </TableCell>
-                    <TableCell
-                      sx={{
-                        fontWeight: "600",
-                        fontSize: "16px",
-                        color: "black",
-                      }}
-                    >
-                      {coupon?.used_count}
-                    </TableCell>
-                    <TableCell
-                      sx={{
-                        fontWeight: "600",
-                        fontSize: "16px",
-                        color: "black",
-                      }}
-                    >
-                      <Switch
-                        checked={coupon?.is_active}
-                        onClick={(event) => event?.stopPropagation()}
-                        onChange={() => handleToggleStatus(coupon?.id)}
-                        sx={{
-                          "& .MuiSwitch-track": {
-                            backgroundColor: coupon?.is_active
-                              ? "#22cfcf"
-                              : "red",
-                            opacity: 1,
-                          },
-                          "& .Mui-checked + .MuiSwitch-track": {
-                            backgroundColor: "#22cfcf",
-                            opacity: 1,
-                          },
-                        }}
-                      />
-                      {coupon?.is_active ? "On" : "Off"}
-                    </TableCell>
-                    <TableCell
-                      sx={{
-                        fontWeight: "600",
-                        fontSize: "16px",
-                      }}
-                    >
-                      <IconButton
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          handleMenuOpen(event, coupon);
-                        }}
-                      >
-                        <MoreHorizIcon />
-                      </IconButton>
-                      <Menu
-                        anchorReference="anchorPosition"
-                        anchorPosition={{
-                          top: menuPosition.top,
-                          left: menuPosition.left,
-                        }}
-                        open={Boolean(menuAnchor)}
-                        onClose={(event) => handleMenuClose(event)}
-                        PaperProps={{
-                          elevation: 2,
-                          sx: { boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.1)" },
-                        }}
-                      >
-                        <MenuItem
-                          onClick={(event) => {
-                            event?.stopPropagation();
-                            handleMenuClose();
-                            handleEditModalOpen();
-                          }}
-                        >
-                          Edit Coupon
-                        </MenuItem>
-                        <MenuItem
-                          onClick={(event) => {
-                            event.stopPropagation();
-                            handleDeleteCoupon();
-                          }}
-                        >
-                          Delete
-                        </MenuItem>
-                      </Menu>
-                    </TableCell>
-                  </TableRow>
-                ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </Box>
+            />
+          )}
+        </TableCell>
+      </>
     );
   };
 
@@ -416,96 +316,39 @@ const Rewards = () => {
   return (
     <>
       <div className="flex justify-between items-center font-redhat text-base text-gray font-semibold mb-8">
-        {"Accounts > Rewards"}
+        {"Accounts > Coupons"}
         <InputSearchBar />
       </div>
 
-      <p className="font-redhat font-semibold text-2xl pt-8">Rewards</p>
-      <p className="font-normal text-lg text-gray pt-4">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-        veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-        commodo consequat.{" "}
-      </p>
-      <p className="font-normal text-lg text-gray pt-1">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod.{" "}
-      </p>
-
       <div className="flex justify-between items-center mt-8">
-        <div className="flex gap-8 items-center">
-          <p className="font-redhat font-semibold text-2xl">
-            Select options to proceed
-          </p>
-        </div>
-        <div className="flex gap-6">
-          <div
-            className="py-2 px-4 text-base font-redhat bg-[#000000] text-white rounded-[56px] cursor-pointer"
-            onClick={() => setModalOpen(true)}
-          >
-            <span className="pr-1">
-              {" "}
-              <AddIcon fontSize="small" />
-            </span>{" "}
-            Create new coupon{" "}
-          </div>
-          <div
-            className="py-2 px-4 text-base font-redhat bg-[#000000] text-white rounded-[56px] cursor-pointer"
-            onClick={() => setModalOpen(true)}
-          >
-            In-app reward
-          </div>
+        <p className="font-redhat font-semibold text-2xl">Coupons</p>
+        <div
+          className="py-2 px-4 text-base font-redhat bg-[#000000] text-white rounded-[56px] cursor-pointer"
+          onClick={() => setModalOpen(true)}
+        >
+          <span className="pr-1">
+            {" "}
+            <AddIcon fontSize="small" />
+          </span>{" "}
+          Create new coupon{" "}
         </div>
       </div>
 
-      {/* Tabs */}
-      <div className="flex justify-between items-center mt-8">
-        <Tabs
-          value={activeTab}
-          onChange={handleTabChange}
-          sx={{
-            borderBottom: "1px solid #d3d3d3",
-            width: "fit-content",
-            ".MuiTab-root": {
-              textTransform: "none",
-              fontWeight: 400,
-              color: "#9e9e9e",
-              paddingY: "8px",
-              fontSize: "16px",
-            },
-            ".Mui-selected": {
-              color: "#1976d2",
-              fontWeight: "600",
-              paddingY: "8px",
-              fontSize: "16px",
-            },
-            ".MuiTabs-indicator": { backgroundColor: "#1976d2" },
-          }}
-        >
-          <Tab label="Coupons" />
-          <Tab label="Rewards" />
-          <Tab label="Voucher" />
-        </Tabs>
-        <Button
-          variant="outlined"
-          sx={{
-            textTransform: "none",
-            borderColor: "black",
-            color: "black",
-            borderRadius: "30px",
-            backgroundColor: "#fff",
-            "&:hover": {
-              backgroundColor: "rgba(0, 0, 0, 0.04)",
-              borderColor: "black",
-            },
-          }}
-        >
-          Engage finance team
-        </Button>
-      </div>
-
-      {activeTab === 0 && <CouponsTable />}
-      {activeTab === 1 && <p className="text-red-400 p-6">Empty</p>}
-      {activeTab === 2 && <p className="text-red-400 p-6">Empty</p>}
+      <EntityPaginatedTable
+        headers={headers}
+        rows={allCoupons}
+        renderRow={(coupon) => renderCouponRow(coupon)}
+        emptyMessage="No coupons yet!"
+        onRowClick={(coupon) => {
+          setSelectedCoupon(coupon);
+          handleEditModalOpen();
+        }}
+        isPreviousPage={isPreviousPage}
+        isNextPage={isNextPage}
+        page={page}
+        setPage={setPage}
+        totalPages={totalPages}
+      />
 
       <CreateCouponModal
         open={modalOpen}
