@@ -1,4 +1,7 @@
-import { useCallback, useEffect, useState } from "react";
+import {
+  useFetchCitiesQuery,
+  useFetchCountriesQuery,
+} from "../../../services/locationApi";
 import {
   Modal,
   TextField,
@@ -22,9 +25,22 @@ const CreateCouponModal = ({
   onSave,
   buttonLoading,
 }) => {
-  // const [openDate, setOpenDate] = useState(false);
-  const [allCities, setAllCities] = useState([]);
-  const [allCountries, setAllCountries] = useState([]);
+  const { data: countryData } = useFetchCountriesQuery({
+    page: 1,
+    limit: 300,
+  });
+  const { data: cityData } = useFetchCitiesQuery(
+    {
+      page: 1,
+      limit: 300,
+      countryId: formData?.country_id,
+    },
+    {
+      skip: !formData.country_id,
+    }
+  );
+  const allCountries = countryData?.data?.countries?.results || [];
+  const allCities = cityData?.data?.cities?.results || [];
 
   const isDisabled =
     formData?.coupon_name?.trim()?.length < 4 ||
@@ -46,61 +62,6 @@ const CreateCouponModal = ({
     const value = e.target.value.replace(/[^0-9]/g, "");
     handleChange("discount_value", value ? parseInt(value, 10) : 0);
   };
-
-  const fetchCountries = useCallback(async () => {
-    try {
-      const res = await fetch(
-        `${
-          import.meta.env.VITE_API_RIDE_URL
-        }/super-admin/country/get-countries?page=1&limit=100`,
-        {
-          method: "GET",
-          credentials: "include",
-        }
-      );
-      const result = await res?.json();
-      if (result?.success) {
-        setAllCountries(result?.data?.countries?.results);
-      } else {
-        throw new Error(result?.message);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }, []);
-
-  const fetchCities = useCallback(async () => {
-    if (!formData?.country_id) return;
-    try {
-      const res = await fetch(
-        `${
-          import.meta.env.VITE_API_RIDE_URL
-        }/super-admin/city/get-cities?page=1&limit=100&country_id=${
-          formData?.country_id
-        }`,
-        {
-          method: "GET",
-          credentials: "include",
-        }
-      );
-      const result = await res?.json();
-      if (result?.success) {
-        setAllCities(result?.data?.cities?.results);
-      } else {
-        throw new Error(result?.message);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }, [formData?.country_id]);
-
-  useEffect(() => {
-    fetchCountries();
-  }, [fetchCountries]);
-
-  useEffect(() => {
-    formData?.country_id && fetchCities();
-  }, [fetchCities, formData?.country_id]);
 
   const handleChange = (field, value) => {
     if (field === "country_id") formData.city_id = "";
