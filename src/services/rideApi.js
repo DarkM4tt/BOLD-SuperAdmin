@@ -40,10 +40,45 @@ export const rideApi = createApi({
       providesTags: ["RideCategories"],
     }),
 
+    addRideCategory: builder.mutation({
+      query: (name) => ({
+        url: `/super-admin/ride-type-categories`,
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: {
+          name,
+        },
+      }),
+      invalidatesTags: ["RideCategories"],
+    }),
+
+    deleteRideCategory: builder.mutation({
+      query: (categoryId) => ({
+        url: `/super-admin/ride-type-categories/${categoryId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["RideCategories"],
+    }),
+
     fetchRideTypeAssignments: builder.query({
-      query: (categoryId) =>
-        `/super-admin/ride-type-assignments?ride_type_category=${categoryId}`,
+      query: (categoryId) => {
+        const params = new URLSearchParams();
+        if (categoryId) {
+          params.append("ride_type_category", categoryId);
+        }
+        return `/super-admin/ride-type-assignments?${params.toString()}`;
+      },
       providesTags: ["RideTypeAssignments"],
+    }),
+
+    updateRideTypeAssignments: builder.mutation({
+      query: (body) => ({
+        url: "/super-admin/ride-type-assignments",
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body,
+      }),
+      invalidatesTags: ["RideTypeAssignments"],
     }),
   }),
 });
@@ -53,5 +88,8 @@ export const {
   useFetchRideDetailsQuery,
   useFetchRideTypesQuery,
   useFetchRideCategoriesQuery,
+  useAddRideCategoryMutation,
+  useDeleteRideCategoryMutation,
   useFetchRideTypeAssignmentsQuery,
+  useUpdateRideTypeAssignmentsMutation,
 } = rideApi;

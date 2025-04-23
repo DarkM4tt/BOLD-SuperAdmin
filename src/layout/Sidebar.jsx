@@ -20,6 +20,7 @@ const menuItems = [
   { name: "Coupons", path: "/coupons" },
   { name: "Location", path: "/location" },
   { name: "Zones", path: "/zones" },
+  { name: "Ride Categories", path: "/ride-categories" },
 ];
 
 const Sidebar = () => {

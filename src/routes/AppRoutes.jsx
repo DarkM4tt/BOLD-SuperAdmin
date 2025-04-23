@@ -4,34 +4,35 @@ import { lazy, Suspense } from "react";
 import MainLayout from "../layout/MainLayout";
 import LoadingAnimation from "../components/common/LoadingAnimation";
 
+const Login = lazy(() => import("../pages/Login"));
 const Dashboard = lazy(() => import("../pages/Dashboard"));
 const Vehicles = lazy(() => import("../components/Vehicles"));
 const VehicleDetails = lazy(() => import("../components/VehicleDetails"));
 const Drivers = lazy(() => import("../components/Drivers"));
 const DriverDetails = lazy(() => import("../components/DriverDetails"));
+const Rides = lazy(() => import("../components/Rides"));
+const RideDetails = lazy(() => import("../components/RideDetails"));
+const Conversation = lazy(() => import("../components/Conversation"));
+const Users = lazy(() => import("../components/Users"));
+const UserDetails = lazy(() => import("../components/UserDetails"));
 const Overview = lazy(() => import("../pages/Services/Overview"));
 const Jumpstart = lazy(() => import("../pages/Services/Jumpstart"));
 const Packages = lazy(() => import("../pages/Services/Packages"));
 const BoldMiles = lazy(() => import("../pages/Services/BoldMiles"));
 const Partners = lazy(() => import("../pages/Partners"));
 const PartnerDetails = lazy(() => import("../components/PartnerDetails"));
-const Zones = lazy(() => import("../pages/Zones"));
-const Login = lazy(() => import("../pages/Login"));
-const Location = lazy(() => import("../pages/Location"));
-const Coupons = lazy(() => import("../pages/Coupons"));
-const NotFound = lazy(() => import("../components/NotFound"));
 const EntityNewRequest = lazy(() => import("../components/EntityNewRequest"));
 const DriverNewRequest = lazy(() => import("../components/DriverNewRequest"));
-const Rides = lazy(() => import("../components/Rides"));
-const RideDetails = lazy(() => import("../components/RideDetails"));
-const Users = lazy(() => import("../components/Users"));
-const UserDetails = lazy(() => import("../components/UserDetails"));
-const Conversation = lazy(() => import("../components/Conversation"));
+const Coupons = lazy(() => import("../pages/Coupons"));
+const Location = lazy(() => import("../pages/Location"));
+const LocationDetails = lazy(() => import("../components/LocationDetails"));
 const AddCity = lazy(() => import("../components/AddCity"));
 const AddPrices = lazy(() => import("../components/AddPrices"));
-const LocationDetails = lazy(() => import("../components/LocationDetails"));
 const UpdatePrices = lazy(() => import("../components/UpdatePrices"));
+const Zones = lazy(() => import("../pages/Zones"));
 const CreateZone = lazy(() => import("../components/CreateZone"));
+const RideCategories = lazy(() => import("../pages/RideCategories"));
+const NotFound = lazy(() => import("../components/NotFound"));
 
 const LoginRedirect = () => {
   const { isAuthenticated, isLoading } = useAuth();
@@ -266,6 +267,16 @@ const AppRoutes = () => {
             />
           </Route>
 
+          {/* Coupons */}
+          <Route
+            path="coupons"
+            element={
+              <ProtectedRoute>
+                <Coupons />
+              </ProtectedRoute>
+            }
+          />
+
           {/* Location */}
           <Route path="location">
             <Route
@@ -354,12 +365,12 @@ const AppRoutes = () => {
             />
           </Route>
 
-          {/* Coupons */}
+          {/* Ride Categories */}
           <Route
-            path="coupons"
+            path="ride-categories"
             element={
               <ProtectedRoute>
-                <Coupons />
+                <RideCategories />
               </ProtectedRoute>
             }
           />
