@@ -351,7 +351,7 @@ const AddLocation = () => {
   if (countryError || cityError) {
     return (
       <p className="text-lg font-bold font-redhat text-red-400">
-        {countryError?.data?.message || "Error in fetching location details!"}
+        {countryError?.data?.message || "Error in fetching location details! "}
         {cityError?.data?.message || "Error in fetching location details!"}
       </p>
     );

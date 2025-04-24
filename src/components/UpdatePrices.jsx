@@ -250,8 +250,8 @@ const UpdateRideTypePrices = () => {
         />
         <p className="font-redhat font-semibold text-2xl">
           {zoneId
-            ? `Update or add prices for zone`
-            : `Update or add prices for city`}
+            ? `Update or add prices for ${areaDetails?.name} zone of ${areaDetails?.city_id?.name} city`
+            : `Update or add prices for ${areaDetails?.name} city`}
         </p>
       </div>
 

@@ -22,7 +22,9 @@ export const locationApi = createApi({
       query: ({ cityId, zoneId }) => {
         const params = new URLSearchParams();
         cityId && params.append("city_id", cityId);
+        cityId && params.append("ride_type_price", "CITY_BASE");
         zoneId && params.append("zone_id", zoneId);
+        zoneId && params.append("ride_type_price", "ZONE_BASE");
 
         return `/super-admin/ride-type-prices?${params.toString()}`;
       },
