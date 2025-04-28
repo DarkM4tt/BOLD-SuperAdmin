@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, TableCell } from "@mui/material";
+import { Box, TableCell, TextField, MenuItem } from "@mui/material";
 import { useFetchRidesQuery } from "../services/rideApi";
 import EntityPaginatedTable from "./common/EntityPaginatedTable";
 import LoadingAnimation from "./common/LoadingAnimation";
@@ -14,6 +14,14 @@ const headers = [
   "Service",
   "Status",
   "Captured amount",
+];
+
+const rideStatusOptions = [
+  { label: "All", value: "" },
+  { label: "Booked", value: "BOOKED" },
+  { label: "Accepted", value: "ACCEPTED" },
+  { label: "Rejected", value: "REJECTED" },
+  { label: "Completed", value: "COMPLETED" },
 ];
 
 const renderRideRow = (ride) => {
@@ -66,18 +74,38 @@ const renderRideRow = (ride) => {
 
 const Rides = () => {
   const [page, setPage] = useState(1);
-  const { data, error, isLoading } = useFetchRidesQuery({ page });
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+  const [status, setStatus] = useState("");
+  const navigate = useNavigate();
+
+  const queryParams = { page };
+
+  if (fromDate) queryParams.from = fromDate;
+  if (toDate) queryParams.to = toDate;
+  if (status) queryParams.status = status;
+
+  const { data, error, isLoading } = useFetchRidesQuery(queryParams);
   const { results, totalPages, isNextPage, isPreviousPage } =
     data?.data?.rides || {};
-  const navigate = useNavigate();
 
   if (error) {
     return (
       <p className="text-red-400 text-lg font-redhat font-semibold">
-        {error?.data?.message || "Error fetching data "}{" "}
+        {error?.data?.message || "Error fetching data "}
       </p>
     );
   }
+
+  const today = new Date().toISOString().split("T")[0];
+
+  const handleFromDateChange = (e) => {
+    const newFromDate = e.target.value;
+    setFromDate(newFromDate);
+    if (toDate && newFromDate > toDate) {
+      setToDate("");
+    }
+  };
 
   return (
     <>
@@ -86,7 +114,7 @@ const Rides = () => {
         <InputSearchBar />
       </div>
 
-      <div className="flex gap-4 items-center">
+      <div className="flex gap-4 items-center mb-6">
         <img
           src={BackArrow}
           alt="BackArrow"
@@ -96,6 +124,53 @@ const Rides = () => {
         <Box sx={{ fontSize: "24px", fontWeight: "600" }}>All Ride History</Box>
       </div>
 
+      {/* Filters */}
+      <div className="flex flex-wrap gap-4 mb-6">
+        {/* From Date */}
+        <TextField
+          type="date"
+          label="From Date"
+          InputLabelProps={{ shrink: true }}
+          size="small"
+          value={fromDate}
+          onChange={handleFromDateChange}
+          sx={{ width: 200 }}
+          inputProps={{
+            max: today,
+          }}
+        />
+        {/* To Date */}
+        <TextField
+          type="date"
+          label="To Date"
+          InputLabelProps={{ shrink: true }}
+          size="small"
+          value={toDate}
+          onChange={(e) => setToDate(e.target.value)}
+          sx={{ width: 200 }}
+          inputProps={{
+            min: fromDate || undefined,
+            max: today,
+          }}
+        />
+        {/* Status Select */}
+        <TextField
+          select
+          label="Status"
+          value={status}
+          onChange={(e) => setStatus(e.target.value)}
+          size="small"
+          sx={{ width: 200 }}
+        >
+          {rideStatusOptions.map((option) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.label}
+            </MenuItem>
+          ))}
+        </TextField>
+      </div>
+
+      {/* Table */}
       {isLoading ? (
         <LoadingAnimation height={500} width={500} />
       ) : (
