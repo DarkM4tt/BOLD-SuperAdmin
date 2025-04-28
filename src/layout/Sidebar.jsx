@@ -11,6 +11,7 @@ const menuItems = [
     path: "/services",
     subMenu: [
       { name: "Overview", path: "/services/overview" },
+      { name: "Rides", path: "/services/rides" },
       { name: "Jumpstart", path: "/services/jumpstart" },
       { name: "Packages", path: "/services/packages" },
       { name: "BOLD Miles", path: "/services/bold-miles" },

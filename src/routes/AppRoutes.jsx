@@ -16,6 +16,7 @@ const Conversation = lazy(() => import("../components/Conversation"));
 const Users = lazy(() => import("../components/Users"));
 const UserDetails = lazy(() => import("../components/UserDetails"));
 const Overview = lazy(() => import("../pages/Services/Overview"));
+const RideAnalysis = lazy(() => import("../pages/Services/RideAnalysis"));
 const Jumpstart = lazy(() => import("../pages/Services/Jumpstart"));
 const Packages = lazy(() => import("../pages/Services/Packages"));
 const BoldMiles = lazy(() => import("../pages/Services/BoldMiles"));
@@ -194,6 +195,14 @@ const AppRoutes = () => {
               element={
                 <ProtectedRoute>
                   <Overview />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="rides"
+              element={
+                <ProtectedRoute>
+                  <RideAnalysis />
                 </ProtectedRoute>
               }
             />
