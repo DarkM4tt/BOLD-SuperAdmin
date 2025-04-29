@@ -461,7 +461,8 @@ const PartnerInfo = () => {
                   Total vehicles
                 </p>
                 <p className="pt-2 font-redhat font-bold text-2xl">
-                  {partnerDetails?.totalVehicles || 0}
+                  {partnerDetails?.pending_vehicles +
+                    partnerDetails?.verified_vehicles || 0}
                 </p>
                 <p className="pt-2 text-sm text-[#777777]">
                   18 k+ currently <span className="text-[#18C4B8]">active</span>
@@ -488,7 +489,8 @@ const PartnerInfo = () => {
                   Total drivers
                 </p>
                 <p className="pt-2 font-redhat font-bold text-2xl">
-                  {partnerDetails?.totalDrivers || 0}
+                  {partnerDetails?.pending_drivers +
+                    partnerDetails?.verified_drivers || 0}
                 </p>
                 <p className="pt-2 text-sm text-[#777777]">
                   including 320 rental org.

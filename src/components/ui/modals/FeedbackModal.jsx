@@ -119,7 +119,9 @@ const FeedbackModal = ({
             }}
           />
           <Typography sx={{ fontWeight: 500 }}>
-            ({currentRating?.rating}.0)
+            {currentRating?.rating
+              ? currentRating?.rating + ".0"
+              : "Not rated!"}
           </Typography>
         </Box>
       </DialogContent>
