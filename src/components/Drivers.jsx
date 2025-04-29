@@ -1,6 +1,14 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Tabs, Tab, Box, Button, Avatar, TableCell } from "@mui/material";
+import {
+  Tabs,
+  Tab,
+  Box,
+  Button,
+  Avatar,
+  TableCell,
+  TextField,
+} from "@mui/material";
 import { formatCreatedAt } from "../utils/dates";
 import { useFetchOrganizationDetailsQuery } from "../services/organizationApi";
 import { useFetchDriversQuery } from "../services/driverApi";
@@ -172,11 +180,13 @@ const renderDriverRow = (driver, selectedTab, partnerId) => {
 };
 
 const Drivers = () => {
-  const [selectedTab, setSelectedTab] = useState("APPROVED");
-  const [page, setPage] = useState(1);
   const navigate = useNavigate();
   const params = useParams();
   const { partnerId } = params;
+  const [selectedTab, setSelectedTab] = useState("APPROVED");
+  const [page, setPage] = useState(1);
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
   const { data: orgdata } = useFetchOrganizationDetailsQuery(partnerId, {
     skip: !partnerId,
   });
@@ -200,6 +210,8 @@ const Drivers = () => {
   };
 
   const queryParams = getQueryParams();
+  if (fromDate) queryParams.from = fromDate;
+  if (toDate) queryParams.to = toDate;
   const { data, error, isLoading } = useFetchDriversQuery({
     ...queryParams,
     page,
@@ -230,6 +242,16 @@ const Drivers = () => {
       pageNumbers.push("...");
     }
   }
+
+  const today = new Date().toISOString().split("T")[0];
+
+  const handleFromDateChange = (e) => {
+    const newFromDate = e.target.value;
+    setFromDate(newFromDate);
+    if (toDate && newFromDate > toDate) {
+      setToDate("");
+    }
+  };
 
   const headers = [
     "Name",
@@ -287,6 +309,35 @@ const Drivers = () => {
         <Tab label="Rejected drivers" value="REJECTED" />
         <Tab label="Assigned drivers" value="ASSIGNED" />
       </Tabs>
+
+      <div className="flex flex-wrap gap-4 my-6 items-center">
+        <p className="font-redhat text-lg font-semibold">Joined on: </p>
+        <TextField
+          type="date"
+          label="From Date"
+          InputLabelProps={{ shrink: true }}
+          size="small"
+          value={fromDate}
+          onChange={handleFromDateChange}
+          sx={{ width: 200 }}
+          inputProps={{
+            max: today,
+          }}
+        />
+        <TextField
+          type="date"
+          label="To Date"
+          InputLabelProps={{ shrink: true }}
+          size="small"
+          value={toDate}
+          onChange={(e) => setToDate(e.target.value)}
+          sx={{ width: 200 }}
+          inputProps={{
+            min: fromDate || undefined,
+            max: today,
+          }}
+        />
+      </div>
 
       {selectedTab === "NEW-REQUEST" ? (
         results?.length > 0 ? (

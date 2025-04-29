@@ -117,7 +117,8 @@ const Rides = () => {
         <Box sx={{ fontSize: "24px", fontWeight: "600" }}>All Ride History</Box>
       </div>
 
-      <div className="flex flex-wrap gap-4 mb-6">
+      <div className="flex flex-wrap gap-4 mb-6 items-center">
+        <p className="font-redhat text-lg font-semibold">Filters: </p>
         <TextField
           type="date"
           label="From Date"

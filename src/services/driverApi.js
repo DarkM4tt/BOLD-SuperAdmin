@@ -11,10 +11,12 @@ export const driverApi = createApi({
   tagTypes: ["Drivers", "DriverDetails"],
   endpoints: (builder) => ({
     fetchDrivers: builder.query({
-      query: ({ status, is_vehicle, page, partnerId }) => {
+      query: ({ status, is_vehicle, page, partnerId, from, to }) => {
         const params = new URLSearchParams();
         if (partnerId) params.append("organization_id", partnerId);
         if (status) params.append("status", status);
+        if (from) params.append("from", from);
+        if (to) params.append("to", to);
         if (typeof is_vehicle === "boolean")
           params.append("is_vehicle", is_vehicle);
         params.append("page", page);

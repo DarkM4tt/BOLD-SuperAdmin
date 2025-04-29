@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Box, TableCell } from "@mui/material";
+import { Box, TableCell, TextField } from "@mui/material";
 import { useFetchUsersQuery } from "../services/userApi";
 import EntityPaginatedTable from "./common/EntityPaginatedTable";
 import LoadingAnimation from "./common/LoadingAnimation";
@@ -41,10 +41,27 @@ const renderRideRow = (customer) => {
 
 const Users = () => {
   const [page, setPage] = useState(1);
-  const { data, error, isLoading } = useFetchUsersQuery({ page });
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+
+  const { data, error, isLoading } = useFetchUsersQuery({
+    from: fromDate,
+    to: toDate,
+    page,
+  });
   const { results, totalPages, isNextPage, isPreviousPage } =
     data?.customers || {};
   const navigate = useNavigate();
+
+  const today = new Date().toISOString().split("T")[0];
+
+  const handleFromDateChange = (e) => {
+    const newFromDate = e.target.value;
+    setFromDate(newFromDate);
+    if (toDate && newFromDate > toDate) {
+      setToDate("");
+    }
+  };
 
   if (error) {
     return (
@@ -69,6 +86,35 @@ const Users = () => {
           onClick={() => navigate(-1)}
         />
         <Box sx={{ fontSize: "24px", fontWeight: "600" }}>List of users</Box>
+      </div>
+
+      <div className="flex flex-wrap gap-4 my-6 items-center">
+        <p className="font-redhat text-lg font-semibold">Joined on: </p>
+        <TextField
+          type="date"
+          label="From Date"
+          InputLabelProps={{ shrink: true }}
+          size="small"
+          value={fromDate}
+          onChange={handleFromDateChange}
+          sx={{ width: 200 }}
+          inputProps={{
+            max: today,
+          }}
+        />
+        <TextField
+          type="date"
+          label="To Date"
+          InputLabelProps={{ shrink: true }}
+          size="small"
+          value={toDate}
+          onChange={(e) => setToDate(e.target.value)}
+          sx={{ width: 200 }}
+          inputProps={{
+            min: fromDate || undefined,
+            max: today,
+          }}
+        />
       </div>
 
       {isLoading ? (

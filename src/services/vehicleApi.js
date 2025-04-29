@@ -11,8 +11,10 @@ export const vehicleApi = createApi({
   tagTypes: ["Vehicles", "VehicleDetails"],
   endpoints: (builder) => ({
     fetchVehicles: builder.query({
-      query: ({ status, page, partnerId }) => {
+      query: ({ status, page, partnerId, from, to }) => {
         const params = new URLSearchParams();
+        if (from) params.append("from", from);
+        if (to) params.append("to", to);
         if (partnerId) params.append("organization_id", partnerId);
         if (status) params.append("status", status);
         params.append("page", page);

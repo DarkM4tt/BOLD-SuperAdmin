@@ -11,8 +11,10 @@ export const userApi = createApi({
   tagTypes: ["Users", "UserDetails"],
   endpoints: (builder) => ({
     fetchUsers: builder.query({
-      query: ({ page }) => {
+      query: ({ page, from, to }) => {
         const params = new URLSearchParams();
+        if (from) params.append("from", from);
+        if (to) params.append("to", to);
         params.append("page", page);
         params.append("limit", "10");
 
