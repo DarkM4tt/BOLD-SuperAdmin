@@ -16,3 +16,14 @@ export function getCarType(carType) {
   }
   return "Null";
 }
+
+export const rideStatusOptions = [
+  { label: "All", value: "" },
+  { label: "Booked", value: "BOOKED" },
+  { label: "Accepted", value: "ACCEPTED" },
+  { label: "Arrived", value: "ARRIVED" },
+  { label: "Onroute", value: "ONROUTE" },
+  { label: "Rejected", value: "REJECTED" },
+  { label: "Canceled", value: "CANCELED" },
+  { label: "Completed", value: "COMPLETED" },
+];

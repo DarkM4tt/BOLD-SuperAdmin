@@ -74,7 +74,10 @@ const NewDriverRequestCard = ({ driverDetails }) => {
   );
 };
 
-const renderDriverRow = (driver, selectedTab) => {
+const renderDriverRow = (driver, selectedTab, partnerId) => {
+  const handleImgError = (e) => {
+    e.target.style.display = "none";
+  };
   return (
     <>
       <TableCell>
@@ -83,6 +86,8 @@ const renderDriverRow = (driver, selectedTab) => {
             <img
               src={driver?.profile_pic}
               className="w-8 h-8 rounded-full"
+              onError={handleImgError}
+              loading="lazy"
               alt="driver-image"
             />
           ) : (
@@ -106,11 +111,9 @@ const renderDriverRow = (driver, selectedTab) => {
         </div>
       </TableCell>
       <TableCell>
-        {driver?.createdAt ? (
-          formatCreatedAt(driver?.createdAt)
-        ) : (
-          <p className="text-red-400">Not added yet!</p>
-        )}
+        {partnerId
+          ? formatCreatedAt(driver?.createdAt)
+          : driver?.organization_name}
       </TableCell>
       <TableCell>
         {driver?.vehicle || <p className="text-red-400">Not assigned yet!</p>}
@@ -230,7 +233,7 @@ const Drivers = () => {
 
   const headers = [
     "Name",
-    "Joined on",
+    partnerId ? "Joined on" : "Organisation",
     "Assigned vehicle",
     "Total trips",
     "Customer rating",
@@ -315,7 +318,9 @@ const Drivers = () => {
         <EntityPaginatedTable
           headers={headers}
           rows={results}
-          renderRow={(driver) => renderDriverRow(driver, selectedTab)}
+          renderRow={(driver) =>
+            renderDriverRow(driver, selectedTab, partnerId)
+          }
           emptyMessage="No drivers!"
           onRowClick={(driver) => navigate(`/drivers/${driver?._id}`)}
           isPreviousPage={isPreviousPage}

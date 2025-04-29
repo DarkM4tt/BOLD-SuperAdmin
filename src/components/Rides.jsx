@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, TableCell, TextField, MenuItem } from "@mui/material";
 import { useFetchRidesQuery } from "../services/rideApi";
+import { rideStatusOptions } from "../utils/constants";
 import EntityPaginatedTable from "./common/EntityPaginatedTable";
 import LoadingAnimation from "./common/LoadingAnimation";
 import InputSearchBar from "./common/InputSearchBar";
@@ -14,14 +15,6 @@ const headers = [
   "Service",
   "Status",
   "Captured amount",
-];
-
-const rideStatusOptions = [
-  { label: "All", value: "" },
-  { label: "Booked", value: "BOOKED" },
-  { label: "Accepted", value: "ACCEPTED" },
-  { label: "Rejected", value: "REJECTED" },
-  { label: "Completed", value: "COMPLETED" },
 ];
 
 const renderRideRow = (ride) => {
@@ -124,9 +117,7 @@ const Rides = () => {
         <Box sx={{ fontSize: "24px", fontWeight: "600" }}>All Ride History</Box>
       </div>
 
-      {/* Filters */}
       <div className="flex flex-wrap gap-4 mb-6">
-        {/* From Date */}
         <TextField
           type="date"
           label="From Date"
@@ -139,7 +130,6 @@ const Rides = () => {
             max: today,
           }}
         />
-        {/* To Date */}
         <TextField
           type="date"
           label="To Date"
@@ -153,7 +143,6 @@ const Rides = () => {
             max: today,
           }}
         />
-        {/* Status Select */}
         <TextField
           select
           label="Status"
