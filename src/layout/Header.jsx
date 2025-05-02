@@ -32,12 +32,12 @@ const Header = () => {
     <div className="flex flex-row justify-between items-center px-8 py-2 bg-white border-b-[1px] border-gray-200">
       <p className="font-redhat text-2xl font-semibold">Owner Access</p>
       <div className="flex flex-row gap-10 items-center">
-        <p
+        {/* <p
           className="font-redhat text-2xl font-semibold px-4 py-2 border-[2px] border-dashed border-[#c8c8c8] rounded-lg cursor-pointer hover:underline"
           onClick={() => navigate("/zones")}
         >
           All zones
-        </p>
+        </p> */}
         <div
           className="flex flex-row items-center cursor-pointer hover:bg-gray-100 p-2 rounded-md group"
           onClick={!isLoading ? handleLogout : undefined}

@@ -33,6 +33,7 @@ const UpdatePrices = lazy(() => import("../components/UpdatePrices"));
 const Zones = lazy(() => import("../pages/Zones"));
 const CreateZone = lazy(() => import("../components/CreateZone"));
 const RideCategories = lazy(() => import("../pages/RideCategories"));
+const LiveMap = lazy(() => import("../pages/LiveMap"));
 const NotFound = lazy(() => import("../components/NotFound"));
 
 const LoginRedirect = () => {
@@ -380,6 +381,16 @@ const AppRoutes = () => {
             element={
               <ProtectedRoute>
                 <RideCategories />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Live Map */}
+          <Route
+            path="live-map"
+            element={
+              <ProtectedRoute>
+                <LiveMap />
               </ProtectedRoute>
             }
           />
