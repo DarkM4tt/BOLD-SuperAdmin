@@ -19,8 +19,9 @@ import {
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import LoadingAnimation from "../components/common/LoadingAnimation";
 import InputSearchBar from "../components/common/InputSearchBar";
-import BackArrow from "../assets/backArrow.svg";
 import EntityPaginatedTable from "../components/common/EntityPaginatedTable";
+import DeleteConfirmationModal from "../components/ui/modals/DeleteConfirmationModal";
+import BackArrow from "../assets/backArrow.svg";
 
 const getZoneType = (type) => {
   if (type === "RED_ZONE") {
@@ -48,6 +49,7 @@ const AllZones = () => {
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
   const [selectedZone, setSelectedZone] = useState(null);
   const [statusOverrides, setStatusOverrides] = useState({});
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const showSnackbar = useSnackbar();
 
   const [toggleZone] = useToggleZoneMutation();
@@ -109,6 +111,8 @@ const AllZones = () => {
     } catch (error) {
       showSnackbar(error?.data?.message || "Failed to delete zone!", "error");
     } finally {
+      setIsDeleteModalOpen(false);
+      setSelectedZone(null);
       handleMenuClose();
     }
   };
@@ -123,7 +127,6 @@ const AllZones = () => {
   const handleMenuClose = (event) => {
     event?.stopPropagation();
     setMenuAnchor(null);
-    setSelectedZone(null);
   };
 
   const renderZoneRow = (zone) => {
@@ -207,58 +210,55 @@ const AllZones = () => {
             fontSize: "16px",
           }}
         >
-          {isDeletingZone ? (
-            <CircularProgress size={20} style={{ color: "grey" }} />
-          ) : (
-            <>
-              <IconButton
+          <>
+            <IconButton
+              onClick={(event) => {
+                event.stopPropagation();
+                handleMenuOpen(event, zone);
+              }}
+            >
+              <MoreHorizIcon />
+            </IconButton>
+            <Menu
+              anchorReference="anchorPosition"
+              anchorPosition={{
+                top: menuPosition.top,
+                left: menuPosition.left,
+              }}
+              open={Boolean(menuAnchor)}
+              onClose={(event) => handleMenuClose(event)}
+              PaperProps={{
+                elevation: 2,
+                sx: { boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.1)" },
+              }}
+            >
+              <MenuItem
                 onClick={(event) => {
                   event.stopPropagation();
-                  handleMenuOpen(event, zone);
+                  navigate(`/zones/${selectedZone?.id}`);
                 }}
               >
-                <MoreHorizIcon />
-              </IconButton>
-              <Menu
-                anchorReference="anchorPosition"
-                anchorPosition={{
-                  top: menuPosition.top,
-                  left: menuPosition.left,
-                }}
-                open={Boolean(menuAnchor)}
-                onClose={(event) => handleMenuClose(event)}
-                PaperProps={{
-                  elevation: 2,
-                  sx: { boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.1)" },
+                Update Polygon
+              </MenuItem>
+              <MenuItem
+                onClick={(event) => {
+                  event.stopPropagation();
+                  navigate(`/zones/${selectedZone?.id}/update-prices`);
                 }}
               >
-                <MenuItem
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    navigate(`/zones/${selectedZone?.id}`);
-                  }}
-                >
-                  Update Polygon
-                </MenuItem>
-                <MenuItem
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    navigate(`/zones/${selectedZone?.id}/update-prices`);
-                  }}
-                >
-                  Update Prices
-                </MenuItem>
-                <MenuItem
-                  onClick={(event) => {
-                    event.stopPropagation();
-                    handleDeleteZone();
-                  }}
-                >
-                  Delete
-                </MenuItem>
-              </Menu>
-            </>
-          )}
+                Update Prices
+              </MenuItem>
+              <MenuItem
+                onClick={(event) => {
+                  event.stopPropagation();
+                  handleMenuClose();
+                  setIsDeleteModalOpen(true);
+                }}
+              >
+                Delete
+              </MenuItem>
+            </Menu>
+          </>
         </TableCell>
       </>
     );
@@ -283,15 +283,15 @@ const AllZones = () => {
         <InputSearchBar />
       </div>
 
-      <div className="flex mt-8 gap-4">
+      {/* <div className="flex mt-8 gap-4">
         <img
           src={BackArrow}
           alt="BackArrow"
           className="cursor-pointer"
           onClick={() => navigate(-1)}
-        />
-        <p className="font-redhat font-semibold text-2xl ">All zones</p>
-      </div>
+        /> */}
+      <p className="font-redhat font-semibold text-2xl mt-8">All zones</p>
+      {/* </div> */}
 
       <div className="mt-4 flex justify-between items-center">
         <p className="font-sans font-normal text-xl">
@@ -331,6 +331,14 @@ const AllZones = () => {
           totalPages={totalPages}
         />
       </Box>
+
+      <DeleteConfirmationModal
+        open={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirm={handleDeleteZone}
+        message="The zone will be deleted from the Super Admin panel."
+        loading={isDeletingZone}
+      />
     </>
   );
 };
