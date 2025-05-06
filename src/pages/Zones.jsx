@@ -9,7 +9,6 @@ import {
 } from "../services/locationApi";
 import {
   Box,
-  CircularProgress,
   IconButton,
   Menu,
   MenuItem,
@@ -21,6 +20,7 @@ import LoadingAnimation from "../components/common/LoadingAnimation";
 import InputSearchBar from "../components/common/InputSearchBar";
 import EntityPaginatedTable from "../components/common/EntityPaginatedTable";
 import DeleteConfirmationModal from "../components/ui/modals/DeleteConfirmationModal";
+import DeactivateConfirmationModal from "@/components/ui/modals/DeactivateConfirmationModal";
 import BackArrow from "../assets/backArrow.svg";
 
 const getZoneType = (type) => {
@@ -48,11 +48,11 @@ const AllZones = () => {
   const [menuAnchor, setMenuAnchor] = useState(null);
   const [menuPosition, setMenuPosition] = useState({ top: 0, left: 0 });
   const [selectedZone, setSelectedZone] = useState(null);
-  const [statusOverrides, setStatusOverrides] = useState({});
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isDeactivateModalOpen, setIsDeactivateModalOpen] = useState(false);
   const showSnackbar = useSnackbar();
 
-  const [toggleZone] = useToggleZoneMutation();
+  const [toggleZone, { isLoading: isTogglingZone }] = useToggleZoneMutation();
   const [deleteZone, { isLoading: isDeletingZone }] = useDeleteZoneMutation();
 
   const {
@@ -67,39 +67,20 @@ const AllZones = () => {
     zoneData?.data?.zones || {};
 
   const handleToggleStatus = async (zoneId) => {
-    const originalItem = results.find((item) => item.id === zoneId);
-    const newStatus = !originalItem?.is_active;
-
-    // Set optimistic status
-    setStatusOverrides((prev) => ({
-      ...prev,
-      [zoneId]: { status: newStatus, locked: true },
-    }));
-
     try {
       const res = await toggleZone(zoneId).unwrap();
       showSnackbar(
         res?.message || "Zone status updated successfully!",
         "success"
       );
-
-      // Keep the override but unlock it (in case API response differs, we still control it for now)
-      setStatusOverrides((prev) => ({
-        ...prev,
-        [zoneId]: { status: newStatus, locked: false },
-      }));
     } catch (error) {
       showSnackbar(
         error?.data?.message || "Failed to update zone status",
         "error"
       );
-
-      // Revert the override
-      setStatusOverrides((prev) => {
-        const updated = { ...prev };
-        delete updated[zoneId];
-        return updated;
-      });
+    } finally {
+      setSelectedZone(null);
+      setIsDeactivateModalOpen(false);
     }
   };
 
@@ -130,9 +111,6 @@ const AllZones = () => {
   };
 
   const renderZoneRow = (zone) => {
-    const isActive = statusOverrides[zone.id]
-      ? statusOverrides[zone.id].status
-      : zone?.is_active;
     return (
       <>
         <TableCell
@@ -184,13 +162,12 @@ const AllZones = () => {
           }}
         >
           <Switch
-            checked={
-              statusOverrides[zone.id]
-                ? statusOverrides[zone.id].status
-                : zone?.is_active
-            }
+            checked={zone?.is_active}
             onClick={(event) => event.stopPropagation()}
-            onChange={() => handleToggleStatus(zone?.id)}
+            onChange={() => {
+              setSelectedZone(zone);
+              setIsDeactivateModalOpen(true);
+            }}
             sx={{
               "& .MuiSwitch-track": {
                 backgroundColor: zone?.is_active ? "#22cfcf" : "red",
@@ -202,7 +179,7 @@ const AllZones = () => {
               },
             }}
           />
-          {isActive ? "On" : "Off"}
+          {zone?.is_active ? "On" : "Off"}
         </TableCell>
         <TableCell
           sx={{
@@ -338,6 +315,14 @@ const AllZones = () => {
         onConfirm={handleDeleteZone}
         message="The zone will be deleted from the Super Admin panel."
         loading={isDeletingZone}
+      />
+
+      <DeactivateConfirmationModal
+        open={isDeactivateModalOpen}
+        onClose={() => setIsDeactivateModalOpen(false)}
+        onConfirm={() => handleToggleStatus(selectedZone?.id)}
+        message="This zone's status will be toggled."
+        loading={isTogglingZone}
       />
     </>
   );

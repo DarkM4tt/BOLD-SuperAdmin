@@ -9,11 +9,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { CircularProgress } from "@mui/material";
 
-const DeleteConfirmationModal = ({
+const DeactivateConfirmationModal = ({
   open,
   onClose,
   onConfirm,
-  message = "This will be deleted from the Super Admin panel",
+  message = "This will be de-activated",
   loading,
 }) => {
   return (
@@ -42,7 +42,7 @@ const DeleteConfirmationModal = ({
             {loading ? (
               <CircularProgress size={20} style={{ color: "grey" }} />
             ) : (
-              "Yes, delete"
+              "Yes, toggle"
             )}
           </Button>
         </DialogFooter>
@@ -51,4 +51,4 @@ const DeleteConfirmationModal = ({
   );
 };
 
-export default DeleteConfirmationModal;
+export default DeactivateConfirmationModal;
