@@ -3,6 +3,7 @@ import { useAuth } from "../context/AuthProvider";
 import { lazy, Suspense } from "react";
 import MainLayout from "../layout/MainLayout";
 import LoadingAnimation from "../components/common/LoadingAnimation";
+import Settings from "@/pages/Settings";
 
 const Login = lazy(() => import("../pages/Login"));
 const Dashboard = lazy(() => import("../pages/Dashboard"));
@@ -391,6 +392,16 @@ const AppRoutes = () => {
             element={
               <ProtectedRoute>
                 <LiveMap />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Settings */}
+          <Route
+            path="settings"
+            element={
+              <ProtectedRoute>
+                <Settings />
               </ProtectedRoute>
             }
           />
