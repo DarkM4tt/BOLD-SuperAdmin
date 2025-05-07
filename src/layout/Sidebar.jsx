@@ -22,6 +22,7 @@ const menuItems = [
   { name: "Location", path: "/location" },
   { name: "Zones", path: "/zones" },
   { name: "Ride Categories", path: "/ride-categories" },
+  { name: "Settings", path: "/settings" },
 ];
 
 const Sidebar = () => {
